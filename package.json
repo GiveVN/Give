@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@radix-ui/react-select": "^2.2.5",
     "@t3-oss/env-nextjs": "^0.13.8",
     "lucide-react": "^0.515.0",
     "next-intl": "^4.1.0",
