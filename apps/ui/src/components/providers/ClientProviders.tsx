@@ -26,9 +26,9 @@ export function ClientProviders({
       <TokenProvider>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
-          forcedTheme="light"
+          forcedTheme="dark"
         >
           <QueryClientProvider client={queryClient}>
             {children}

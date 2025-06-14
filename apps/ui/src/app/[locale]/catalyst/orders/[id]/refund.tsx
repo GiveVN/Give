@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { Button } from '@/components/catalyst/button'
 import { Checkbox, CheckboxField } from '@/components/catalyst/checkbox'
@@ -17,7 +17,7 @@ export function RefundOrder({ amount, ...props }: { amount: string } & React.Com
       <Dialog open={isOpen} onClose={setIsOpen}>
         <DialogTitle>Refund payment</DialogTitle>
         <DialogDescription>
-          The refund will be reflected in the customer's bank account 2 to 3 business days after processing.
+          The refund will be reflected in the customer&apos;s bank account 2 to 3 business days after processing.
         </DialogDescription>
         <DialogBody>
           <FieldGroup>

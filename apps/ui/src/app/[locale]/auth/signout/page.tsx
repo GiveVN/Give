@@ -19,8 +19,7 @@ export default function SignOutPage() {
     } else {
       redirect({ href: "/", locale })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session.status])
+  }, [session.status, locale])
 
   return null
 }

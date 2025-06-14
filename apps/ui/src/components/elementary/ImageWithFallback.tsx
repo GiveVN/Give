@@ -22,8 +22,7 @@ export const ImageWithFallback = ({
 
   useEffect(() => {
     setSrc(originalSrc ?? fallbackSrc ?? invalidSrc)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [originalSrc])
+  }, [originalSrc, fallbackSrc])
 
   const handleLoadError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
     console.error(`Error loading image from ${src}:`, e)

@@ -10,24 +10,20 @@ import { Textarea } from '@/components/catalyst/textarea'
 import type { Metadata } from 'next'
 import { Address } from './address'
 
-// Import ApplicationLayout từ trang home
-import { ApplicationLayout } from '../page'
-
 export const metadata: Metadata = {
   title: 'Settings',
 }
 
 export default function Settings() {
   return (
-    <ApplicationLayout>
-      <form method="post" className="mx-auto max-w-4xl">
-        <Heading className="text-white">Settings</Heading>
+    <form method="post" className="mx-auto max-w-4xl">
+      <Heading>Settings</Heading>
         <Divider className="my-10 mt-6" />
 
         <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           <div className="space-y-1">
-            <Subheading className="text-white">Organization Name</Subheading>
-            <Text className="text-zinc-400">This will be displayed on your public profile.</Text>
+            <Subheading>Organization Name</Subheading>
+            <Text>This will be displayed on your public profile.</Text>
           </div>
           <div>
             <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" />
@@ -38,8 +34,8 @@ export default function Settings() {
 
         <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           <div className="space-y-1">
-            <Subheading className="text-white">Organization Bio</Subheading>
-            <Text className="text-zinc-400">This will be displayed on your public profile. Maximum 240 characters.</Text>
+            <Subheading>Organization Bio</Subheading>
+            <Text>This will be displayed on your public profile. Maximum 240 characters.</Text>
           </div>
           <div>
             <Textarea aria-label="Organization Bio" name="bio" />
@@ -50,14 +46,14 @@ export default function Settings() {
 
         <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           <div className="space-y-1">
-            <Subheading className="text-white">Organization Email</Subheading>
-            <Text className="text-zinc-400">This is how customers can contact you for support.</Text>
+            <Subheading>Organization Email</Subheading>
+            <Text>This is how customers can contact you for support.</Text>
           </div>
           <div className="space-y-4">
             <Input type="email" aria-label="Organization Email" name="email" defaultValue="info@example.com" />
             <CheckboxField>
               <Checkbox name="email_is_public" defaultChecked />
-              <Label className="text-white">Show email on public profile</Label>
+              <Label>Show email on public profile</Label>
             </CheckboxField>
           </div>
         </section>
@@ -66,8 +62,8 @@ export default function Settings() {
 
         <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           <div className="space-y-1">
-            <Subheading className="text-white">Address</Subheading>
-            <Text className="text-zinc-400">This is where your organization is registered.</Text>
+            <Subheading>Address</Subheading>
+            <Text>This is where your organization is registered.</Text>
           </div>
           <Address />
         </section>
@@ -76,8 +72,8 @@ export default function Settings() {
 
         <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           <div className="space-y-1">
-            <Subheading className="text-white">Currency</Subheading>
-            <Text className="text-zinc-400">The currency that your organization will be collecting.</Text>
+            <Subheading>Currency</Subheading>
+            <Text>The currency that your organization will be collecting.</Text>
           </div>
           <div>
             <Select aria-label="Currency" name="currency" defaultValue="cad">
@@ -96,6 +92,5 @@ export default function Settings() {
           <Button type="submit">Save changes</Button>
         </div>
       </form>
-    </ApplicationLayout>
   )
 }

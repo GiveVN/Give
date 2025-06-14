@@ -33,7 +33,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3001,
@@ -60,7 +60,7 @@ export async function getOrders() {
         country: 'USA',
         countryFlagUrl: '/flags/us.svg',
       },
-      event: await getEvent('1001'),
+      event: await getEvent('2'),
     },
     {
       id: 3002,
@@ -87,7 +87,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1002'),
+      event: await getEvent('3'),
     },
     {
       id: 3003,
@@ -114,7 +114,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3004,
@@ -141,7 +141,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3005,
@@ -168,7 +168,7 @@ export async function getOrders() {
         country: 'USA',
         countryFlagUrl: '/flags/us.svg',
       },
-      event: await getEvent('1001'),
+      event: await getEvent('2'),
     },
     {
       id: 3006,
@@ -195,7 +195,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1002'),
+      event: await getEvent('3'),
     },
     {
       id: 3007,
@@ -222,7 +222,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3008,
@@ -249,7 +249,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3009,
@@ -276,7 +276,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3010,
@@ -303,7 +303,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1001'),
+      event: await getEvent('2'),
     },
     {
       id: 3011,
@@ -330,7 +330,7 @@ export async function getOrders() {
         country: 'USA',
         countryFlagUrl: '/flags/us.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3012,
@@ -357,7 +357,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1002'),
+      event: await getEvent('3'),
     },
     {
       id: 3013,
@@ -384,7 +384,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1001'),
+      event: await getEvent('2'),
     },
     {
       id: 3014,
@@ -411,7 +411,7 @@ export async function getOrders() {
         country: 'USA',
         countryFlagUrl: '/flags/us.svg',
       },
-      event: await getEvent('1002'),
+      event: await getEvent('3'),
     },
     {
       id: 3015,
@@ -438,7 +438,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1002'),
+      event: await getEvent('3'),
     },
     {
       id: 3016,
@@ -465,7 +465,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3017,
@@ -492,7 +492,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3018,
@@ -519,7 +519,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3019,
@@ -546,7 +546,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3020,
@@ -573,7 +573,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1001'),
+      event: await getEvent('2'),
     },
     {
       id: 3021,
@@ -600,7 +600,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1000'),
+      event: await getEvent('1'),
     },
     {
       id: 3022,
@@ -627,7 +627,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3023,
@@ -654,7 +654,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3024,
@@ -681,7 +681,7 @@ export async function getOrders() {
         country: 'Canada',
         countryFlagUrl: '/flags/ca.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
     {
       id: 3025,
@@ -708,7 +708,7 @@ export async function getOrders() {
         country: 'USA',
         countryFlagUrl: '/flags/us.svg',
       },
-      event: await getEvent('1003'),
+      event: await getEvent('4'),
     },
   ]
 }
@@ -718,15 +718,15 @@ export async function getEvent(id: string) {
 }
 
 export async function getEventOrders(id: string) {
-  return (await getOrders()).filter((order) => order.event.id.toString() === id)
+  return (await getOrders()).filter((order) => order.event && order.event.id && order.event.id.toString() === id)
 }
 
 export async function getEvents() {
   return [
     {
-      id: 1000,
+      id: 1,
       name: 'Bear Hug: Live in Concert',
-      url: '/events/1000',
+      url: '/catalyst/events/1',
       date: 'May 20, 2024',
       time: '10 PM',
       location: 'Harmony Theater, Winnipeg, MB',
@@ -742,9 +742,9 @@ export async function getEvents() {
       thumbUrl: '/events/bear-hug-thumb.jpg',
     },
     {
-      id: 1001,
+      id: 2,
       name: 'Six Fingers — DJ Set',
-      url: '/events/1001',
+      url: '/catalyst/events/2',
       date: 'Jun 2, 2024',
       time: '8 PM',
       location: 'Moonbeam Arena, Uxbridge, ON',
@@ -760,9 +760,9 @@ export async function getEvents() {
       thumbUrl: '/events/six-fingers-thumb.jpg',
     },
     {
-      id: 1002,
+      id: 3,
       name: 'We All Look The Same',
-      url: '/events/1002',
+      url: '/catalyst/events/3',
       date: 'Aug 5, 2024',
       time: '4 PM',
       location: 'Electric Coliseum, New York, NY',
@@ -778,9 +778,9 @@ export async function getEvents() {
       thumbUrl: '/events/we-all-look-the-same-thumb.jpg',
     },
     {
-      id: 1003,
+      id: 4,
       name: 'Viking People',
-      url: '/events/1003',
+      url: '/catalyst/events/4',
       date: 'Dec 31, 2024',
       time: '8 PM',
       location: 'Tapestry Hall, Cambridge, ON',
