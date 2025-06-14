@@ -29,7 +29,7 @@
 ```yaml
 Framework: Strapi 5.15+ (Headless CMS)
 Language: TypeScript
-Database: PostgreSQL 17+
+Database: PostgreSQL 17+ chạy trong docker contain tên DB
 Cache: Redis 7+
 File Upload: Cloudinary Integration
 Authentication: Strapi Users & Permissions Plugin
@@ -219,7 +219,7 @@ interface Project {
   publishedAt: Date
 }
 
-// Donation System
+// Donation System (Giver-focused branding)
 interface Donation {
   id: number
   amount: number
@@ -230,14 +230,14 @@ interface Donation {
   paymentId: string
   paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded'
   
-  // Donor Information
+  // Giver Information (Give platform branding)
   isAnonymous: boolean
-  donorName?: string
+  giverName?: string
   message?: string
   
   // Relations
   project: Project
-  donor?: User
+  giver?: User  // Renamed from 'donor' to 'giver'
   
   // Timestamps
   createdAt: Date
@@ -261,6 +261,95 @@ interface Category {
   projects: Project[]
 }
 ```
+
+## 🏷️ TAG & CATEGORY ARCHITECTURE RESEARCH
+
+*Research findings từ major crowdfunding platforms và industry best practices*
+
+### 🔍 Research Findings từ Major Platforms
+
+**Kickstarter & Indiegogo Analysis:**
+- **Kickstarter**: 15 fixed categories (Film & Video, Music, Technology, Games, etc.)
+- **Indiegogo**: 28 categories, more flexible but still structured
+- **No user-generated tags** - chỉ có structured categories
+- **Focus on analytics và filtering** rather than discovery tags
+
+**E-commerce Platform Patterns:**
+- **Separate table approach** là industry standard
+- **Hierarchical categories** + **flexible tags**
+- **EAV model** cho complex product attributes
+- **Many-to-many relationships** cho flexibility
+
+### 🎯 Recommended Architecture
+
+**Hybrid Approach - Best of Both Worlds:**
+
+```typescript
+// Main Categories (Enum với i18n support)
+enum ProjectCategory {
+  TECHNOLOGY = 'technology',
+  ARTS = 'arts', 
+  COMMUNITY = 'community',
+  EDUCATION = 'education',
+  ENVIRONMENT = 'environment',
+  HEALTH = 'health',
+  SOCIAL_IMPACT = 'social-impact'
+}
+
+// Flexible Tags (Separate Table)
+interface Tag {
+  id: number
+  name: string
+  slug: string
+  color?: string
+  description?: string
+  isActive: boolean
+  usageCount: number
+  
+  // Relations
+  projects: Project[]
+  
+  // Timestamps
+  createdAt: Date
+  updatedAt: Date
+}
+
+// Updated Project Interface
+interface Project {
+  // ... existing fields ...
+  
+  // Category (Single, Required)
+  category: ProjectCategory
+  
+  // Tags (Multiple, Optional)
+  tags: Tag[]
+  
+  // ... rest of fields ...
+}
+```
+
+### 🏆 Architecture Benefits
+
+**Categories (Enum):**
+- ✅ **Structured analytics** - Easy reporting và filtering
+- ✅ **i18n support** - Strapi supports enum localization
+- ✅ **Admin control** - Prevent category proliferation
+- ✅ **SEO friendly** - Clean URL structure
+- ✅ **Performance** - No joins needed
+
+**Tags (Separate Table):**
+- ✅ **User flexibility** - Dynamic tag creation
+- ✅ **Discovery** - Rich tagging for search
+- ✅ **Analytics** - Usage tracking và trending
+- ✅ **Admin management** - Merge/delete unused tags
+- ✅ **Scalability** - Handle thousands of tags
+
+### 🔧 Implementation Strategy
+
+1. **Phase 1**: Implement enum categories với i18n
+2. **Phase 2**: Add separate Tag content type
+3. **Phase 3**: Build tag management UI
+4. **Phase 4**: Add tag analytics và trending
 
 ### Strapi Configuration
 ```typescript

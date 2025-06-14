@@ -1,0 +1,82 @@
+{
+  "kind": "collectionType",
+  "collectionName": "comments",
+  "info": {
+    "singularName": "comment",
+    "pluralName": "comments",
+    "displayName": "Comment",
+    "description": "Comments on projects and project updates with threading support"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Content": {
+      "type": "text",
+      "required": true,
+      "maxLength": 1000,
+      "minLength": 1
+    },
+    "IsApproved": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "IsEdited": {
+      "type": "boolean",
+      "default": false
+    },
+    "EditedAt": {
+      "type": "datetime"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "comments"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
+      "inversedBy": "Comments"
+    },
+    "projectUpdate": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project-update.project-update",
+      "inversedBy": "comments"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::comment.comment",
+      "inversedBy": "replies"
+    },
+    "replies": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "parent"
+    },
+    "IsReported": {
+      "type": "boolean",
+      "default": false
+    },
+    "ReportReason": {
+      "type": "text"
+    },
+    "Likes": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "IpAddress": {
+      "type": "string"
+    },
+    "UserAgent": {
+      "type": "text"
+    }
+  }
+} 

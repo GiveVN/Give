@@ -1,0 +1,153 @@
+{
+  "kind": "collectionType",
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "Crowdfunding projects on Give platform"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "ShortDescription": {
+      "type": "text",
+      "required": true,
+      "maxLength": 500,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "FullDescription": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "CoverImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "Gallery": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images", "videos"]
+    },
+    "TargetAmount": {
+      "type": "decimal",
+      "required": true,
+      "min": 1
+    },
+    "RaisedAmount": {
+      "type": "decimal",
+      "default": 0,
+      "min": 0
+    },
+    "Currency": {
+      "type": "enumeration",
+      "enum": ["USD", "EUR", "VND", "ETH", "BTC"],
+      "default": "USD",
+      "required": true
+    },
+    "Category": {
+      "type": "enumeration",
+      "enum": [
+        "technology",
+        "arts",
+        "community",
+        "education",
+        "environment",
+        "health",
+        "social-impact"
+      ],
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "Status": {
+      "type": "enumeration",
+      "enum": ["draft", "active", "completed", "cancelled", "suspended"],
+      "default": "draft",
+      "required": true
+    },
+    "StartDate": {
+      "type": "datetime"
+    },
+    "EndDate": {
+      "type": "datetime"
+    },
+    "Slug": {
+      "type": "uid",
+      "targetField": "Title",
+      "required": true
+    },
+    "FeaturedUntil": {
+      "type": "datetime"
+    },
+    "IsVerified": {
+      "type": "boolean",
+      "default": false
+    },
+    "Owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "ownedProjects"
+    },
+    "Collaborators": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "collaboratingProjects"
+    },
+    "Tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "inversedBy": "projects"
+    },
+    "Donations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::donation.donation",
+      "mappedBy": "project"
+    },
+    "Comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "project"
+    },
+    "ProjectUpdates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-update.project-update",
+      "mappedBy": "project"
+    }
+  }
+} 
