@@ -8,6 +8,18 @@ const optionalZodBoolean = z
   .pipe(z.boolean())
   .optional()
 
+// Relaxed URL validation for development (allows localhost)
+const urlOrLocalhost = z.string().refine((val) => {
+  try {
+    new URL(val)
+    return true
+  } catch {
+    return false
+  }
+}, {
+  message: "Invalid URL format"
+})
+
 export const env = createEnv({
   emptyStringAsUndefined: true,
 
@@ -17,8 +29,8 @@ export const env = createEnv({
    */
   server: {
     // Required environment variables
-    APP_PUBLIC_URL: z.string().url(),
-    STRAPI_URL: z.string().url(),
+    APP_PUBLIC_URL: urlOrLocalhost,
+    STRAPI_URL: urlOrLocalhost,
     STRAPI_REST_READONLY_API_KEY: z.string(),
 
     // Optional environment variables
@@ -27,7 +39,7 @@ export const env = createEnv({
     NEXT_OUTPUT: z.string().optional(),
     WEBPACK_CACHE_TYPE: z.enum(["filesystem", "memory"]).optional(),
 
-    NEXTAUTH_URL: z.string().url().optional(),
+    NEXTAUTH_URL: urlOrLocalhost.optional(),
     NEXTAUTH_SECRET: z.string().optional(),
 
     SENTRY_AUTH_TOKEN: z.string().optional(),

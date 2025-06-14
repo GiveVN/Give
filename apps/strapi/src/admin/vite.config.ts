@@ -1,4 +1,5 @@
 import { mergeConfig } from "vite"
+import path from "path"
 
 import type { UserConfig } from "vite"
 
@@ -8,6 +9,8 @@ export default (config: UserConfig) => {
     resolve: {
       alias: {
         "@": "/src",
+        "@repo/design-system": path.resolve(__dirname, "../../../../packages/design-system/dist"),
+        "@repo/shared-data": path.resolve(__dirname, "../../../../packages/shared-data/dist"),
       },
     },
   } as UserConfig)
