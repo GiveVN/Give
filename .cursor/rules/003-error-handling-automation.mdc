@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Error Handling Automation
+
+## Build Failures
+1. Check TypeScript errors first
+2. Verify imports và dependencies
+3. Clear dist directories
+4. Remove node_modules. Rename nếu không remove được
+5. Run yarn install if needed
+6. Check environment variables
+
+## Plugin Development
+- Test trong /Test directory
+- Clean build artifacts khi có issues
+- Verify database connections
+- Check console logs cho JavaScript errors
+
+## Automatic Recovery
+- Port conflicts: Auto-kill the exact port và restart. Không kill các port không liên quan
+- Module not found: Run yarn install
+- Database issues: Check connection strings
+- Build cache: Clear và rebuild
+
+
