@@ -19,6 +19,8 @@
     "**/sharp": "0.33.5"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@heroicons/react": "^2.2.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.1.1",
     "@plaiceholder/next": "^3.0.0",
