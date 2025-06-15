@@ -107,7 +107,7 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
 
   return (
     <Link href={projectLink} className="block">
-    <div className="group relative bg-white rounded-t-lg overflow-visible shadow-none hover:shadow-xl transition-shadow duration-300 hover:z-30">
+    <div className="group relative bg-white rounded-lg overflow-hidden shadow-none hover:shadow-xl transition-shadow duration-300 hover:z-30">
       {/* Project Image */}
       <div className="relative">
         <Image
@@ -142,8 +142,8 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
         )}
       </div>
 
-      {/* Card Content - Expandable */}
-      <div className="p-6 group-hover:pb-6">
+      {/* Card Content */}
+      <div className="p-6 relative z-10">
         {/* Category */}
         <div className="mb-3">
           <Badge className={categoryColor}>
@@ -197,9 +197,9 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
           </div>
         </div>
 
-        {/* Description and Tags - Absolute positioned overlay to avoid pushing cards below */}
+        {/* Description and Tags - Slide-up panel inside the same box */}
         {(project.shortDescription || (project.tags && project.tags.length > 0)) && (
-          <div className="absolute inset-x-0 bg-white px-6 pb-6 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 ease-out z-50 rounded-b-lg" style={{ top: 'calc(100% - 1px)' }}>
+          <div className="absolute inset-x-0 bottom-0 bg-white px-6 pt-4 pb-6 rounded-b-lg transform translate-y-full group-hover:translate-y-0 transition-transform duration-200 z-30">
             {project.shortDescription && (
               <p className="text-gray-700 text-sm mb-3 line-clamp-2">
                 {project.shortDescription}
