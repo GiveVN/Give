@@ -24,6 +24,7 @@ interface ProjectCardProps {
     }> | null
     slug?: string | null
     endDate?: string | null
+    creator: string
   }
   locale: string
 }
@@ -106,122 +107,103 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
     : null
 
   return (
-    <Link href={projectLink} className="block">
-    <div className="group relative bg-white rounded-lg overflow-hidden shadow-none hover:shadow-xl transition-shadow duration-300 hover:z-30">
-      {/* Project Image */}
-      <div className="relative">
-        <Image
-          src={projectImage}
-          alt={project.title}
-          width={400}
-          height={200}
-          className="w-full h-48 object-cover rounded-t-lg"
-        />
-        
-        {/* Status Badge */}
-        <div className="absolute top-3 right-3">
-          <Badge 
-            variant={project.status === 'Active' ? 'default' : 'secondary'}
-            className={`${
-              project.status === 'Active' 
-                ? 'bg-green-100 text-green-800 border-green-200' 
-                : 'bg-gray-100 text-gray-600 border-gray-200'
-            }`}
-          >
-            {project.status}
-          </Badge>
-        </div>
-
-        {/* Featured Badge */}
-        {project.featured && (
-          <div className="absolute top-3 left-3">
-            <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-              ⭐ Featured
-            </Badge>
-          </div>
-        )}
-      </div>
-
-      {/* Card Content */}
-      <div className="p-6 relative z-10">
-        {/* Category */}
-        <div className="mb-3">
-          <Badge className={categoryColor}>
-            {categoryLabel}
-          </Badge>
-        </div>
-
-        {/* Project Title */}
-        <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-          {project.title}
-        </h3>
-
-        {/* Funding Progress */}
-        {fundingGoal > 0 ? (
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-lg font-bold text-gray-900">
-                {formatCurrency(currentFunding)} raised
-              </span>
-              <span className="text-sm text-gray-500">
-                {progressPercentage}%
-              </span>
-            </div>
-            <Progress 
-              value={progressPercentage} 
-              className="h-2 mb-2"
+    <div className="group relative bg-white rounded-lg overflow-visible shadow-sm hover:shadow-lg transition-all duration-300">
+      {/* Main Card Content */}
+      <div className="relative bg-white rounded-lg group-hover:rounded-b-none overflow-hidden">
+        {/* Project Image */}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <Link href={projectLink}>
+            <Image
+              src={projectImage}
+              alt={project.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-200"
             />
-            <div className="text-sm text-gray-600">
-              Goal: {formatCurrency(fundingGoal)}
-            </div>
-          </div>
-        ) : (
-          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-500 text-center">
-              Funding details coming soon
-            </p>
-          </div>
-        )}
-
-        {/* Project Stats */}
-        <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-          {daysRemaining !== null && (
-            <div className="flex items-center gap-1">
-              <CalendarIcon className="w-4 h-4" />
-              <span>{daysRemaining} days left</span>
+          </Link>
+          
+          {/* Featured Badge - Kickstarter style */}
+          {featured && (
+            <div className="absolute top-3 left-3">
+              <Badge className="bg-green-600 hover:bg-green-600 text-white text-xs font-medium px-2 py-1">
+                ❤️ Project We Love
+              </Badge>
             </div>
           )}
-          <div className="flex items-center gap-1">
-            <UsersIcon className="w-4 h-4" />
-            <span>{backersCount} backers</span>
+          
+          {/* User Avatar - bottom left overlay */}
+          <div className="absolute bottom-3 left-3">
+            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+              <span className="text-xs font-medium text-gray-600">
+                {project.creator?.charAt(0) || 'U'}
+              </span>
+            </div>
           </div>
+          
+          {/* Save Button - bottom right */}
+          <button 
+            className="absolute bottom-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center transition-colors"
+            aria-label="Save project"
+          >
+            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
         </div>
 
-        {/* Description and Tags - Slide-up panel inside the same box */}
-        {(project.shortDescription || (project.tags && project.tags.length > 0)) && (
-          <div className="absolute inset-x-0 bottom-0 bg-white px-6 pt-4 pb-6 rounded-b-lg transform translate-y-full group-hover:translate-y-0 transition-transform duration-200 z-30">
-            {project.shortDescription && (
-              <p className="text-gray-700 text-sm mb-3 line-clamp-2">
-                {project.shortDescription}
-              </p>
-            )}
-            {project.tags && project.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {project.tags.slice(0, 3).map((tag) => (
-                  <Badge
-                    key={tag.id}
-                    variant="outline"
-                    className="text-xs bg-blue-50 text-blue-700 border-blue-200"
-                  >
-                    {tag.name}
-                  </Badge>
-                ))}
-              </div>
+        {/* Main Card Info */}
+        <div className="p-4">
+          {/* Title */}
+          <Link href={projectLink}>
+            <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
+              {project.title}
+            </h3>
+          </Link>
+          
+          {/* Creator */}
+          <p className="text-sm text-gray-600 mb-2">
+            by <span className="font-medium">{project.creator || 'Anonymous'}</span>
+          </p>
+          
+          {/* Progress Info */}
+          <div className="flex items-center text-xs text-gray-500 space-x-2">
+            <CalendarIcon className="w-3 h-3" />
+            <span>{daysRemaining} days left</span>
+            <span>•</span>
+            <span>{progressPercentage}% funded</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded Content - Absolute positioned to overlap like Kickstarter */}
+      <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out z-50">
+        <div className="px-4 py-3">
+          {/* Project Description */}
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+            {project.shortDescription}
+          </p>
+          
+          {/* Tags - Kickstarter style */}
+          <div className="flex flex-wrap gap-2">
+            {project.tags?.slice(0, 2).map((tag) => (
+              <Link
+                key={tag.id}
+                href={`/projects?tag=${tag.name}`}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                {tag.name}
+              </Link>
+            ))}
+            {project.category && (
+              <Link
+                href={`/projects?category=${project.category}`}
+                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                {project.category}
+              </Link>
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
-    </Link>
   )
 } 
