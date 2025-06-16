@@ -2,8 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { CalendarIcon, UsersIcon } from '@heroicons/react/24/outline'
+import { CalendarIcon, UsersIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
+import { Heart } from 'lucide-react'
 
 interface ProjectCardProps {
   project: {
@@ -72,6 +73,11 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
   
   // Calculate progress percentage
   const progressPercentage = fundingGoal > 0 ? Math.round((currentFunding / fundingGoal) * 100) : 0
+
+  // Calculate days left
+  const daysLeft = project.endDate 
+    ? Math.max(0, Math.ceil((new Date(project.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+    : 0
   
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -101,17 +107,12 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
     ? `/${locale}/projects/${project.slug}`
     : `/${locale}/projects/${project.documentId}`
 
-  // Calculate days remaining if endDate exists
-  const daysRemaining = project.endDate 
-    ? Math.max(0, Math.ceil((new Date(project.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
-    : null
-
   return (
-    <div className="group relative bg-white rounded-lg overflow-visible shadow-sm hover:shadow-lg transition-all duration-300">
-      {/* Main Card Content */}
-      <div className="relative bg-white rounded-lg group-hover:rounded-b-none overflow-hidden">
+    <div className="group relative before:content-[''] before:absolute before:inset-0 before:rounded-lg hover:before:bottom-[-96px] hover:before:shadow-xl before:pointer-events-none before:-z-10 before:transition-all before:duration-300 hover:z-50">
+      {/* Main card */}
+      <div className="relative bg-white rounded-lg shadow-sm group-hover:shadow-none transition-shadow duration-300">
         {/* Project Image */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
           <Link href={projectLink}>
             <Image
               src={projectImage}
@@ -124,59 +125,57 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
           {/* Featured Badge - Kickstarter style */}
           {featured && (
             <div className="absolute top-3 left-3">
-              <Badge className="bg-green-600 hover:bg-green-600 text-white text-xs font-medium px-2 py-1">
+              <Badge className="bg-green-600 hover:bg-green-600 text-white">
                 ❤️ Project We Love
               </Badge>
             </div>
           )}
-          
-          {/* User Avatar - bottom left overlay */}
-          <div className="absolute bottom-3 left-3">
-            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-gray-600">
-                {project.creator?.charAt(0) || 'U'}
-              </span>
-            </div>
+
+          {/* Creator Avatar - Top right */}
+          <div className="absolute top-3 right-12 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm font-medium text-gray-700">
+            {project.creator?.[0] || 'U'}
           </div>
-          
-          {/* Save Button - bottom right */}
+
+          {/* Save Button - Top right corner */}
           <button 
-            className="absolute bottom-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center transition-colors"
+            className="absolute top-3 right-3 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center transition-colors"
             aria-label="Save project"
           >
-            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
+            <Heart className="w-4 h-4 text-gray-600 hover:text-red-500" />
           </button>
         </div>
 
-        {/* Main Card Info */}
+        {/* Card Content */}
         <div className="p-4">
-          {/* Title */}
+          {/* Project Title */}
           <Link href={projectLink}>
-            <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
+            <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
               {project.title}
             </h3>
           </Link>
-          
+
           {/* Creator */}
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm text-gray-600 mb-3">
             by <span className="font-medium">{project.creator || 'Anonymous'}</span>
           </p>
-          
-          {/* Progress Info */}
-          <div className="flex items-center text-xs text-gray-500 space-x-2">
-            <CalendarIcon className="w-3 h-3" />
-            <span>{daysRemaining} days left</span>
-            <span>•</span>
-            <span>{progressPercentage}% funded</span>
+
+          {/* Progress Bar */}
+          <div className="mb-3">
+            <Progress value={progressPercentage} className="h-2 mb-2" />
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <div className="flex items-center gap-1">
+                <ClockIcon className="w-4 h-4" />
+                <span>{daysLeft} days left</span>
+              </div>
+              <span>{progressPercentage}% funded</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Expanded Content - Absolute positioned to overlap like Kickstarter */}
-      <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out z-50">
-        <div className="px-4 py-3">
+      {/* Expanded Content */}
+      <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+        <div className="p-4">
           {/* Project Description */}
           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
             {project.shortDescription}
@@ -198,7 +197,7 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
                 href={`/projects?category=${project.category}`}
                 className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
               >
-                {project.category}
+                {categoryLabel}
               </Link>
             )}
           </div>

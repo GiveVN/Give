@@ -5,7 +5,7 @@
     "singularName": "project",
     "pluralName": "projects",
     "displayName": "Project",
-    "description": "Crowdfunding projects on Give platform"
+    "description": "Crowdfunding projects"
   },
   "options": {
     "draftAndPublish": true
@@ -16,120 +16,147 @@
     }
   },
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
-      "required": true,
-      "maxLength": 200,
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "required": true
     },
-    "ShortDescription": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": false
+    },
+    "description": {
       "type": "text",
-      "required": true,
-      "maxLength": 500,
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "required": true
     },
-    "FullDescription": {
-      "type": "richtext",
+    "shortDescription": {
+      "type": "string",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "maxLength": 160
     },
-    "CoverImage": {
-      "type": "media",
-      "multiple": false,
+    "category": {
+      "type": "enumeration",
       "required": true,
-      "allowedTypes": ["images"]
+      "enum": [
+        "technology",
+        "health",
+        "education",
+        "environment",
+        "arts",
+        "community",
+        "business",
+        "sports",
+        "travel",
+        "food",
+        "fashion",
+        "games",
+        "film",
+        "music",
+        "publishing"
+      ]
     },
-    "Gallery": {
-      "type": "media",
-      "multiple": true,
-      "allowedTypes": ["images", "videos"]
+    "status": {
+      "type": "enumeration",
+      "required": true,
+      "default": "draft",
+      "enum": [
+        "draft",
+        "active",
+        "funded",
+        "ended",
+        "cancelled"
+      ]
     },
-    "TargetAmount": {
+    "fundingGoal": {
       "type": "decimal",
       "required": true,
-      "min": 1
+      "min": 0
     },
-    "RaisedAmount": {
+    "currentFunding": {
       "type": "decimal",
       "default": 0,
       "min": 0
     },
-    "Currency": {
+    "currency": {
       "type": "enumeration",
-      "enum": ["USD", "EUR", "VND", "ETH", "BTC"],
-      "default": "USD",
-      "required": true
-    },
-    "Category": {
-      "type": "enumeration",
-      "enum": [
-        "technology",
-        "arts",
-        "community",
-        "education",
-        "environment",
-        "health",
-        "social-impact"
-      ],
       "required": true,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "default": "USD",
+      "enum": [
+        "USD",
+        "EUR",
+        "GBP",
+        "VND"
+      ]
     },
-    "Status": {
-      "type": "enumeration",
-      "enum": ["draft", "active", "completed", "cancelled", "suspended"],
-      "default": "draft",
+    "backersCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "startDate": {
+      "type": "datetime",
       "required": true
     },
-    "StartDate": {
-      "type": "datetime"
-    },
-    "EndDate": {
-      "type": "datetime"
-    },
-    "Slug": {
-      "type": "uid",
-      "targetField": "Title",
+    "endDate": {
+      "type": "datetime",
       "required": true
     },
-    "FeaturedUntil": {
-      "type": "datetime"
-    },
-    "IsVerified": {
+    "featured": {
       "type": "boolean",
       "default": false
     },
-    "Owner": {
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "video": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "creator": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "ownedProjects"
+      "inversedBy": "projects"
     },
-    "Collaborators": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "collaboratingProjects"
-    },
-    "Tags": {
+    "tags": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::tag.tag",
-      "inversedBy": "projects"
+      "mappedBy": "projects"
+    },
+    "rewards": {
+      "type": "component",
+      "component": "project.reward",
+      "repeatable": true
+    },
+    "updates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-update.project-update",
+      "mappedBy": "project"
     },
     "Donations": {
       "type": "relation",
@@ -143,11 +170,10 @@
       "target": "api::comment.comment",
       "mappedBy": "project"
     },
-    "ProjectUpdates": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::project-update.project-update",
-      "mappedBy": "project"
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
     }
   }
-} 
+}

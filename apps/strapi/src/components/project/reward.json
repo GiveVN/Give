@@ -1,0 +1,57 @@
+{
+  "collectionName": "components_project_rewards",
+  "info": {
+    "displayName": "Reward",
+    "description": "Project reward/perk for backers"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "currency": {
+      "type": "enumeration",
+      "enum": [
+        "USD",
+        "EUR",
+        "GBP",
+        "VND"
+      ],
+      "default": "USD",
+      "required": true
+    },
+    "estimatedDelivery": {
+      "type": "date"
+    },
+    "limitedQuantity": {
+      "type": "integer",
+      "min": 0
+    },
+    "claimedQuantity": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    }
+  }
+} 

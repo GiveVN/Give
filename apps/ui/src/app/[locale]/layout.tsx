@@ -12,71 +12,58 @@ import { cn } from "@/lib/styles"
 import { ErrorBoundary } from "@/components/elementary/ErrorBoundary"
 import StrapiPreviewListener from "@/components/elementary/StrapiPreviewListener"
 import { TailwindIndicator } from "@/components/elementary/TailwindIndicator"
-import StrapiFooter from "@/components/page-builder/single-types/footer/StrapiFooter"
-import StrapiNavbar from "@/components/page-builder/single-types/navbar/StrapiNavbar"
 import { ClientProviders } from "@/components/providers/ClientProviders"
 import { ServerProviders } from "@/components/providers/ServerProviders"
 import TrackingScripts from "@/components/providers/TrackingScripts"
 import { Toaster } from "@/components/ui/toaster"
+import { StrapiFooter } from "@/components/page-builder/single-types/footer/StrapiFooter"
+import { StrapiNavbarNew } from "@/components/page-builder/single-types/navbar/StrapiNavbarNew"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
 export const metadata: Metadata = {
-  title: {
-    template: "%s / Notum Technologies",
-    default: "",
-  },
+  title: "Give - Crowdfunding Platform",
+  description: "A modern crowdfunding platform built with Next.js and Strapi",
 }
 
-export default async function RootLayout({ children, params }: LayoutProps) {
-  const { locale } = await params
-
-  if (!routing.locales.includes(locale)) {
+export default async function RootLayout({
+  children,
+  params,
+}: LayoutProps) {
+  const resolvedParams = await params
+  const { locale } = resolvedParams
+  // Ensure that the incoming `locale` is valid
+  if (!routing.locales.includes(locale as any)) {
     notFound()
   }
 
   // Enable static rendering
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router/with-i18n-routing#static-rendering
   setRequestLocale(locale)
 
   return (
-    <html 
-      lang={locale} 
+    <html
+      lang={locale}
+      className={cn(fontRoboto.variable)}
       suppressHydrationWarning
-      className="text-zinc-950 antialiased lg:bg-zinc-100 dark:bg-zinc-900 dark:text-white dark:lg:bg-zinc-950"
     >
-      <head />
-      <body
-        className={cn(
-          "bg-background min-h-screen font-sans antialiased",
-          fontRoboto.variable
-        )}
-      >
-        <TrackingScripts />
-        <ServerProviders params={params}>
-          <ClientProviders>
-            <StrapiPreviewListener />
-            <div className="relative flex min-h-screen flex-col">
-              <ErrorBoundary hideFallback>
-                <StrapiNavbar locale={locale} />
-              </ErrorBoundary>
-
-              <div className="flex-1">
-                <div>{children}</div>
-              </div>
-
-              <TailwindIndicator />
-
-              <Toaster />
-
-              <ErrorBoundary hideFallback>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <ErrorBoundary>
+          <ServerProviders params={resolvedParams}>
+            <ClientProviders>
+              <div className="relative flex min-h-screen flex-col">
+                <StrapiNavbarNew locale={locale} />
+                <main className="flex-1">{children}</main>
                 <StrapiFooter locale={locale} />
-              </ErrorBoundary>
-            </div>
-          </ClientProviders>
-        </ServerProviders>
+              </div>
+              <Toaster />
+              <TailwindIndicator />
+              <StrapiPreviewListener />
+            </ClientProviders>
+          </ServerProviders>
+        </ErrorBoundary>
+        <TrackingScripts />
       </body>
     </html>
   )

@@ -24,6 +24,7 @@ Tôi cần AI làm tự động nhiều nhất có thể, ít phải động tay
 - Thêm đầy đủ imports, dependencies, error handling
 - Tạo README và documentation tự động
 - Không bao giờ tạo code cần manual setup phức tạp
+- Ưu tiên sử dụng đúng best practices & guidelines và các tiêu chuẩn hiện đại.
 
 ### Testing & Quality
 - Tự động tạo tests khi generate code

@@ -19,13 +19,23 @@
     },
     "Currency": {
       "type": "enumeration",
-      "enum": ["USD", "EUR", "VND", "ETH", "BTC"],
+      "enum": [
+        "USD",
+        "EUR",
+        "VND",
+        "ETH",
+        "BTC"
+      ],
       "default": "USD",
       "required": true
     },
     "PaymentMethod": {
       "type": "enumeration",
-      "enum": ["stripe", "paypal", "crypto"],
+      "enum": [
+        "stripe",
+        "paypal",
+        "crypto"
+      ],
       "required": true
     },
     "PaymentId": {
@@ -34,7 +44,12 @@
     },
     "PaymentStatus": {
       "type": "enumeration",
-      "enum": ["pending", "completed", "failed", "refunded"],
+      "enum": [
+        "pending",
+        "completed",
+        "failed",
+        "refunded"
+      ],
       "default": "pending",
       "required": true
     },
@@ -64,4 +79,4 @@
       "inversedBy": "donations"
     }
   }
-} 
+}

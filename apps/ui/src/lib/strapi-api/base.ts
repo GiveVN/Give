@@ -18,6 +18,7 @@ export const API_ENDPOINTS: { [key in UID.ContentType]?: string } = {
   "api::footer.footer": "/footer",
   "api::navbar.navbar": "/navbar",
   "api::subscriber.subscriber": "/subscribers",
+  "api::project.project": "/projects",
 } as const
 
 export default abstract class BaseStrapiClient {
@@ -53,10 +54,11 @@ export default abstract class BaseStrapiClient {
 
     const { json, text } = await this.parseResponse(response)
 
-    if (text) {
+    // If the response is not JSON (e.g. Strapi is down, proxy crashed, HTML error page, etc.)
+    if (!json) {
       const appError: AppError = {
         name: "Invalid response format",
-        message: text,
+        message: text ?? "No JSON body returned from Strapi API.",
         status: response.status,
       }
       console.error("[BaseStrapiClient] Strapi API request error: ", appError)
@@ -64,10 +66,10 @@ export default abstract class BaseStrapiClient {
     }
 
     if (!response.ok) {
-      const { error } = json
+      const { error } = json as any
       const appError: AppError = {
-        name: error?.name,
-        message: error?.message,
+        name: error?.name ?? "Strapi API Error",
+        message: error?.message ?? "Unknown error from Strapi API.",
         details: error?.details,
         status: response.status ?? error?.status,
       }

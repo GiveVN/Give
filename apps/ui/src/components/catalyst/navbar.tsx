@@ -3,12 +3,170 @@
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
 import { LayoutGroup, motion } from 'framer-motion'
-import React, { forwardRef, useId } from 'react'
+import React, { forwardRef, useId, useState } from 'react'
 import { TouchTarget } from './button'
 import { Link } from './link'
+import { Dialog, DialogPanel } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { Logo } from './logo'
+import { Button } from '@/components/ui/button'
 
-export function Navbar({ className, ...props }: React.ComponentPropsWithoutRef<'nav'>) {
-  return <nav {...props} className={clsx(className, 'flex flex-1 items-center gap-4 py-2.5')} />
+const navigation = [
+  { name: 'Discover', href: '/discover' },
+  { name: 'Start a campaign', href: '/start' },
+  { name: 'My campaigns', href: '/my-campaigns' },
+]
+
+export function Navbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  return (
+    <header className="bg-white shadow-sm border-b border-gray-200">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+        {/* Left side - Logo + Menu */}
+        <div className="flex items-center gap-8">
+          <div className="flex lg:flex-1">
+            <a href="/" className="-m-1.5 p-1.5 flex items-center gap-3">
+              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-green-700 rounded-md flex items-center justify-center shadow-lg">
+                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <span className="text-2xl font-bold text-gray-900 tracking-tight">Give</span>
+            </a>
+          </div>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex lg:gap-x-8">
+            {navigation.slice(0, 2).map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200"
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Center - Search Bar (less rounded) */}
+        <div className="hidden lg:flex lg:flex-1 lg:justify-center lg:max-w-2xl">
+          <div className="relative w-full max-w-lg">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search for campaigns, creators, or categories..."
+              className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm shadow-sm hover:shadow-md transition-shadow duration-200"
+            />
+            <div className="absolute inset-y-0 right-0 pr-2 flex items-center">
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors duration-200 shadow-sm"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right side - Login + Start Campaign */}
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
+          <a href="/login" className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2">
+            Sign in
+          </a>
+          <Button asChild className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded text-sm font-semibold transition-colors duration-200 shadow-sm">
+            <a href="/start">
+              Start a campaign
+            </a>
+          </Button>
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="flex lg:hidden">
+          <button
+            type="button"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <span className="sr-only">Open main menu</span>
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu */}
+      <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+        <div className="fixed inset-0 z-50" />
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div className="flex items-center justify-between">
+            <a href="/" className="-m-1.5 p-1.5 flex items-center gap-3">
+              <div className="h-8 w-8 bg-gradient-to-br from-green-600 to-green-700 rounded flex items-center justify-center">
+                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900">Give</span>
+            </a>
+            <button
+              type="button"
+              className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="sr-only">Close menu</span>
+              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </div>
+          
+          <div className="mt-6 flow-root">
+            <div className="-my-6 divide-y divide-gray-500/10">
+              {/* Mobile Search - Less rounded */}
+              <div className="py-6">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search campaigns, creators..."
+                    className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2 py-6">
+                {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="-mx-3 block rounded px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </div>
+              
+              <div className="py-6 space-y-4">
+                <a
+                  href="/login"
+                  className="-mx-3 block rounded px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                >
+                  Sign in
+                </a>
+                <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded font-semibold">
+                  <a href="/start">
+                    Start a campaign
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
+      </Dialog>
+    </header>
+  )
 }
 
 export function NavbarDivider({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {

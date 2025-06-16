@@ -5,7 +5,7 @@
     "singularName": "tag",
     "pluralName": "tags",
     "displayName": "Tag",
-    "description": "Flexible tags for project discovery and categorization"
+    "description": "Tags for project categorization"
   },
   "options": {
     "draftAndPublish": false
@@ -16,51 +16,40 @@
     }
   },
   "attributes": {
-    "Name": {
+    "name": {
       "type": "string",
       "required": true,
       "unique": true,
-      "maxLength": 50,
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       }
     },
-    "Slug": {
+    "slug": {
       "type": "uid",
-      "targetField": "Name",
+      "targetField": "name",
       "required": true
     },
-    "Color": {
-      "type": "string",
-      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
-      "default": "#3B82F6"
-    },
-    "Description": {
-      "type": "text",
-      "maxLength": 200,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "IsActive": {
-      "type": "boolean",
-      "default": true,
-      "required": true
-    },
-    "UsageCount": {
-      "type": "integer",
-      "default": 0,
-      "min": 0
+    "color": {
+      "type": "enumeration",
+      "enum": [
+        "blue",
+        "green",
+        "red",
+        "yellow",
+        "purple",
+        "pink",
+        "indigo",
+        "gray"
+      ],
+      "default": "blue"
     },
     "projects": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::project.project",
-      "mappedBy": "Tags"
+      "inversedBy": "tags"
     }
   }
-} 
+}

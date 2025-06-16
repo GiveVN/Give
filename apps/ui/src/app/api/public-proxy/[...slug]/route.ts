@@ -70,4 +70,4 @@ export {
 }
 
 // List of allowed endpoints for GET requests
-const ALLOWED_STRAPI_ENDPOINTS = ["/pages", "/footer", "/navbar"]
+const ALLOWED_STRAPI_ENDPOINTS = ["/pages", "/footer", "/navbar", "/projects"]

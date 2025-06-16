@@ -42,7 +42,10 @@
     "Images": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images", "videos"]
+      "allowedTypes": [
+        "images",
+        "videos"
+      ]
     },
     "IsPublic": {
       "type": "boolean",
@@ -62,7 +65,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::project.project",
-      "inversedBy": "ProjectUpdates"
+      "inversedBy": "updates"
     },
     "author": {
       "type": "relation",
@@ -77,4 +80,4 @@
       "mappedBy": "projectUpdate"
     }
   }
-} 
+}

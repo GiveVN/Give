@@ -1,17 +1,17 @@
 {
-  "name": "strapi-next-monorepo-starter",
+  "name": "Give-Crowdfunding",
   "version": "2.0.0",
   "private": true,
   "author": {
-    "name": "Notum Technologies",
-    "email": "info@notum.cz",
-    "url": "https://notum.cz"
+    "name": "JOY",
+    "email": "h@joy.box",
+    "url": "https://joy.box"
   },
   "maintainers": [
     {
-      "name": "Notum Technologies",
-      "email": "info@notum.cz",
-      "url": "https://notum.cz"
+      "name": "JOY",
+      "email": "h@joy.box",
+      "url": "https://joy.box"
     }
   ],
   "workspaces": [
@@ -24,6 +24,7 @@
     "build:ui": "turbo run build --filter=@repo/ui",
     "commit": "git-cz",
     "dev": "turbo dev",
+    "develop": "turbo dev",
     "dev:strapi": "turbo run dev --filter=@repo/strapi",
     "dev:ui": "turbo run dev --filter=@repo/ui",
     "format": "prettier --write --cache --ignore-unknown \"**/*.{js,jsx,ts,tsx,md,css,scss}\"",
@@ -68,6 +69,8 @@
     "lucide-react": "^0.515.0",
     "next-intl": "^4.1.0",
     "next-themes": "^0.4.6",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.16.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^6.0.0",

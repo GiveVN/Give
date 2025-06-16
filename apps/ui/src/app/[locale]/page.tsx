@@ -4,58 +4,29 @@ import { setRequestLocale } from "next-intl/server"
 
 import type { PageProps } from "@/types/next"
 
-import { isDevelopment } from "@/lib/general-helpers"
 import { getMetadataFromStrapi } from "@/lib/metadata"
-import { routing } from "@/lib/navigation"
-import { PublicStrapiClient } from "@/lib/strapi-api"
 import { fetchPage } from "@/lib/strapi-api/content/page"
 import { cn } from "@/lib/styles"
-import { Breadcrumbs } from "@/components/elementary/Breadcrumbs"
 import { Container } from "@/components/elementary/Container"
 import { ErrorBoundary } from "@/components/elementary/ErrorBoundary"
 import { PageContentComponents } from "@/components/page-builder"
 import StrapiStructuredData from "@/components/page-builder/components/seo-utilities/StrapiStructuredData"
 
-export async function generateStaticParams() {
-  if (isDevelopment()) {
-    // do not prefetch all locales when developing
-    return []
-  }
-
-  const promises = routing.locales.map((locale) =>
-    PublicStrapiClient.fetchAll("api::page.page", { locale })
-  )
-
-  const results = await Promise.allSettled(promises)
-
-  const params = results
-    .filter((result) => result.status === "fulfilled")
-    .flatMap((result) => result.value.data)
-    .map((page) => ({
-      locale: page.locale,
-      rest: [page.slug],
-    }))
-
-  return params
-}
-
-type Props = PageProps<{
-  rest: string[]
-}>
+type Props = PageProps<{}>
 
 export async function generateMetadata(props: Props) {
   const params = await props.params
-  const fullPath = ROOT_PAGE_PATH + (params.rest ?? []).join("/")
+  const fullPath = ROOT_PAGE_PATH
 
   return getMetadataFromStrapi({ fullPath, locale: params.locale })
 }
 
-export default async function StrapiPage(props: Props) {
+export default async function HomePage(props: Props) {
   const params = await props.params
 
   setRequestLocale(params.locale)
 
-  const fullPath = ROOT_PAGE_PATH + (params.rest ?? []).join("/")
+  const fullPath = ROOT_PAGE_PATH
   const response = await fetchPage(fullPath, params.locale)
 
   const data = response?.data
@@ -71,13 +42,6 @@ export default async function StrapiPage(props: Props) {
       <StrapiStructuredData structuredData={data?.seo?.structuredData} />
 
       <main className={cn("flex w-full flex-col overflow-hidden")}>
-        <Container>
-          <Breadcrumbs
-            breadcrumbs={response?.meta?.breadcrumbs}
-            className="mt-6 mb-6"
-          />
-        </Container>
-
         {content
           .filter((comp) => comp != null)
           .map((comp) => {
@@ -96,14 +60,6 @@ export default async function StrapiPage(props: Props) {
               )
             }
 
-            // TODO: Resolve dynamic import issue with NextJS 15
-            // const Component = dynamic<{
-            // 	component: typeof comp
-            // 	pageParams: Awaited<Props['params']>
-            // 	page: typeof data
-            // 	// breadcrumbs: typeof breadcrumbs
-            // }>(() => import(`@/components/page-builder${componentPath}`))
-
             return (
               <ErrorBoundary key={key}>
                 <div className={cn("mb-4 md:mb-12 lg:mb-16")}>
@@ -119,4 +75,4 @@ export default async function StrapiPage(props: Props) {
       </main>
     </>
   )
-}
+} 

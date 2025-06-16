@@ -11,6 +11,12 @@ import StrapiHorizontalImages from "@/components/page-builder/components/section
 import StrapiImageWithCTAButton from "@/components/page-builder/components/sections/StrapiImageWithCTAButton"
 import StrapiCkEditorContent from "@/components/page-builder/components/utilities/StrapiCkEditorContent"
 
+// Radiant Crowdfunding Components
+import HeroCrowdfunding from "@/components/page-builder/sections/HeroCrowdfunding"
+import StatsSection from "@/components/page-builder/sections/StatsSection"
+import FeaturedProjects from "@/components/page-builder/sections/FeaturedProjects"
+import CtaSection from "@/components/page-builder/sections/CtaSection"
+
 /**
  * Mapping of Strapi Component UID to React Component
  * TODO: This should map Strapi component uid -> component path to reduce bundle size, however this became an issue with nextjs 15 update
@@ -38,6 +44,12 @@ export const PageContentComponents: {
   // Forms
   "forms.contact-form": StrapiContactForm,
   "forms.newsletter-form": StrapiNewsletterForm,
+
+  // Radiant Crowdfunding Components
+  "sections.hero-crowdfunding": HeroCrowdfunding,
+  "sections.stats-section": StatsSection,
+  "sections.featured-projects": FeaturedProjects,
+  "sections.cta-section": CtaSection,
 
   // Add more components here
 }
