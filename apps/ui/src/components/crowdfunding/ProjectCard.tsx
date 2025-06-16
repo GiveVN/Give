@@ -1,208 +1,230 @@
-import Image from 'next/image'
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
+import { Heart, Calendar } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
-import { CalendarIcon, UsersIcon, ClockIcon } from '@heroicons/react/24/outline'
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
-import { Heart } from 'lucide-react'
 
 interface ProjectCardProps {
   project: {
+    id: string
     documentId: string
     title: string
-    shortDescription: string
+    shortDescription?: string
+    description: string
     category: string
-    status: string
-    fundingGoal?: number | null
-    currentFunding?: number | null
-    backersCount?: number | null
-    featured?: boolean | null
-    images?: any[] | null
+    fundingGoal: number
+    currentFunding: number
+    currency: string
+    backersCount: number
+    startDate: string
+    endDate: string
+    featured: boolean
+    projectStatus: string
+    images?: Array<{
+      id: number
+      url: string
+      alternativeText?: string
+      width?: number
+      height?: number
+    }>
     tags?: Array<{
       id: number
       name: string
-      color?: string
-    }> | null
-    slug?: string | null
-    endDate?: string | null
-    creator: string
+    }>
   }
-  locale: string
 }
 
-const categoryLabels: Record<string, string> = {
-  technology_innovation: 'Technology',
-  environment_sustainability: 'Environment', 
-  health_medical: 'Health',
-  arts_culture: 'Arts & Culture',
-  community: 'Community',
-  education: 'Education',
-  business: 'Business'
+// Helper function to format currency
+const formatCurrency = (amount: number, currency: string = 'USD'): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount)
 }
 
-const categoryColors: Record<string, string> = {
-  technology_innovation: 'bg-blue-100 text-blue-800',
-  environment_sustainability: 'bg-green-100 text-green-800',
-  health_medical: 'bg-red-100 text-red-800', 
-  arts_culture: 'bg-purple-100 text-purple-800',
-  community: 'bg-orange-100 text-orange-800',
-  education: 'bg-indigo-100 text-indigo-800',
-  business: 'bg-gray-100 text-gray-800'
+// Helper function to get status color
+const getStatusColor = (status: string): string => {
+  switch (status) {
+    case 'active':
+      return 'bg-green-100 text-green-800'
+    case 'funded':
+      return 'bg-blue-100 text-blue-800'
+    case 'ended':
+      return 'bg-gray-100 text-gray-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
 }
 
-const statusLabels: Record<string, string> = {
-  active: 'Active',
-  draft: 'Draft',
-  completed: 'Completed',
-  cancelled: 'Cancelled'
+// Helper function to get status display name
+const getStatusDisplayName = (status: string): string => {
+  switch (status) {
+    case 'active':
+      return 'Active'
+    case 'funded':
+      return 'Funded'
+    case 'ended':
+      return 'Ended'
+    default:
+      return status
+  }
 }
 
-const statusColors: Record<string, string> = {
-  active: 'bg-green-100 text-green-800',
-  draft: 'bg-yellow-100 text-yellow-800', 
-  completed: 'bg-blue-100 text-blue-800',
-  cancelled: 'bg-red-100 text-red-800'
+// Helper function to get category display name
+const getCategoryDisplayName = (category: string): string => {
+  switch (category) {
+    case 'technology_innovation':
+      return 'Technology'
+    case 'business':
+      return 'Business'
+    case 'creative_arts':
+      return 'Creative Arts'
+    case 'social_impact':
+      return 'Social Impact'
+    case 'health_wellness':
+      return 'Health & Wellness'
+    case 'education':
+      return 'Education'
+    case 'environment':
+      return 'Environment'
+    case 'community':
+      return 'Community'
+    default:
+      return category
+  }
 }
 
-export function ProjectCard({ project, locale }: ProjectCardProps) {
-  // Handle missing funding data with fallbacks
-  const fundingGoal = project.fundingGoal || 0
-  const currentFunding = project.currentFunding || 0
-  const backersCount = project.backersCount || 0
-  const featured = project.featured || false
+export default function ProjectCard({ project }: ProjectCardProps) {
+  const [isLiked, setIsLiked] = useState(false)
   
-  // Calculate progress percentage
-  const progressPercentage = fundingGoal > 0 ? Math.round((currentFunding / fundingGoal) * 100) : 0
-
-  // Calculate days left
-  const daysLeft = project.endDate 
-    ? Math.max(0, Math.ceil((new Date(project.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+  const progressPercentage = project.fundingGoal > 0 
+    ? Math.round((project.currentFunding / project.fundingGoal) * 100)
     : 0
-  
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
 
-  // Get project image
-  const projectImage = project.images?.[0]?.url 
+  const endDate = new Date(project.endDate)
+  const today = new Date()
+  const timeDiff = endDate.getTime() - today.getTime()
+  const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
+
+  const imageUrl = project.images?.[0]?.url 
     ? `http://localhost:1338${project.images[0].url}`
-    : '/placeholder-project.svg'
-
-  // Get category info
-  const categoryLabel = categoryLabels[project.category] || project.category
-  const categoryColor = categoryColors[project.category] || 'bg-gray-100 text-gray-800'
-  
-  // Get status info
-  const statusLabel = statusLabels[project.status] || project.status
-  const statusColor = statusColors[project.status] || 'bg-gray-100 text-gray-800'
-
-  // Project link
-  const projectLink = project.slug 
-    ? `/${locale}/projects/${project.slug}`
-    : `/${locale}/projects/${project.documentId}`
+    : null
 
   return (
-    <div className="group relative before:content-[''] before:absolute before:inset-0 before:rounded-lg hover:before:bottom-[-96px] hover:before:shadow-xl before:pointer-events-none before:-z-10 before:transition-all before:duration-300 hover:z-50">
-      {/* Main card */}
-      <div className="relative bg-white rounded-lg shadow-sm group-hover:shadow-none transition-shadow duration-300">
-        {/* Project Image */}
-        <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
-          <Link href={projectLink}>
-            <Image
-              src={projectImage}
-              alt={project.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-200"
-            />
-          </Link>
-          
-          {/* Featured Badge - Kickstarter style */}
-          {featured && (
-            <div className="absolute top-3 left-3">
-              <Badge className="bg-green-600 hover:bg-green-600 text-white">
-                ❤️ Project We Love
-              </Badge>
+    <Link href={`/projects/${project.documentId}`} className="block">
+      <div className="group relative hover:z-50">
+        
+        {/* Main card with unified shadow system */}
+        <div className="relative bg-white rounded-lg group-hover:rounded-b-none overflow-visible shadow-sm group-hover:shadow-none transition-all duration-300">
+          {/* Featured Badge */}
+          {project.featured && (
+            <div className="absolute top-3 left-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+              Featured
             </div>
           )}
 
-          {/* Creator Avatar - Top right */}
-          <div className="absolute top-3 right-12 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm font-medium text-gray-700">
-            {project.creator?.[0] || 'U'}
+          {/* Like Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              setIsLiked(!isLiked)
+            }}
+            className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
+            aria-label={isLiked ? "Unlike project" : "Like project"}
+          >
+            <Heart 
+              className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+            />
+          </button>
+
+          {/* Project Image */}
+          <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
+            {project.images && project.images.length > 0 ? (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${project.images[0].url}`}
+                alt={project.images[0].alternativeText || project.title || "Project image"}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-400">No Image</span>
+              </div>
+            )}
           </div>
 
-          {/* Save Button - Top right corner */}
-          <button 
-            className="absolute top-3 right-3 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center transition-colors"
-            aria-label="Save project"
-          >
-            <Heart className="w-4 h-4 text-gray-600 hover:text-red-500" />
-          </button>
-        </div>
+          {/* Project Content */}
+          <div className="p-4">
+            {/* Status Badge */}
+            <div className="mb-3">
+              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.projectStatus)}`}>
+                {getStatusDisplayName(project.projectStatus)}
+              </span>
+            </div>
 
-        {/* Card Content */}
-        <div className="p-4">
-          {/* Project Title */}
-          <Link href={projectLink}>
-            <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+            {/* Project Title */}
+            <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
               {project.title}
             </h3>
-          </Link>
 
-          {/* Creator */}
-          <p className="text-sm text-gray-600 mb-3">
-            by <span className="font-medium">{project.creator || 'Anonymous'}</span>
-          </p>
+            {/* Progress Bar */}
+            <div className="mb-3">
+              <Progress value={progressPercentage} className="h-2" />
+            </div>
 
-          {/* Progress Bar */}
-          <div className="mb-3">
-            <Progress value={progressPercentage} className="h-2 mb-2" />
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <div className="flex items-center gap-1">
-                <ClockIcon className="w-4 h-4" />
-                <span>{daysLeft} days left</span>
+            {/* Funding Info */}
+            <div className="flex justify-between items-center text-sm">
+              <div>
+                <span className="font-semibold text-gray-900">
+                  {formatCurrency(project.currentFunding, project.currency)}
+                </span>
+                <span className="text-gray-500 ml-1">raised</span>
               </div>
-              <span>{progressPercentage}% funded</span>
+              <div className="text-gray-500">
+                {progressPercentage}% funded
+              </div>
+            </div>
+
+            {/* Days Left */}
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <Calendar className="w-4 h-4 mr-1" />
+              <span>{daysLeft} days left</span>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Expanded Content */}
-      <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-        <div className="p-4">
-          {/* Project Description */}
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-            {project.shortDescription}
-          </p>
+        {/* Expanded Content - Single unified block with shadow */}
+        <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg p-4 space-y-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:shadow-xl transition-all duration-300 ease-in-out z-40">
+          {/* Subtle separator line */}
+          <div className="absolute top-0 left-4 right-4 h-px bg-gray-100"></div>
           
-          {/* Tags - Kickstarter style */}
-          <div className="flex flex-wrap gap-2">
-            {project.tags?.slice(0, 2).map((tag) => (
-              <Link
+          {/* Short Description */}
+          {project.shortDescription && (
+            <p className="text-sm text-gray-600 line-clamp-2 pt-2">
+              {project.shortDescription}
+            </p>
+          )}
+          
+          {/* Category and Tags */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+              {getCategoryDisplayName(project.category)}
+            </span>
+            {project.tags?.map((tag) => (
+              <span 
                 key={tag.id}
-                href={`/projects?tag=${tag.name}`}
-                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
               >
                 {tag.name}
-              </Link>
+              </span>
             ))}
-            {project.category && (
-              <Link
-                href={`/projects?category=${project.category}`}
-                className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
-              >
-                {categoryLabel}
-              </Link>
-            )}
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 } 
