@@ -9,7 +9,7 @@ export interface ProjectData {
   shortDescription?: string
   slug: string
   category: 'technology' | 'health' | 'education' | 'environment' | 'arts' | 'community' | 'business' | 'sports' | 'travel' | 'food' | 'fashion' | 'games' | 'film' | 'music' | 'publishing'
-  status: 'draft' | 'active' | 'funded' | 'ended' | 'cancelled'
+  projectStatus: 'draft' | 'active' | 'funded' | 'ended' | 'cancelled'
   fundingGoal: number
   currentFunding: number
   currency: 'USD' | 'EUR' | 'GBP' | 'VND'
@@ -92,7 +92,7 @@ export interface ProjectData {
 
 export interface ProjectsFilters {
   category?: string
-  status?: string
+  projectStatus?: string
   featured?: boolean
   locale?: string
 }
@@ -131,7 +131,7 @@ export async function fetchProjects({
         shortDescription: 'AI-powered water purification for remote communities',
         slug: 'smart-water-purifier',
         category: 'technology',
-        status: 'active',
+        projectStatus: 'active',
         fundingGoal: 50000,
         currentFunding: 32500,
         currency: 'USD',
@@ -152,7 +152,7 @@ export async function fetchProjects({
         shortDescription: 'Sustainable community gardens for local food production',
         slug: 'community-garden-initiative',
         category: 'environment',
-        status: 'active',
+        projectStatus: 'active',
         fundingGoal: 25000,
         currentFunding: 18750,
         currency: 'USD',
@@ -173,7 +173,7 @@ export async function fetchProjects({
         shortDescription: 'VR platform for immersive educational experiences',
         slug: 'educational-vr-platform',
         category: 'education',
-        status: 'active',
+        projectStatus: 'active',
         fundingGoal: 75000,
         currentFunding: 45000,
         currency: 'USD',
@@ -193,8 +193,8 @@ export async function fetchProjects({
     if (filters.category) {
       filteredProjects = filteredProjects.filter(p => p.category === filters.category)
     }
-    if (filters.status) {
-      filteredProjects = filteredProjects.filter(p => p.status === filters.status)
+    if (filters.projectStatus) {
+      filteredProjects = filteredProjects.filter(p => p.projectStatus === filters.projectStatus)
     }
     if (filters.featured !== undefined) {
       filteredProjects = filteredProjects.filter(p => p.featured === filters.featured)
@@ -283,9 +283,9 @@ export async function fetchProjectStats(): Promise<{
     const projects = response.data
 
     const totalFunded = projects.reduce((sum, project) => sum + project.currentFunding, 0)
-    const activeProjects = projects.filter(project => project.status === 'active').length
+    const activeProjects = projects.filter(project => project.projectStatus === 'active').length
     const totalBackers = projects.reduce((sum, project) => sum + project.backersCount, 0)
-    const fundedProjects = projects.filter(project => project.status === 'funded').length
+    const fundedProjects = projects.filter(project => project.projectStatus === 'funded').length
     const successRate = projects.length > 0 ? (fundedProjects / projects.length) * 100 : 0
 
     return {

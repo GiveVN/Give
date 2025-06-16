@@ -32,6 +32,7 @@ export const ImageWithBlur = ({
       placeholder="blur"
       blurDataURL={rgbDataURL(...blurRgb)}
       {...imgProps}
+      alt={imgProps.alt || "Image"}
     />
   )
 }

@@ -37,8 +37,8 @@ export const ImageWithFallback = ({
   }
 
   if (blurOff) {
-    return <Image src={src} {...imgProps} onError={handleLoadError} />
+    return <Image src={src} {...imgProps} alt={imgProps.alt || "Image"} onError={handleLoadError} />
   }
 
-  return <ImageWithBlur src={src} {...imgProps} onError={handleLoadError} />
+  return <ImageWithBlur src={src} {...imgProps} alt={imgProps.alt || "Image"} onError={handleLoadError} />
 }

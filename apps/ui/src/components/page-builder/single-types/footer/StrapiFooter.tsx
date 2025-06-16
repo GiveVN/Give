@@ -62,7 +62,7 @@ function FooterLogo({ logoImage }: { logoImage: any }) {
   const logoElement = (
     <Image
       src={`http://localhost:1338${imageUrl}`}
-      alt={alt || "Logo"}
+      alt={alt && alt.trim() ? alt : "Give Logo"}
       width={Math.min(imageWidth, 120)} // Limit max width to 120px for footer
       height={Math.min(imageHeight, 60)} // Limit max height to 60px for footer
       className="h-auto max-h-12 w-auto max-w-[120px] object-contain"
@@ -91,16 +91,14 @@ export async function StrapiFooter({ locale }: { locale: AppLocale }) {
 
   console.log("StrapiFooter render - data:", data)
   console.log("StrapiFooter render - sections:", data?.sections)
-  console.log("StrapiFooter render - socialLinks:", data?.socialLinks)
-
   if (!data) {
     console.log("StrapiFooter: No data, returning null")
     return null
   }
 
-  const { sections, logoImage, links, socialLinks, copyRight } = data.data || data
+  const { sections, logoImage, links, copyRight, socialLinks } = data.data || data
 
-  console.log("StrapiFooter: Extracted data", { sections, logoImage, links, socialLinks, copyRight })
+  console.log("StrapiFooter: Extracted data", { sections, logoImage, links, copyRight })
 
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
@@ -112,18 +110,7 @@ export async function StrapiFooter({ locale }: { locale: AppLocale }) {
               <FooterLogo logoImage={logoImage} />
             </div>
             
-            {/* Social Links */}
-            {socialLinks && socialLinks.length > 0 && (
-              <div className="flex space-x-4">
-                {socialLinks.map((socialLink: any) => (
-                  <SocialIcon
-                    key={socialLink.id}
-                    platform={socialLink.platform}
-                    url={socialLink.url}
-                  />
-                ))}
-              </div>
-            )}
+
           </div>
 
           {/* Menu Sections - Reduced gap from gap-8 to gap-6 */}
@@ -172,6 +159,19 @@ export async function StrapiFooter({ locale }: { locale: AppLocale }) {
                  ))}
                </div>
             )}
+
+            {/* Social Links - Commented out until socialLinks field is added to Strapi */}
+            {/* {socialLinks && socialLinks.length > 0 && (
+              <div className="flex space-x-4">
+                {socialLinks.map((socialLink: any) => (
+                  <SocialIcon
+                    key={socialLink.id}
+                    platform={socialLink.platform}
+                    url={socialLink.url}
+                  />
+                ))}
+              </div>
+            )} */}
           </div>
         </div>
       </Container>

@@ -36,6 +36,51 @@ export interface FormsNewsletterForm extends Struct.ComponentSchema {
   }
 }
 
+export interface ProjectReward extends Struct.ComponentSchema {
+  collectionName: "components_project_rewards"
+  info: {
+    description: "Project reward/perk for backers"
+    displayName: "Reward"
+  }
+  attributes: {
+    amount: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0
+        },
+        number
+      >
+    claimedQuantity: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>
+    currency: Schema.Attribute.Enumeration<["USD", "EUR", "GBP", "VND"]> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<"USD">
+    description: Schema.Attribute.Text & Schema.Attribute.Required
+    estimatedDelivery: Schema.Attribute.Date
+    image: Schema.Attribute.Media<"images">
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
+    limitedQuantity: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0
+        },
+        number
+      >
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100
+      }>
+  }
+}
+
 export interface SectionsAnimatedLogoRow extends Struct.ComponentSchema {
   collectionName: "components_sections_animated_logo_rows"
   info: {
@@ -60,6 +105,39 @@ export interface SectionsCarousel extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsCtaSection extends Struct.ComponentSchema {
+  collectionName: "components_sections_cta_sections"
+  info: {
+    description: "Call-to-action section with title, description, and action buttons"
+    displayName: "CTA Section"
+  }
+  attributes: {
+    backgroundColor: Schema.Attribute.Enumeration<
+      [
+        "gradient-blue-purple",
+        "gradient-green-blue",
+        "solid-blue",
+        "solid-purple",
+      ]
+    > &
+      Schema.Attribute.DefaultTo<"gradient-blue-purple">
+    description: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<"Whether you're an innovator with a groundbreaking idea or a supporter looking to fund change, Give is your platform to make it happen.">
+    primaryButtonLink: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"/start-project">
+    primaryButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"Launch Your Project">
+    secondaryButtonLink: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"/projects">
+    secondaryButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"Support a Project">
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<"Ready to make an impact?">
+  }
+}
+
 export interface SectionsFaq extends Struct.ComponentSchema {
   collectionName: "components_sections_faqs"
   info: {
@@ -70,6 +148,31 @@ export interface SectionsFaq extends Struct.ComponentSchema {
     accordions: Schema.Attribute.Component<"utilities.accordions", true>
     subTitle: Schema.Attribute.String
     title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface SectionsFeaturedProjects extends Struct.ComponentSchema {
+  collectionName: "components_sections_featured_projects"
+  info: {
+    description: "A section displaying featured projects"
+    displayName: "Featured Projects"
+  }
+  attributes: {
+    limit: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 12
+          min: 1
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<6>
+    showViewAllButton: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>
+    subtitle: Schema.Attribute.Text
+    title: Schema.Attribute.String & Schema.Attribute.Required
+    viewAllButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"View all projects">
   }
 }
 
@@ -100,6 +203,33 @@ export interface SectionsHero extends Struct.ComponentSchema {
     steps: Schema.Attribute.Component<"utilities.text", true>
     subTitle: Schema.Attribute.String
     title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface SectionsHeroCrowdfunding extends Struct.ComponentSchema {
+  collectionName: "components_sections_hero_crowdfundings"
+  info: {
+    description: "Hero section for crowdfunding platform with title, subtitle, and CTA buttons"
+    displayName: "Hero Crowdfunding"
+  }
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<"images">
+    badge: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"\uD83D\uDE80 Funding Innovation Since 2024">
+    primaryButtonLink: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"/projects">
+    primaryButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"Explore Projects">
+    secondaryButtonLink: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"/start-project">
+    secondaryButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<"Start a Project">
+    subtitle: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<"Discover groundbreaking projects and support innovators who are solving real-world problems. Join a community of forward-thinking backers making change happen.">
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<"Give to Change">
   }
 }
 
@@ -136,6 +266,19 @@ export interface SectionsImageWithCtaButton extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<"utilities.basic-image", false>
     link: Schema.Attribute.Component<"utilities.link", false>
     subText: Schema.Attribute.String
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface SectionsStatsSection extends Struct.ComponentSchema {
+  collectionName: "components_sections_stats_sections"
+  info: {
+    description: "A section displaying statistics"
+    displayName: "Stats Section"
+  }
+  attributes: {
+    stats: Schema.Attribute.Component<"utilities.stat-item", true>
+    subtitle: Schema.Attribute.Text
     title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
@@ -379,6 +522,38 @@ export interface UtilitiesLinksWithTitle extends Struct.ComponentSchema {
   }
 }
 
+export interface UtilitiesSocialLink extends Struct.ComponentSchema {
+  collectionName: "components_utilities_social_links"
+  info: {
+    description: "Social media link with icon"
+    displayName: "Social Link"
+  }
+  attributes: {
+    platform: Schema.Attribute.Enumeration<
+      ["facebook", "instagram", "twitter", "github", "youtube", "linkedin"]
+    > &
+      Schema.Attribute.Required
+    url: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface UtilitiesStatItem extends Struct.ComponentSchema {
+  collectionName: "components_utilities_stat_items"
+  info: {
+    description: "Individual statistic item with title, value, and change percentage"
+    displayName: "Stat Item"
+  }
+  attributes: {
+    change: Schema.Attribute.String
+    changeType: Schema.Attribute.Enumeration<
+      ["positive", "negative", "neutral"]
+    > &
+      Schema.Attribute.DefaultTo<"positive">
+    title: Schema.Attribute.String & Schema.Attribute.Required
+    value: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface UtilitiesText extends Struct.ComponentSchema {
   collectionName: "components_utilities_texts"
   info: {
@@ -395,13 +570,18 @@ declare module "@strapi/strapi" {
       "elements.footer-item": ElementsFooterItem
       "forms.contact-form": FormsContactForm
       "forms.newsletter-form": FormsNewsletterForm
+      "project.reward": ProjectReward
       "sections.animated-logo-row": SectionsAnimatedLogoRow
       "sections.carousel": SectionsCarousel
+      "sections.cta-section": SectionsCtaSection
       "sections.faq": SectionsFaq
+      "sections.featured-projects": SectionsFeaturedProjects
       "sections.heading-with-cta-button": SectionsHeadingWithCtaButton
       "sections.hero": SectionsHero
+      "sections.hero-crowdfunding": SectionsHeroCrowdfunding
       "sections.horizontal-images": SectionsHorizontalImages
       "sections.image-with-cta-button": SectionsImageWithCtaButton
+      "sections.stats-section": SectionsStatsSection
       "seo-utilities.meta-social": SeoUtilitiesMetaSocial
       "seo-utilities.seo": SeoUtilitiesSeo
       "seo-utilities.seo-og": SeoUtilitiesSeoOg
@@ -415,6 +595,8 @@ declare module "@strapi/strapi" {
       "utilities.image-with-link": UtilitiesImageWithLink
       "utilities.link": UtilitiesLink
       "utilities.links-with-title": UtilitiesLinksWithTitle
+      "utilities.social-link": UtilitiesSocialLink
+      "utilities.stat-item": UtilitiesStatItem
       "utilities.text": UtilitiesText
     }
   }

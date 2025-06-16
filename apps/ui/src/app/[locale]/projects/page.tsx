@@ -1,9 +1,9 @@
 import { Container } from "@/components/catalyst/container"
-import { ProjectCard } from "@/components/crowdfunding/ProjectCard"
+import ProjectCard from "@/components/crowdfunding/ProjectCard"
 import FiltersSidebar from "@/components/crowdfunding/FiltersSidebar"
 import FiltersSheet from "@/components/crowdfunding/FiltersSheet"
 import ProjectsTopControls from "@/components/crowdfunding/ProjectsTopControls"
-import { AppLocale } from "@/lib/i18n"
+import { AppLocale } from "@/types/general"
 
 interface ProjectsPageProps {
   params: Promise<{ locale: AppLocale }>
@@ -19,9 +19,6 @@ async function fetchProjects(locale: AppLocale, searchParams: any) {
   try {
     // Direct API call to Strapi as workaround for permissions
     const queryParams = new URLSearchParams({
-      'populate[images][populate]': '*',
-      'populate[tags]': 'true',
-      'populate[seo]': 'true',
       'sort[0]': 'createdAt:desc',
       'pagination[page]': searchParams.page || '1',
       'pagination[pageSize]': '12',

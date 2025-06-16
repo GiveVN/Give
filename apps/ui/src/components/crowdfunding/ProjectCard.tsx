@@ -116,13 +116,13 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/projects/${project.documentId}`} className="block">
-      <div className="group relative hover:z-50">
+      <div className="group relative">
         
-        {/* Main card with unified shadow system */}
-        <div className="relative bg-white rounded-lg group-hover:rounded-b-none overflow-visible shadow-sm group-hover:shadow-none transition-all duration-300">
+        {/* Main card - no z-index change, no shadow transition to avoid zoom effect */}
+        <div className="relative bg-white rounded-lg border border-transparent group-hover:rounded-b-none group-hover:border-t-gray-200 group-hover:border-l-gray-200 group-hover:border-r-gray-200 group-hover:border-b-transparent overflow-visible transition-[border-radius,border-color] duration-200">
           {/* Featured Badge */}
           {project.featured && (
-            <div className="absolute top-3 left-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+            <div className="absolute top-3 right-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
               Featured
             </div>
           )}
@@ -143,6 +143,13 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
           {/* Project Image */}
           <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
+            {/* Status Badge - moved to image corner */}
+            <div className="absolute top-3 left-3 z-10">
+              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.projectStatus)}`}>
+                {getStatusDisplayName(project.projectStatus)}
+              </span>
+            </div>
+
             {project.images && project.images.length > 0 ? (
               <Image
                 src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${project.images[0].url}`}
@@ -159,13 +166,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
           {/* Project Content */}
           <div className="p-4">
-            {/* Status Badge */}
-            <div className="mb-3">
-              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.projectStatus)}`}>
-                {getStatusDisplayName(project.projectStatus)}
-              </span>
-            </div>
-
             {/* Project Title */}
             <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
               {project.title}
@@ -188,20 +188,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                 {progressPercentage}% funded
               </div>
             </div>
-
-            {/* Days Left */}
-            <div className="mt-2 flex items-center text-sm text-gray-500">
-              <Calendar className="w-4 h-4 mr-1" />
-              <span>{daysLeft} days left</span>
-            </div>
           </div>
         </div>
 
-        {/* Expanded Content - Single unified block with shadow */}
-        <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg p-4 space-y-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:shadow-xl transition-all duration-300 ease-in-out z-40">
-          {/* Subtle separator line */}
-          <div className="absolute top-0 left-4 right-4 h-px bg-gray-100"></div>
-          
+        {/* Expanded Content - faster timing, shadow only when visible */}
+        <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg p-4 space-y-3 opacity-0 invisible border border-transparent group-hover:opacity-100 group-hover:visible group-hover:border-l-gray-200 group-hover:border-r-gray-200 group-hover:border-b-gray-200 group-hover:border-t-transparent group-hover:shadow-lg transition-[opacity,visibility,border-color,box-shadow] duration-200 z-40">
           {/* Short Description */}
           {project.shortDescription && (
             <p className="text-sm text-gray-600 line-clamp-2 pt-2">
