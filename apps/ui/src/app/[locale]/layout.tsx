@@ -12,12 +12,12 @@ import { cn } from "@/lib/styles"
 import { ErrorBoundary } from "@/components/elementary/ErrorBoundary"
 import StrapiPreviewListener from "@/components/elementary/StrapiPreviewListener"
 import { TailwindIndicator } from "@/components/elementary/TailwindIndicator"
+import { StrapiFooter } from "@/components/page-builder/single-types/footer/StrapiFooter"
+import { StrapiNavbarNew } from "@/components/page-builder/single-types/navbar/StrapiNavbarNew"
 import { ClientProviders } from "@/components/providers/ClientProviders"
 import { ServerProviders } from "@/components/providers/ServerProviders"
 import TrackingScripts from "@/components/providers/TrackingScripts"
 import { Toaster } from "@/components/ui/toaster"
-import { StrapiFooter } from "@/components/page-builder/single-types/footer/StrapiFooter"
-import { StrapiNavbarNew } from "@/components/page-builder/single-types/navbar/StrapiNavbarNew"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -28,10 +28,7 @@ export const metadata: Metadata = {
   description: "A modern crowdfunding platform built with Next.js and Strapi",
 }
 
-export default async function RootLayout({
-  children,
-  params,
-}: LayoutProps) {
+export default async function RootLayout({ children, params }: LayoutProps) {
   const resolvedParams = await params
   const { locale } = resolvedParams
   // Ensure that the incoming `locale` is valid
@@ -48,7 +45,7 @@ export default async function RootLayout({
       className={cn(fontRoboto.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="bg-background min-h-screen font-sans antialiased">
         <ErrorBoundary>
           <ServerProviders params={resolvedParams}>
             <ClientProviders>

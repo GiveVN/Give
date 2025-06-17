@@ -1,9 +1,17 @@
-import { Stat } from '@/components/catalyst/stat'
-import { Avatar } from '@/components/catalyst/avatar'
-import { Heading, Subheading } from '@/components/catalyst/heading'
-import { Select } from '@/components/catalyst/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/catalyst/table'
-import { getRecentOrders } from '@/data'
+import { getRecentOrders } from "@/data"
+
+import { Avatar } from "@/components/catalyst/avatar"
+import { Heading, Subheading } from "@/components/catalyst/heading"
+import { Select } from "@/components/catalyst/select"
+import { Stat } from "@/components/catalyst/stat"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/catalyst/table"
 
 export default async function Home() {
   let orders = await getRecentOrders()
@@ -41,7 +49,11 @@ export default async function Home() {
         </TableHead>
         <TableBody>
           {orders.map((order) => (
-            <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
+            <TableRow
+              key={order.id}
+              href={order.url}
+              title={`Order #${order.id}`}
+            >
               <TableCell>{order.id}</TableCell>
               <TableCell className="text-zinc-500">{order.date}</TableCell>
               <TableCell>{order.customer.name}</TableCell>
@@ -58,4 +70,4 @@ export default async function Home() {
       </Table>
     </>
   )
-} 
+}

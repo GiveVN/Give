@@ -1,6 +1,27 @@
-'use client'
+"use client"
 
-import { Avatar } from '@/components/catalyst/avatar'
+import { usePathname } from "next/navigation"
+import { getEvents } from "@/data"
+import {
+  ArrowRightStartOnRectangleIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  Cog8ToothIcon,
+  LightBulbIcon,
+  PlusIcon,
+  ShieldCheckIcon,
+  UserCircleIcon,
+} from "@heroicons/react/16/solid"
+import {
+  Cog6ToothIcon,
+  HomeIcon,
+  QuestionMarkCircleIcon,
+  SparklesIcon,
+  Square2StackIcon,
+  TicketIcon,
+} from "@heroicons/react/20/solid"
+
+import { Avatar } from "@/components/catalyst/avatar"
 import {
   Dropdown,
   DropdownButton,
@@ -8,8 +29,13 @@ import {
   DropdownItem,
   DropdownLabel,
   DropdownMenu,
-} from '@/components/catalyst/dropdown'
-import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from '@/components/catalyst/navbar'
+} from "@/components/catalyst/dropdown"
+import {
+  Navbar,
+  NavbarItem,
+  NavbarSection,
+  NavbarSpacer,
+} from "@/components/catalyst/navbar"
 import {
   Sidebar,
   SidebarBody,
@@ -20,30 +46,14 @@ import {
   SidebarLabel,
   SidebarSection,
   SidebarSpacer,
-} from '@/components/catalyst/sidebar'
-import { SidebarLayout } from '@/components/catalyst/sidebar-layout'
-import { getEvents } from '@/data'
-import {
-  ArrowRightStartOnRectangleIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  Cog8ToothIcon,
-  LightBulbIcon,
-  PlusIcon,
-  ShieldCheckIcon,
-  UserCircleIcon,
-} from '@heroicons/react/16/solid'
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
-  Square2StackIcon,
-  TicketIcon,
-} from '@heroicons/react/20/solid'
-import { usePathname } from 'next/navigation'
+} from "@/components/catalyst/sidebar"
+import { SidebarLayout } from "@/components/catalyst/sidebar-layout"
 
-function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
+function AccountDropdownMenu({
+  anchor,
+}: {
+  anchor: "top start" | "bottom end"
+}) {
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
       <DropdownItem href="#">
@@ -101,7 +111,10 @@ export function ApplicationLayout({
                 <SidebarLabel>Catalyst</SidebarLabel>
                 <ChevronDownIcon />
               </DropdownButton>
-              <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
+              <DropdownMenu
+                className="min-w-80 lg:min-w-64"
+                anchor="bottom start"
+              >
                 <DropdownItem href="/catalyst/settings">
                   <Cog8ToothIcon />
                   <DropdownLabel>Settings</DropdownLabel>
@@ -112,7 +125,11 @@ export function ApplicationLayout({
                   <DropdownLabel>Catalyst</DropdownLabel>
                 </DropdownItem>
                 <DropdownItem href="#">
-                  <Avatar slot="icon" initials="BE" className="bg-purple-500 text-white" />
+                  <Avatar
+                    slot="icon"
+                    initials="BE"
+                    className="bg-purple-500 text-white"
+                  />
                   <DropdownLabel>Big Events</DropdownLabel>
                 </DropdownItem>
                 <DropdownDivider />
@@ -126,19 +143,28 @@ export function ApplicationLayout({
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/catalyst" current={pathname === '/catalyst'}>
+              <SidebarItem href="/catalyst" current={pathname === "/catalyst"}>
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/catalyst/events" current={pathname.startsWith('/catalyst/events')}>
+              <SidebarItem
+                href="/catalyst/events"
+                current={pathname.startsWith("/catalyst/events")}
+              >
                 <Square2StackIcon />
                 <SidebarLabel>Events</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/catalyst/orders" current={pathname.startsWith('/catalyst/orders')}>
+              <SidebarItem
+                href="/catalyst/orders"
+                current={pathname.startsWith("/catalyst/orders")}
+              >
                 <TicketIcon />
                 <SidebarLabel>Orders</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/catalyst/settings" current={pathname.startsWith('/catalyst/settings')}>
+              <SidebarItem
+                href="/catalyst/settings"
+                current={pathname.startsWith("/catalyst/settings")}
+              >
                 <Cog6ToothIcon />
                 <SidebarLabel>Settings</SidebarLabel>
               </SidebarItem>
@@ -171,9 +197,16 @@ export function ApplicationLayout({
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  <Avatar src="/users/erica.jpg" className="size-10" square alt="" />
+                  <Avatar
+                    src="/users/erica.jpg"
+                    className="size-10"
+                    square
+                    alt=""
+                  />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Erica</span>
+                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
+                      Erica
+                    </span>
                     <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
                       erica@example.com
                     </span>
@@ -190,4 +223,4 @@ export function ApplicationLayout({
       {children}
     </SidebarLayout>
   )
-} 
+}

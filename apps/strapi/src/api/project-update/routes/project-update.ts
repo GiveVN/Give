@@ -2,6 +2,6 @@
  * project-update router
  */
 
-import { factories } from '@strapi/strapi';
+import { factories } from "@strapi/strapi"
 
-export default factories.createCoreRouter('api::project-update.project-update'); 
+export default factories.createCoreRouter("api::project-update.project-update")

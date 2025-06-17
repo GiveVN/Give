@@ -1,15 +1,28 @@
-import { Stat } from '@/components/catalyst/stat'
-import { Badge } from '@/components/catalyst/badge'
-import { Button } from '@/components/catalyst/button'
-import { Heading, Subheading } from '@/components/catalyst/heading'
-import { Link } from '@/components/catalyst/link'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/catalyst/table'
-import { getEvent, getEventOrders } from '@/data'
-import { ChevronLeftIcon } from '@heroicons/react/16/solid'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound } from "next/navigation"
+import { getEvent, getEventOrders } from "@/data"
+import { ChevronLeftIcon } from "@heroicons/react/16/solid"
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+import type { Metadata } from "next"
+
+import { Badge } from "@/components/catalyst/badge"
+import { Button } from "@/components/catalyst/button"
+import { Heading, Subheading } from "@/components/catalyst/heading"
+import { Link } from "@/components/catalyst/link"
+import { Stat } from "@/components/catalyst/stat"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/catalyst/table"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string }
+}): Promise<Metadata> {
   let event = await getEvent(params.id)
 
   return {
@@ -28,7 +41,10 @@ export default async function Event({ params }: { params: { id: string } }) {
   return (
     <>
       <div className="max-lg:hidden">
-        <Link href="/catalyst/events" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <Link
+          href="/catalyst/events"
+          className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400"
+        >
           <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
           Events
         </Link>
@@ -36,15 +52,22 @@ export default async function Event({ params }: { params: { id: string } }) {
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-wrap items-center gap-6">
           <div className="w-32 shrink-0">
-            <img className="aspect-3/2 rounded-lg shadow-sm" src={event.imgUrl} alt="" />
+            <img
+              className="aspect-3/2 rounded-lg shadow-sm"
+              src={event.imgUrl}
+              alt=""
+            />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Heading>{event.name}</Heading>
-              <Badge color={event.status === 'On Sale' ? 'lime' : 'zinc'}>{event.status}</Badge>
+              <Badge color={event.status === "On Sale" ? "lime" : "zinc"}>
+                {event.status}
+              </Badge>
             </div>
             <div className="mt-2 text-sm/6 text-zinc-500">
-              {event.date} at {event.time} <span aria-hidden="true">·</span> {event.location}
+              {event.date} at {event.time} <span aria-hidden="true">·</span>{" "}
+              {event.location}
             </div>
           </div>
         </div>
@@ -54,13 +77,21 @@ export default async function Event({ params }: { params: { id: string } }) {
         </div>
       </div>
       <div className="mt-8 grid gap-8 sm:grid-cols-3">
-        <Stat title="Total revenue" value={event.totalRevenue} change={event.totalRevenueChange} />
+        <Stat
+          title="Total revenue"
+          value={event.totalRevenue}
+          change={event.totalRevenueChange}
+        />
         <Stat
           title="Tickets sold"
           value={`${event.ticketsSold}/${event.ticketsAvailable}`}
           change={event.ticketsSoldChange}
         />
-        <Stat title="Pageviews" value={event.pageViews} change={event.pageViewsChange} />
+        <Stat
+          title="Pageviews"
+          value={event.pageViews}
+          change={event.pageViewsChange}
+        />
       </div>
       <Subheading className="mt-12">Recent orders</Subheading>
       <Table className="mt-4 [--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]">
@@ -74,7 +105,11 @@ export default async function Event({ params }: { params: { id: string } }) {
         </TableHead>
         <TableBody>
           {orders.map((order) => (
-            <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
+            <TableRow
+              key={order.id}
+              href={order.url}
+              title={`Order #${order.id}`}
+            >
               <TableCell>{order.id}</TableCell>
               <TableCell className="text-zinc-500">{order.date}</TableCell>
               <TableCell>{order.customer.name}</TableCell>
@@ -85,4 +120,4 @@ export default async function Event({ params }: { params: { id: string } }) {
       </Table>
     </>
   )
-} 
+}

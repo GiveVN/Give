@@ -146,23 +146,23 @@ export async function fetchProjects({
       },
       {
         id: 2,
-        documentId: 'project-2',
-        title: 'Community Garden Initiative',
-        description: 'Building sustainable community gardens to promote local food production and environmental education.',
-        shortDescription: 'Sustainable community gardens for local food production',
-        slug: 'community-garden-initiative',
-        category: 'environment',
+        documentId: '15da6f3646074a639ee966a8280e',  // Match the real ID from URL
+        title: 'Ủng hộ nạn nhân động đất ở xxx',
+        description: 'Hãy giúp đỡ nạn nhân động đất ở xxx Hãy giúp đỡ nạn nhân động đất ở xxx',
+        shortDescription: 'Hãy giúp đỡ nạn nhân động đất ở xxx',
+        slug: 'ung-ho-nan-nhan-dong-dat-o-xxx',
+        category: 'health',
         projectStatus: 'active',
-        fundingGoal: 25000,
-        currentFunding: 18750,
+        fundingGoal: 500000,
+        currentFunding: 1000000,
         currency: 'USD',
-        backersCount: 89,
-        startDate: '2025-01-15T00:00:00.000Z',
-        endDate: '2025-04-15T00:00:00.000Z',
-        featured: true,
-        createdAt: '2025-01-15T00:00:00.000Z',
-        updatedAt: '2025-01-20T00:00:00.000Z',
-        publishedAt: '2025-01-15T00:00:00.000Z',
+        backersCount: 3232,
+        startDate: '2025-06-29T17:00:00.000Z',
+        endDate: '2025-06-15T17:00:00.000Z',
+        featured: false,
+        createdAt: '2025-06-16T04:27:58.303Z',
+        updatedAt: '2025-06-16T10:12:09.998Z',
+        publishedAt: '2025-06-16T10:12:10.071Z',
         locale: 'en'
       },
       {
@@ -257,12 +257,133 @@ export async function fetchFeaturedProjects(limit: number = 6): Promise<ProjectD
 }
 
 /**
- * Fetch project by ID
+ * Fetch project by ID from Strapi API
  */
 export async function fetchProjectById(id: string): Promise<ProjectData | null> {
   try {
-    const response = await fetchProjects()
-    return response.data.find(project => project.documentId === id) || null
+    console.log(`Fetching project by ID: ${id}`)
+    
+    // First try to fetch from Strapi API
+    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
+    const response = await fetch(`${apiUrl}/api/projects/${id}?populate=*`)
+    
+    if (response.ok) {
+      const strapiProject = await response.json()
+      console.log(`Strapi project data:`, strapiProject)
+      
+      if (strapiProject?.data) {
+        // Transform Strapi response to ProjectData format
+        const project = strapiProject.data
+        return {
+          id: project.id,
+          documentId: project.documentId || id,
+          title: project.title || project.Title || 'Untitled Project',
+          description: project.description || project.Description || '',
+          shortDescription: project.shortDescription || project.description || '',
+          slug: project.slug || id,
+          category: project.category || project.Category || 'technology',
+          projectStatus: project.projectStatus || project.ProjectStatus || 'active',
+          fundingGoal: project.fundingGoal || project.FundingGoal || 0,
+          currentFunding: project.currentFunding || project.CurrentFunding || 0,
+          currency: project.currency || 'USD',
+          backersCount: project.backersCount || project.BackersCount || 0,
+          startDate: project.startDate || project.StartDate || new Date().toISOString(),
+          endDate: project.endDate || project.EndDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          featured: project.featured || false,
+          createdAt: project.createdAt || new Date().toISOString(),
+          updatedAt: project.updatedAt || new Date().toISOString(),
+          publishedAt: project.publishedAt || new Date().toISOString(),
+          locale: project.locale || 'en',
+          images: project.images || project.Image ? {
+            data: Array.isArray(project.images?.data) ? project.images.data : 
+                  project.Image?.data ? [project.Image.data] : []
+          } : undefined
+        }
+      }
+    }
+    
+    console.log(`Strapi API failed, fallback to mock data for ID: ${id}`)
+    
+    // Fallback to mock data
+    const mockProjects: ProjectData[] = [
+      {
+        id: 1,
+        documentId: 'project-1',
+        title: 'Smart Water Purifier',
+        description: 'Revolutionary water purification system using AI and IoT technology to provide clean drinking water in remote areas.',
+        shortDescription: 'AI-powered water purification for remote communities',
+        slug: 'smart-water-purifier',
+        category: 'technology',
+        projectStatus: 'active',
+        fundingGoal: 50000,
+        currentFunding: 32500,
+        currency: 'USD',
+        backersCount: 127,
+        startDate: '2025-01-01T00:00:00.000Z',
+        endDate: '2025-03-01T00:00:00.000Z',
+        featured: true,
+        createdAt: '2025-01-01T00:00:00.000Z',
+        updatedAt: '2025-01-15T00:00:00.000Z',
+        publishedAt: '2025-01-01T00:00:00.000Z',
+        locale: 'en'
+      },
+      {
+        id: 2,
+        documentId: '15da6f3646074a639ee966a8280e',  // Match the real ID from URL
+        title: 'Ủng hộ nạn nhân động đất ở xxx',
+        description: 'Hãy giúp đỡ nạn nhân động đất ở xxx Hãy giúp đỡ nạn nhân động đất ở xxx',
+        shortDescription: 'Hãy giúp đỡ nạn nhân động đất ở xxx',
+        slug: 'ung-ho-nan-nhan-dong-dat-o-xxx',
+        category: 'health',
+        projectStatus: 'active',
+        fundingGoal: 500000,
+        currentFunding: 1000000,
+        currency: 'USD',
+        backersCount: 3232,
+        startDate: '2025-06-29T17:00:00.000Z',
+        endDate: '2025-06-15T17:00:00.000Z',
+        featured: false,
+        createdAt: '2025-06-16T04:27:58.303Z',
+        updatedAt: '2025-06-16T10:12:09.998Z',
+        publishedAt: '2025-06-16T10:12:10.071Z',
+        locale: 'en'
+      },
+      {
+        id: 3,
+        documentId: 'project-3',
+        title: 'Educational VR Platform',
+        description: 'Immersive virtual reality platform for interactive learning experiences in schools and universities.',
+        shortDescription: 'VR platform for immersive educational experiences',
+        slug: 'educational-vr-platform',
+        category: 'education',
+        projectStatus: 'active',
+        fundingGoal: 75000,
+        currentFunding: 45000,
+        currency: 'USD',
+        backersCount: 203,
+        startDate: '2025-02-01T00:00:00.000Z',
+        endDate: '2025-05-01T00:00:00.000Z',
+        featured: true,
+        createdAt: '2025-02-01T00:00:00.000Z',
+        updatedAt: '2025-02-10T00:00:00.000Z',
+        publishedAt: '2025-02-01T00:00:00.000Z',
+        locale: 'en'
+      }
+    ]
+    
+    // Try to find by documentId first, then by slug
+    let project = mockProjects.find(project => project.documentId === id)
+    if (!project) {
+      project = mockProjects.find(project => project.slug === id)
+    }
+    
+    if (project) {
+      console.log(`Found mock project:`, project)
+      return project
+    }
+    
+    console.log(`Project not found for ID: ${id}`)
+    return null
   } catch (error) {
     console.error('Error fetching project by ID:', error)
     return null
@@ -302,5 +423,150 @@ export async function fetchProjectStats(): Promise<{
       totalBackers: 0,
       successRate: 0
     }
+  }
+}
+
+/**
+ * Get a single project by ID - wrapper for project detail page
+ */
+export async function getProject(id: string) {
+  try {
+    console.log(`Fetching project by ID: ${id}`)
+    
+    // Try to fetch from Strapi API by documentId
+    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
+    
+    // Try by documentId first
+    let response = await fetch(`${apiUrl}/api/projects/${id}?populate=*`)
+    
+    if (response.ok) {
+      const strapiProject = await response.json()
+      console.log(`Strapi project by documentId:`, strapiProject)
+      
+      if (strapiProject?.data) {
+        return transformStrapiProject(strapiProject.data)
+      }
+    }
+    
+    // If documentId doesn't work, try by slug (fallback)
+    console.log(`DocumentId not found, trying by slug: ${id}`)
+    response = await fetch(`${apiUrl}/api/projects?filters[slug][$eq]=${id}&populate=*`)
+    
+    if (response.ok) {
+      const strapiProjects = await response.json()
+      console.log(`Strapi projects by slug:`, strapiProjects)
+      
+      if (strapiProjects?.data && strapiProjects.data.length > 0) {
+        const project = strapiProjects.data[0]
+        return transformStrapiProject(project)
+      }
+    }
+    
+    console.log(`Project not found by documentId or slug: ${id}`)
+    return null
+    
+  } catch (error) {
+    console.error(`Error fetching project by ID ${id}:`, error)
+    return null
+  }
+}
+
+/**
+ * Get a single project by slug - wrapper for project detail page
+ */
+export async function getProjectBySlug(slug: string) {
+  try {
+    console.log(`Fetching project by slug: ${slug}`)
+    
+    // First try to fetch from Strapi API by slug
+    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
+    
+    // Try to find by slug first
+    let response = await fetch(`${apiUrl}/api/projects?filters[slug][$eq]=${slug}&populate=*`)
+    
+    if (response.ok) {
+      const strapiProjects = await response.json()
+      console.log(`Strapi projects by slug:`, strapiProjects)
+      
+      if (strapiProjects?.data && strapiProjects.data.length > 0) {
+        const project = strapiProjects.data[0]
+        return transformStrapiProject(project)
+      }
+    }
+    
+    // If slug doesn't work, try by documentId (fallback for old URLs)
+    console.log(`Slug not found, trying by documentId: ${slug}`)
+    response = await fetch(`${apiUrl}/api/projects/${slug}?populate=*`)
+    
+    if (response.ok) {
+      const strapiProject = await response.json()
+      console.log(`Strapi project by documentId:`, strapiProject)
+      
+      if (strapiProject?.data) {
+        return transformStrapiProject(strapiProject.data)
+      }
+    }
+    
+    console.log(`Project not found by slug or documentId: ${slug}`)
+    return null
+    
+  } catch (error) {
+    console.error(`Error fetching project by slug ${slug}:`, error)
+    return null
+  }
+}
+
+/**
+ * Transform Strapi project data to our format
+ */
+function transformStrapiProject(project: any) {
+  const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
+  
+  return {
+    id: project.documentId || project.id,
+    Title: project.title || project.Title,
+    Description: project.description || project.Description,
+    ShortDescription: project.shortDescription || project.ShortDescription,
+    LongDescription: project.description || project.Description,
+    Images: project.images?.map((image: any) => ({
+      url: image.url.startsWith('http') 
+        ? image.url 
+        : `${apiUrl}${image.url}`,
+      alternativeText: image.alternativeText || project.title || project.Title,
+      width: image.width,
+      height: image.height
+    })) || [],
+    // Keep single Image for backward compatibility
+    Image: project.images?.[0] ? {
+      url: project.images[0].url.startsWith('http') 
+        ? project.images[0].url 
+        : `${apiUrl}${project.images[0].url}`,
+      alternativeText: project.images[0].alternativeText || project.title || project.Title
+    } : undefined,
+    FundingGoal: project.fundingGoal || project.FundingGoal || 50000,
+    CurrentFunding: project.currentFunding || project.CurrentFunding || 32500,
+    BackersCount: project.backersCount || project.BackersCount || 127,
+    DaysLeft: project.endDate ? Math.ceil((new Date(project.endDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) : 30,
+    Category: project.category || project.Category || 'technology',
+    CreatedBy: project.createdBy || project.CreatedBy || 'Anonymous Creator',
+    Location: project.location || project.Location || 'Global',
+    Slug: project.slug || project.Slug,
+    Rewards: project.rewards?.map((reward: any) => ({
+      id: reward.id,
+      title: reward.title,
+      description: reward.description,
+      amount: reward.amount,
+      currency: reward.currency || 'USD',
+      estimatedDelivery: reward.estimatedDelivery,
+      limitedQuantity: reward.limitedQuantity,
+      claimedQuantity: reward.claimedQuantity || 0,
+      isActive: reward.isActive !== false,
+      image: reward.image?.data ? {
+        url: reward.image.data.url.startsWith('http') 
+          ? reward.image.data.url 
+          : `${apiUrl}${reward.image.data.url}`,
+        alternativeText: reward.image.data.alternativeText || reward.title
+      } : undefined
+    })) || []
   }
 } 

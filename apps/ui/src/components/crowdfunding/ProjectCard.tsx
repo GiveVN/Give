@@ -11,6 +11,7 @@ interface ProjectCardProps {
     id: string
     documentId: string
     title: string
+    slug?: string
     shortDescription?: string
     description: string
     category: string
@@ -115,7 +116,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     : null
 
   return (
-    <Link href={`/projects/${project.documentId}`} className="block">
+    <Link href={`/projects/${project.slug || project.documentId}`} className="block">
       <div className="group relative">
         
         {/* Main card - no z-index change, no shadow transition to avoid zoom effect */}

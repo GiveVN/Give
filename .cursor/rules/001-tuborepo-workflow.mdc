@@ -31,8 +31,5 @@ globs: ["package.json", "turbo.json", "yarn.lock"]
 ## Development Rules  
 - Kiểm tra port conflicts trước khi start
 - Strapi admin: localhost:1338
-- Next.js UI: localhost:3002
-
-
-
+- Next.js UI: localhost:3003
 - Auto-restart services khi cần thiết

@@ -1,17 +1,27 @@
-import { Badge } from '@/components/catalyst/badge'
-import { Button } from '@/components/catalyst/button'
-import { Divider } from '@/components/catalyst/divider'
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown'
-import { Heading } from '@/components/catalyst/heading'
-import { Input, InputGroup } from '@/components/catalyst/input'
-import { Link } from '@/components/catalyst/link'
-import { Select } from '@/components/catalyst/select'
-import { getEvents } from '@/data'
-import { EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
-import type { Metadata } from 'next'
+import { getEvents } from "@/data"
+import {
+  EllipsisVerticalIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/16/solid"
+
+import type { Metadata } from "next"
+
+import { Badge } from "@/components/catalyst/badge"
+import { Button } from "@/components/catalyst/button"
+import { Divider } from "@/components/catalyst/divider"
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownItem,
+  DropdownMenu,
+} from "@/components/catalyst/dropdown"
+import { Heading } from "@/components/catalyst/heading"
+import { Input, InputGroup } from "@/components/catalyst/input"
+import { Link } from "@/components/catalyst/link"
+import { Select } from "@/components/catalyst/select"
 
 export const metadata: Metadata = {
-  title: 'Events',
+  title: "Events",
 }
 
 export default async function Events() {
@@ -48,7 +58,11 @@ export default async function Events() {
               <div key={event.id} className="flex gap-6 py-6">
                 <div className="w-32 shrink-0">
                   <Link href={event.url} aria-hidden="true">
-                    <img className="aspect-3/2 rounded-lg shadow-sm" src={event.imgUrl} alt="" />
+                    <img
+                      className="aspect-3/2 rounded-lg shadow-sm"
+                      src={event.imgUrl}
+                      alt=""
+                    />
                   </Link>
                 </div>
                 <div className="space-y-1.5">
@@ -56,7 +70,8 @@ export default async function Events() {
                     <Link href={event.url}>{event.name}</Link>
                   </div>
                   <div className="text-xs/6 text-zinc-500">
-                    {event.date} at {event.time} <span aria-hidden="true">·</span> {event.location}
+                    {event.date} at {event.time}{" "}
+                    <span aria-hidden="true">·</span> {event.location}
                   </div>
                   <div className="text-xs/6 text-zinc-600">
                     {event.ticketsSold}/{event.ticketsAvailable} tickets sold
@@ -64,7 +79,10 @@ export default async function Events() {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <Badge className="max-sm:hidden" color={event.status === 'On Sale' ? 'lime' : 'zinc'}>
+                <Badge
+                  className="max-sm:hidden"
+                  color={event.status === "On Sale" ? "lime" : "zinc"}
+                >
                   {event.status}
                 </Badge>
                 <Dropdown>
