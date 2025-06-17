@@ -37,6 +37,7 @@ export interface ProjectDetailSidebarProps {
 export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
   const [selectedReward, setSelectedReward] = useState<string | null>(null)
   const [isBookmarked, setIsBookmarked] = useState(false)
+  const [customAmount, setCustomAmount] = useState<string>("")
 
   // Use real rewards from Strapi or fallback to mock data
   const rewardTiers = project.Rewards && project.Rewards.length > 0 
@@ -163,6 +164,13 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
     console.log(`Backing project with $${amount}`)
   }
 
+  const handleCustomPledge = () => {
+    const amount = parseFloat(customAmount)
+    if (amount && amount > 0) {
+      handleBack(amount)
+    }
+  }
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -178,15 +186,57 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
 
   return (
     <div className="sticky top-6 h-fit max-h-[calc(100vh-3rem)] overflow-hidden">
-      {/* Scrollable Rewards Section */}
-      <div className="flex flex-col overflow-hidden">
-        {/* Reward Tiers Header */}
-        <div className="mb-4 flex-shrink-0">
-          <h3 className="text-lg font-semibold">Choose your reward</h3>
+      {/* Single Scrollable Container for Everything */}
+      <div className="flex flex-col overflow-y-auto pr-2 space-y-4 max-h-[calc(100vh-6rem)] scrollbar-thin">
+        
+        {/* Support this project header */}
+        <div className="flex-shrink-0">
+          <h3 className="text-lg font-semibold mb-3">Support this project</h3>
         </div>
 
-        {/* Scrollable Rewards Container */}
-        <div className="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[400px] scrollbar-thin">
+        {/* Custom Pledge - Top Priority (Kickstarter Style) */}
+        <div className="flex-shrink-0">
+          <Card className="border-2 border-blue-200 bg-blue-50/50">
+            <CardContent className="p-4">
+              <div className="mb-3">
+                <h4 className="font-semibold text-blue-900">Make a pledge without a reward</h4>
+                <p className="text-sm text-blue-700">
+                  Back it because you believe in it.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                  <input
+                    type="number"
+                    placeholder="Enter amount"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    min="1"
+                  />
+                </div>
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700"
+                  size="sm"
+                  onClick={handleCustomPledge}
+                  disabled={!customAmount || parseFloat(customAmount) <= 0}
+                >
+                  <Heart className="mr-1 h-3 w-3" />
+                  Pledge
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Rewards Header */}
+        <div className="flex-shrink-0">
+          <h4 className="text-base font-medium text-gray-700">Or choose a reward</h4>
+        </div>
+
+        {/* Rewards List */}
+        <div className="flex-shrink-0 space-y-4">
           {rewardTiers.map((reward) => (
             <Card
               key={reward.id}
@@ -243,81 +293,24 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
                   </div>
                   <div>{reward.backers} backers</div>
                 </div>
+
+                {/* Pledge Button */}
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <Button
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleBack(reward.amount)
+                    }}
+                  >
+                    <Heart className="mr-2 h-4 w-4" />
+                    Pledge {reward.currency === 'USD' ? 'US$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : 'US$'} {reward.amount.toLocaleString()}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        {/* Fixed Bottom Actions */}
-        <div className="mt-4 flex-shrink-0 space-y-4">
-          {/* Back Button */}
-          <Button
-            className="w-full"
-            size="lg"
-            onClick={() => {
-              const reward = rewardTiers.find((r) => r.id === selectedReward)
-              if (reward) {
-                handleBack(reward.amount)
-              }
-            }}
-            disabled={!selectedReward}
-          >
-            {selectedReward ? (
-              <>
-                <Heart className="mr-2 h-4 w-4" />
-                Back this project
-              </>
-            ) : (
-              "Select a reward"
-            )}
-          </Button>
-
-          {/* Custom Amount */}
-          <div className="border-t pt-4">
-            <div className="mb-2 text-sm text-gray-600">
-              Or make a custom pledge
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                placeholder="Enter amount"
-                className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
-                min="1"
-              />
-              <Button variant="outline" size="sm">
-                Pledge
-              </Button>
-            </div>
-          </div>
-
-          {/* Project Stats */}
-          <Card className="mt-4">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Project Stats</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Total Backers</span>
-                <span className="font-medium">{project.BackersCount || 0}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Days Remaining</span>
-                <span className="font-medium">{project.DaysLeft || 30}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Current Funding</span>
-                <span className="font-medium">
-                  ${(project.CurrentFunding || 0).toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Funding Goal</span>
-                <span className="font-medium">
-                  ${(project.FundingGoal || 0).toLocaleString()}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

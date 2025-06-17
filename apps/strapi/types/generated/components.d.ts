@@ -564,6 +564,21 @@ export interface UtilitiesText extends Struct.ComponentSchema {
   }
 }
 
+export interface UtilitiesVideoUrl extends Struct.ComponentSchema {
+  collectionName: "components_utilities_video_urls"
+  info: {
+    description: "YouTube video URL with title"
+    displayName: "Video URL"
+  }
+  attributes: {
+    title: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100
+      }>
+    url: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 declare module "@strapi/strapi" {
   export module Public {
     export interface ComponentSchemas {
@@ -598,6 +613,7 @@ declare module "@strapi/strapi" {
       "utilities.social-link": UtilitiesSocialLink
       "utilities.stat-item": UtilitiesStatItem
       "utilities.text": UtilitiesText
+      "utilities.video-url": UtilitiesVideoUrl
     }
   }
 }

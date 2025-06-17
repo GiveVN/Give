@@ -42,6 +42,12 @@ export interface ProjectData {
       caption?: string
     }
   }
+  videoUrl?: string
+  videoUrls?: Array<{
+    id: number
+    title?: string
+    url: string
+  }>
   creator?: {
     data: {
       id: number
@@ -563,6 +569,11 @@ function transformStrapiProject(project: any) {
     CreatedBy: project.createdBy || project.CreatedBy || 'Anonymous Creator',
     Location: project.location || project.Location || 'Global',
     Slug: project.slug || project.Slug,
+    
+    // Video support
+    video: project.video,
+    videoUrl: project.videoUrl,
+    videoUrls: project.videoUrls || [],
     Rewards: project.rewards?.map((reward: any) => ({
       id: reward.id,
       title: reward.title,

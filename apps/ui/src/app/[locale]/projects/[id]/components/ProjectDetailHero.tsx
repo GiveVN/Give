@@ -1,11 +1,13 @@
 "use client"
 
-import { Calendar, MapPin, Users, ChevronLeft, ChevronRight, Heart, Share2, Bookmark, Facebook, Twitter, Mail, Link } from "lucide-react"
+import { Calendar, MapPin, Users, ChevronLeft, ChevronRight, Heart, Share2, Bookmark, Facebook, Twitter, Mail, Link, Play } from "lucide-react"
 import { useState } from "react"
 
 import { ImageWithFallback } from "@/components/elementary/ImageWithFallback"
+import { YouTubePlayer } from "@/components/elementary/YouTubePlayer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { createMediaGallery, type MediaItem } from "@/lib/youtube"
 
 export interface ProjectDetailHeroProps {
   project: {
@@ -23,6 +25,13 @@ export interface ProjectDetailHeroProps {
       url: string
       alternativeText?: string
     }
+    video?: any
+    videoUrl?: string
+    videoUrls?: Array<{
+      id: number
+      title?: string
+      url: string
+    }>
     FundingGoal?: number
     CurrentFunding?: number
     BackersCount?: number
@@ -34,24 +43,26 @@ export interface ProjectDetailHeroProps {
 }
 
 export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
   
-  const images = project.Images && project.Images.length > 0 
-    ? project.Images 
-    : project.Image 
-      ? [project.Image] 
-      : []
+  // Create unified media gallery with images and videos
+  const mediaGallery = createMediaGallery(
+    project.Images || (project.Image ? [project.Image] : []),
+    project.video,
+    project.videoUrl,
+    project.videoUrls
+  )
 
   const fundingPercentage = project.FundingGoal
     ? Math.round(((project.CurrentFunding || 0) / project.FundingGoal) * 100)
     : 0
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % images.length)
+  const nextMedia = () => {
+    setCurrentMediaIndex((prev) => (prev + 1) % mediaGallery.length)
   }
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
+  const prevMedia = () => {
+    setCurrentMediaIndex((prev) => (prev - 1 + mediaGallery.length) % mediaGallery.length)
   }
 
   return (
@@ -72,45 +83,74 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-10 lg:items-start">
           {/* Left: Project Image Gallery - 60% width */}
           <div className="space-y-4 lg:col-span-6">
-            {/* Main Image */}
+            {/* Main Media Display */}
             <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
-              {images.length > 0 ? (
+              {mediaGallery.length > 0 ? (
                 <>
-                  <ImageWithFallback
-                    src={images[currentImageIndex].url}
-                    alt={
-                      images[currentImageIndex].alternativeText ||
-                      project.Title ||
-                      "Project image"
+                  {/* Render current media item */}
+                  {(() => {
+                    const currentMedia = mediaGallery[currentMediaIndex]
+                    
+                    if (!currentMedia) return null
+                    
+                    switch (currentMedia.type) {
+                      case 'youtube':
+                        return (
+                          <YouTubePlayer
+                            videoId={currentMedia.videoId!}
+                            title={currentMedia.alternativeText || project.Title}
+                            className="h-full w-full"
+                            showThumbnail={true}
+                          />
+                        )
+                      case 'video':
+                        return (
+                          <video
+                            src={currentMedia.url}
+                            controls
+                            className="h-full w-full object-cover"
+                            poster={currentMedia.alternativeText}
+                          >
+                            Your browser does not support the video tag.
+                          </video>
+                        )
+                      case 'image':
+                      default:
+                        return (
+                          <ImageWithFallback
+                            src={currentMedia.url}
+                            alt={currentMedia.alternativeText || project.Title || "Project media"}
+                            width={600}
+                            height={400}
+                            className="h-full w-full object-cover"
+                          />
+                        )
                     }
-                    width={600}
-                    height={400}
-                    className="h-full w-full object-cover"
-                  />
+                  })()}
                   
-                  {/* Navigation arrows for multiple images */}
-                  {images.length > 1 && (
+                  {/* Navigation arrows for multiple media items */}
+                  {mediaGallery.length > 1 && (
                     <>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70"
-                        onClick={prevImage}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70 z-10"
+                        onClick={prevMedia}
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70"
-                        onClick={nextImage}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70 z-10"
+                        onClick={nextMedia}
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                       
-                      {/* Image counter */}
-                      <div className="absolute bottom-2 right-2 rounded bg-black/50 px-2 py-1 text-xs text-white">
-                        {currentImageIndex + 1} / {images.length}
+                      {/* Media counter */}
+                      <div className="absolute bottom-2 right-2 rounded bg-black/50 px-2 py-1 text-xs text-white z-10">
+                        {currentMediaIndex + 1} / {mediaGallery.length}
                       </div>
                     </>
                   )}
@@ -127,26 +167,54 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
             </div>
             
             {/* Thumbnail Gallery */}
-            {images.length > 1 && (
+            {mediaGallery.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
-                {images.map((image, index) => (
+                {mediaGallery.map((media, index) => (
                   <button
                     key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    aria-label={`View image ${index + 1}`}
-                    className={`flex-shrink-0 overflow-hidden rounded border-2 transition-all ${
-                      index === currentImageIndex
+                    onClick={() => setCurrentMediaIndex(index)}
+                    aria-label={`View ${media.type} ${index + 1}`}
+                    className={`relative flex-shrink-0 overflow-hidden rounded border-2 transition-all ${
+                      index === currentMediaIndex
                         ? "border-blue-500"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    <ImageWithFallback
-                      src={image.url}
-                      alt={image.alternativeText || `Project image ${index + 1}`}
-                      width={80}
-                      height={60}
-                      className="h-15 w-20 object-cover"
-                    />
+                    {media.type === 'youtube' ? (
+                      <>
+                        <img
+                          src={`https://img.youtube.com/vi/${media.videoId}/mqdefault.jpg`}
+                          alt={media.alternativeText || `YouTube video ${index + 1}`}
+                          className="h-15 w-20 object-cover"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-red-600 rounded-full p-1">
+                            <Play className="h-3 w-3 text-white fill-white" />
+                          </div>
+                        </div>
+                      </>
+                    ) : media.type === 'video' ? (
+                      <>
+                        <video
+                          src={media.url}
+                          className="h-15 w-20 object-cover"
+                          muted
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-black/70 rounded-full p-1">
+                            <Play className="h-3 w-3 text-white fill-white" />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <ImageWithFallback
+                        src={media.url}
+                        alt={media.alternativeText || `Project image ${index + 1}`}
+                        width={80}
+                        height={60}
+                        className="h-15 w-20 object-cover"
+                      />
+                    )}
                   </button>
                 ))}
               </div>

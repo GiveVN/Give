@@ -135,6 +135,17 @@
         "videos"
       ]
     },
+    "videoUrl": {
+      "type": "string",
+      "required": false,
+      "regex": "^(https?:\\/\\/)?(www\\.)?(youtube\\.com\\/watch\\?v=|youtu\\.be\\/|youtube\\.com\\/embed\\/)[a-zA-Z0-9_-]{11}$"
+    },
+    "videoUrls": {
+      "type": "component",
+      "component": "utilities.video-url",
+      "repeatable": true,
+      "required": false
+    },
     "creator": {
       "type": "relation",
       "relation": "manyToOne",

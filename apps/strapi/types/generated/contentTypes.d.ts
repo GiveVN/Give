@@ -942,6 +942,8 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       "api::project-update.project-update"
     >
     video: Schema.Attribute.Media<"videos">
+    videoUrl: Schema.Attribute.String
+    videoUrls: Schema.Attribute.Component<"utilities.video-url", true>
   }
 }
 
