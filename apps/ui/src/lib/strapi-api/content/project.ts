@@ -433,33 +433,39 @@ export async function getProject(id: string) {
   try {
     console.log(`Fetching project by ID: ${id}`)
     
-    // Try to fetch from Strapi API by documentId
-    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
-    
-    // Try by documentId first
-    let response = await fetch(`${apiUrl}/api/projects/${id}?populate=*`)
-    
-    if (response.ok) {
-      const strapiProject = await response.json()
-      console.log(`Strapi project by documentId:`, strapiProject)
+    // Try to fetch from Strapi API by documentId using PublicStrapiClient
+    try {
+      const strapiProject = await PublicStrapiClient.fetchOne(
+        'api::project.project',
+        id,
+        { populate: '*' }
+      )
       
       if (strapiProject?.data) {
+        console.log(`Strapi project by documentId:`, strapiProject.data)
         return transformStrapiProject(strapiProject.data)
       }
+    } catch (error) {
+      console.log(`DocumentId fetch failed, trying by slug: ${id}`)
     }
     
     // If documentId doesn't work, try by slug (fallback)
-    console.log(`DocumentId not found, trying by slug: ${id}`)
-    response = await fetch(`${apiUrl}/api/projects?filters[slug][$eq]=${id}&populate=*`)
-    
-    if (response.ok) {
-      const strapiProjects = await response.json()
-      console.log(`Strapi projects by slug:`, strapiProjects)
+    try {
+      const strapiProjects = await PublicStrapiClient.fetchMany(
+        'api::project.project',
+        { 
+          filters: { slug: { $eq: id } },
+          populate: '*'
+        }
+      )
       
       if (strapiProjects?.data && strapiProjects.data.length > 0) {
+        console.log(`Strapi projects by slug:`, strapiProjects.data)
         const project = strapiProjects.data[0]
         return transformStrapiProject(project)
       }
+    } catch (error) {
+      console.log(`Slug fetch failed for: ${id}`)
     }
     
     console.log(`Project not found by documentId or slug: ${id}`)
@@ -478,33 +484,39 @@ export async function getProjectBySlug(slug: string) {
   try {
     console.log(`Fetching project by slug: ${slug}`)
     
-    // First try to fetch from Strapi API by slug
-    const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
-    
-    // Try to find by slug first
-    let response = await fetch(`${apiUrl}/api/projects?filters[slug][$eq]=${slug}&populate=*`)
-    
-    if (response.ok) {
-      const strapiProjects = await response.json()
-      console.log(`Strapi projects by slug:`, strapiProjects)
+    // Try to find by slug first using PublicStrapiClient
+    try {
+      const strapiProjects = await PublicStrapiClient.fetchMany(
+        'api::project.project',
+        { 
+          filters: { slug: { $eq: slug } },
+          populate: '*'
+        }
+      )
       
       if (strapiProjects?.data && strapiProjects.data.length > 0) {
+        console.log(`Strapi projects by slug:`, strapiProjects.data)
         const project = strapiProjects.data[0]
         return transformStrapiProject(project)
       }
+    } catch (error) {
+      console.log(`Slug fetch failed, trying by documentId: ${slug}`)
     }
     
     // If slug doesn't work, try by documentId (fallback for old URLs)
-    console.log(`Slug not found, trying by documentId: ${slug}`)
-    response = await fetch(`${apiUrl}/api/projects/${slug}?populate=*`)
-    
-    if (response.ok) {
-      const strapiProject = await response.json()
-      console.log(`Strapi project by documentId:`, strapiProject)
+    try {
+      const strapiProject = await PublicStrapiClient.fetchOne(
+        'api::project.project',
+        slug,
+        { populate: '*' }
+      )
       
       if (strapiProject?.data) {
+        console.log(`Strapi project by documentId:`, strapiProject.data)
         return transformStrapiProject(strapiProject.data)
       }
+    } catch (error) {
+      console.log(`DocumentId fetch failed for: ${slug}`)
     }
     
     console.log(`Project not found by slug or documentId: ${slug}`)
@@ -520,7 +532,7 @@ export async function getProjectBySlug(slug: string) {
  * Transform Strapi project data to our format
  */
 function transformStrapiProject(project: any) {
-  const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1338'
+  const baseUrl = 'http://localhost:1338'
   
   return {
     id: project.documentId || project.id,
@@ -531,7 +543,7 @@ function transformStrapiProject(project: any) {
     Images: project.images?.map((image: any) => ({
       url: image.url.startsWith('http') 
         ? image.url 
-        : `${apiUrl}${image.url}`,
+        : `${baseUrl}${image.url}`,
       alternativeText: image.alternativeText || project.title || project.Title,
       width: image.width,
       height: image.height
@@ -540,7 +552,7 @@ function transformStrapiProject(project: any) {
     Image: project.images?.[0] ? {
       url: project.images[0].url.startsWith('http') 
         ? project.images[0].url 
-        : `${apiUrl}${project.images[0].url}`,
+        : `${baseUrl}${project.images[0].url}`,
       alternativeText: project.images[0].alternativeText || project.title || project.Title
     } : undefined,
     FundingGoal: project.fundingGoal || project.FundingGoal || 50000,

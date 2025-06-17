@@ -151,9 +151,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               </span>
             </div>
 
-            {project.images && project.images.length > 0 ? (
+            {project.images && project.images.length > 0 && project.images[0] ? (
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${project.images[0].url}`}
+                src={project.images[0].url.startsWith('http') ? project.images[0].url : `http://localhost:1338${project.images[0].url}`}
                 alt={project.images[0].alternativeText || project.title || "Project image"}
                 fill
                 className="object-cover"

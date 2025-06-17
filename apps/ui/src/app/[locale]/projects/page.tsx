@@ -19,6 +19,8 @@ async function fetchProjects(locale: AppLocale, searchParams: any) {
   try {
     // Direct API call to Strapi as workaround for permissions
     const queryParams = new URLSearchParams({
+      'populate[images][populate]': '*',
+      'populate[tags]': 'true',
       'sort[0]': 'createdAt:desc',
       'pagination[page]': searchParams.page || '1',
       'pagination[pageSize]': '12',
@@ -114,7 +116,6 @@ export default async function ProjectsPage({ params, searchParams }: ProjectsPag
                   <ProjectCard 
                     key={project.documentId}
                     project={project}
-                    locale={resolvedParams.locale}
                   />
                 ))}
               </div>
