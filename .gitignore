@@ -46,3 +46,48 @@ yarn-error.log*
 .strapi-updater.json
 node_modules_*
 node_modules*
+
+# Security - Scripts with potential passwords
+**/fix-*.ts
+**/fix-*.js
+**/check-*.ts
+**/check-*.js
+**/debug-*.ts
+**/debug-*.js
+**/test-*.ts
+**/test-*.js
+**/update-*.ts
+**/update-*.js
+**/publish-*.ts
+**/publish-*.js
+**/assign-*.ts
+**/assign-*.js
+**/clear-*.ts
+**/clear-*.js
+**/compare-*.ts
+**/compare-*.js
+**/find-*.ts
+**/find-*.js
+**/simple-*.ts
+**/simple-*.js
+**/activate-*.ts
+**/activate-*.js
+
+# Temporary scripts
+temp-*.ts
+temp-*.js
+script-*.ts
+script-*.js
+
+# Database backup files with potential sensitive data
+**/*.sql
+**/Backup/
+**/backups/
+
+# Environment files with sensitive data
+.env.local
+.env.development
+.env.production
+**/.env.local
+**/.env.development
+**/.env.production
