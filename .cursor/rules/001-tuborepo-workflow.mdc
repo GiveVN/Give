@@ -33,3 +33,6 @@ globs: ["package.json", "turbo.json", "yarn.lock"]
 - Strapi admin: localhost:1338
 - Next.js UI: localhost:3003
 - Auto-restart services khi cần thiết
+
+## Add New Packages
+- Add theo chuẩn turbo workspace, ví dụ: yarn workspace @repo/strapi add @getbrevo/brevo

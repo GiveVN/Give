@@ -156,7 +156,7 @@ export async function StrapiNavbar({ locale }: { locale: AppLocale }) {
 
         {/* Right side - Login + Start Campaign */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
-          <a href="/login" className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2">
+                      <a href="/en/auth/signin" className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2">
             Sign in
           </a>
           <a 

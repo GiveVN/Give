@@ -74,7 +74,7 @@ export function Navbar() {
 
         {/* Right side - Login + Start Campaign */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
-          <a href="/login" className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2">
+          <a href="/en/auth/signin" className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2">
             Sign in
           </a>
           <Button asChild className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded text-sm font-semibold transition-colors duration-200 shadow-sm">
@@ -150,7 +150,7 @@ export function Navbar() {
               
               <div className="py-6 space-y-4">
                 <a
-                  href="/login"
+                  href="/en/auth/signin"
                   className="-mx-3 block rounded px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Sign in

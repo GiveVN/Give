@@ -1,3 +1,5 @@
+// Brevo email provider is implemented as a workspace package (packages/strapi-provider-email-brevo)
+
 export default ({ env }) => {
   const awsS3Config = prepareAwsS3Config(env)
   if (!awsS3Config) {
@@ -42,20 +44,19 @@ export default ({ env }) => {
       },
     },
 
-    // email: {
-    //   config: {
-    //     provider: "mailgun",
-    //     providerOptions: {
-    //       key: env("MAILGUN_API_KEY"),
-    //       domain: env("MAILGUN_DOMAIN"),
-    //       url: env("MAILGUN_HOST", "https://api.eu.mailgun.net"),
-    //     },
-    //     settings: {
-    //       defaultFrom: env("MAILGUN_EMAIL"),
-    //       defaultReplyTo: env("MAILGUN_EMAIL"),
-    //     },
-    //   },
-    // },
+    email: {
+      config: {
+        provider: "strapi-provider-email-brevo",
+        providerOptions: {
+          apiKey: env("BREVO_API_KEY"),
+        },
+        settings: {
+          defaultFrom: env("EMAIL_DEFAULT_FROM", "admin@give.local"),
+          defaultReplyTo: env("EMAIL_DEFAULT_REPLY_TO", "admin@give.local"),
+          defaultSenderName: "Give Platform",
+        },
+      },
+    },
   }
 }
 
