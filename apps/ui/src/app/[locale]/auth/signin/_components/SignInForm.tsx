@@ -44,6 +44,7 @@ export function SignInForm() {
     })
 
     if (!res?.error) {
+      toast({ variant: "default", description: t("status.success") })
       router.refresh()
       setTimeout(() => router.push(callbackUrl), 300)
     } else {
