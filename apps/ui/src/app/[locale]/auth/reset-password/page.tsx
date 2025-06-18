@@ -1,8 +1,5 @@
-import { removeThisWhenYouNeedMe } from "@/lib/general-helpers"
-import { SetPasswordForm } from "@/app/[locale]/auth/activate/_components/SetPasswordForm"
+import { SetPasswordForm } from "../activate/_components/SetPasswordForm"
 
 export default function ResetPasswordPage() {
-  removeThisWhenYouNeedMe("ResetPasswordPage")
-
-  return <SetPasswordForm />
+  return <SetPasswordForm accountActivation={false} />
 }

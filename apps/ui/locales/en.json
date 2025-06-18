@@ -213,11 +213,13 @@
       "activateAccount": "A new account has been created with the email {email}.",
       "invalidLink": "This link is not valid.",
       "activate": "Activate account",
+      "emailConfirmed": "Your email has been confirmed. You can now sign in.",
       "header": "Set password",
       "description": "Choose a password to use for logging in.",
       "submit": "Activate account",
       "password": "New password",
-      "confirmPassword": "Confirm password"
+      "confirmPassword": "Confirm password",
+      "signInLink": "Sign in"
     },
 
     "resetPassword": {
