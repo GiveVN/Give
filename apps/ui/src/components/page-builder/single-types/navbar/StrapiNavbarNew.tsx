@@ -1,9 +1,13 @@
 import { Fragment } from "react"
+import React from "react"
 
 import { AppLocale } from "@/types/general"
 
+import { getAuth } from "@/lib/auth"
 import { PublicStrapiClient } from "@/lib/strapi-api"
 import { cn } from "@/lib/styles"
+import AppLink from "@/components/elementary/AppLink"
+import { LoggedUserMenu } from "@/components/page-builder/single-types/navbar/LoggedUserMenu"
 import StrapiImageWithLink from "@/components/page-builder/components/utilities/StrapiImageWithLink"
 import StrapiLink from "@/components/page-builder/components/utilities/StrapiLink"
 
@@ -78,7 +82,7 @@ function NavbarLogo({ logoImage }: { logoImage: any }) {
 }
 
 export async function StrapiNavbarNew({ locale }: { locale: AppLocale }) {
-  const data = await fetchData(locale)
+  const [data, session] = await Promise.all([fetchData(locale), getAuth()])
 
   if (!data) {
     // Fallback to hardcoded navbar if Strapi data not available
@@ -151,17 +155,27 @@ export async function StrapiNavbarNew({ locale }: { locale: AppLocale }) {
           </div>
         </div>
 
-        {/* Right side - Login + Start Campaign */}
+        {/* Right side - Login/Profile + Start Campaign */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
-                      <a href="/en/auth/signin" className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2">
-            Sign in
-          </a>
-          <a 
-            href="/start"
+          {session?.user ? (
+            <LoggedUserMenu user={session.user} />
+          ) : (
+            <AppLink
+              href={`/${locale}/auth/signin`}
+              variant="link"
+              className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2"
+            >
+              Sign in
+            </AppLink>
+          )}
+
+          <AppLink
+            href={`/${locale}/start`}
+            variant="default"
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded text-sm font-semibold transition-colors duration-200 shadow-sm"
           >
             Start a campaign
-          </a>
+          </AppLink>
         </div>
 
         {/* Mobile menu button */}

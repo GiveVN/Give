@@ -47,7 +47,10 @@
       "profile": "Profil",
       "signOut": "Odhlásit se",
       "changePassword": "Změnit heslo",
-      "signIn": "Přihlásit se"
+      "signIn": "Přihlásit se",
+      "myCampaigns": "Moje kampaně",
+      "myContributions": "Moje příspěvky",
+      "settings": "Nastavení"
     }
   },
 
@@ -152,7 +155,8 @@
       "status": {
         "fail": "Nepodařilo se přihlásit",
         "success": "Přihlášení proběhlo úspěšně",
-        "checkCredentials": "Zkontrolujte prosím přihlašovací údaje"
+        "checkCredentials": "Zkontrolujte prosím přihlašovací údaje",
+        "signingIn": "Přihlašuji..."
       },
       "errors": {
         "CredentialsSignin": "Zadal/a jste nesprávné přihlašovací údaje."

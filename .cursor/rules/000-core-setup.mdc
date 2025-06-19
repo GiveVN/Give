@@ -13,7 +13,7 @@ Tôi cần AI làm tự động nhiều nhất có thể, ít phải động tay
 - **Runtime**: Node.js v22, PowerShell 7 (Windows 11) 
 - **Frontend**: Next.js, React, TypeScript
 - **Backend**: Strapi CMS v5.15+, Node.js APIs
-- **Database**: PostgreSQL v17+ chạy trong docker container
+- **Database**: PostgreSQL v17+ chạy trong docker container tên DB
 - **DevOps**: Docker, Docker Compose
 - **Future**: Flutter (mobile development)
 

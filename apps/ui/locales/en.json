@@ -45,9 +45,12 @@
     "account": "Account",
     "actions": {
       "profile": "Profile",
-      "signOut": "Sign out",
+      "signOut": "Log out",
       "changePassword": "Change password",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "myCampaigns": "My Campaigns",
+      "myContributions": "My Contributions",
+      "settings": "Settings"
     }
   },
 
@@ -152,7 +155,8 @@
       "status": {
         "fail": "Sign in failed",
         "success": "Sign in successful",
-        "checkCredentials": "Please check your login credentials"
+        "checkCredentials": "Please check your login credentials",
+        "signingIn": "Signing in..."
       },
       "errors": {
         "CredentialsSignin": "You have entered incorrect login credentials."

@@ -29,6 +29,32 @@ export function LoggedUserMenu({ user }: { readonly user: Session["user"] }) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>
+          <Link href="/my-campaigns" className="flex w-full items-center gap-1">
+            <span>{t("actions.myCampaigns")}</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>
+          <Link href="/my-contributions" className="flex w-full items-center gap-1">
+            <span>{t("actions.myContributions")}</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>
+          <Link href="/profile" className="flex w-full items-center gap-1">
+            <span>{t("actions.profile")}</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>
+          <Link href="/settings" className="flex w-full items-center gap-1">
+            <span>{t("actions.settings")}</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem>
           <Link
             href="/auth/change-password"
             className="flex w-full items-center gap-1"
