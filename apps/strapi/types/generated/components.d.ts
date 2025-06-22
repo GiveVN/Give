@@ -43,7 +43,7 @@ export interface ProjectReward extends Struct.ComponentSchema {
     displayName: "Reward"
   }
   attributes: {
-    amount: Schema.Attribute.Decimal &
+    Amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
@@ -51,7 +51,7 @@ export interface ProjectReward extends Struct.ComponentSchema {
         },
         number
       >
-    claimedQuantity: Schema.Attribute.Integer &
+    ClaimedQuantity: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
           min: 0
@@ -59,21 +59,21 @@ export interface ProjectReward extends Struct.ComponentSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>
-    currency: Schema.Attribute.Enumeration<["USD", "EUR", "GBP", "VND"]> &
+    Currency: Schema.Attribute.Enumeration<["USD", "EUR", "GBP", "VND"]> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<"USD">
-    description: Schema.Attribute.Text & Schema.Attribute.Required
-    estimatedDelivery: Schema.Attribute.Date
-    image: Schema.Attribute.Media<"images">
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
-    limitedQuantity: Schema.Attribute.Integer &
+    Description: Schema.Attribute.Text & Schema.Attribute.Required
+    EstimatedDelivery: Schema.Attribute.Date
+    Image: Schema.Attribute.Media<"images">
+    IsActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
+    LimitedQuantity: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
           min: 0
         },
         number
       >
-    title: Schema.Attribute.String &
+    Title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100

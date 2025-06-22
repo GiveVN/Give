@@ -91,3 +91,4 @@ script-*.js
 **/.env.local
 **/.env.development
 **/.env.production
+.tmp*

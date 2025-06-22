@@ -6,21 +6,21 @@
   },
   "options": {},
   "attributes": {
-    "title": {
+    "Title": {
       "type": "string",
       "required": true,
       "maxLength": 100
     },
-    "description": {
+    "Description": {
       "type": "text",
       "required": true
     },
-    "amount": {
+    "Amount": {
       "type": "decimal",
       "required": true,
       "min": 0
     },
-    "currency": {
+    "Currency": {
       "type": "enumeration",
       "enum": [
         "USD",
@@ -31,23 +31,23 @@
       "default": "USD",
       "required": true
     },
-    "estimatedDelivery": {
+    "EstimatedDelivery": {
       "type": "date"
     },
-    "limitedQuantity": {
+    "LimitedQuantity": {
       "type": "integer",
       "min": 0
     },
-    "claimedQuantity": {
+    "ClaimedQuantity": {
       "type": "integer",
       "default": 0,
       "min": 0
     },
-    "isActive": {
+    "IsActive": {
       "type": "boolean",
       "default": true
     },
-    "image": {
+    "Image": {
       "type": "media",
       "multiple": false,
       "required": false,

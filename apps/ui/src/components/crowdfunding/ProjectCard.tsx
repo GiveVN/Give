@@ -115,8 +115,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const timeDiff = endDate.getTime() - today.getTime()
   const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
 
-  const imageUrl = project.Images?.[0]?.Url 
-    ? `http://localhost:1338${project.Images[0].Url}`
+  const imageSrc = project.Images && project.Images.length > 0 && project.Images[0]
+    ? (project.Images[0].Url.startsWith('http') ? project.Images[0].Url : `http://localhost:1338${project.Images[0].Url}`)
     : null
 
   return (
@@ -155,10 +155,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               </span>
             </div>
 
-            {project.Images && project.Images.length > 0 && project.Images[0] ? (
+            {imageSrc ? (
               <Image
-                src={project.Images[0].Url.startsWith('http') ? project.Images[0].Url : `http://localhost:1338${project.Images[0].Url}`}
-                alt={project.Images[0].AlternativeText || project.Title || "Project image"}
+                src={imageSrc}
+                alt={project.Images?.[0]?.AlternativeText || project.Title || "Project image"}
                 fill
                 className="object-cover"
               />

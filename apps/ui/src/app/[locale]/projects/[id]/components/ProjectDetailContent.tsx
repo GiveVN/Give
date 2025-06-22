@@ -44,14 +44,14 @@ export interface ProjectDetailContentProps {
     Slug?: string
     Rewards?: Array<{
       id: number
-      title: string
-      description: string
-      amount: number
-      currency: string
-      estimatedDelivery?: string
-      limitedQuantity?: number
-      claimedQuantity: number
-      isActive: boolean
+      Title: string
+      Description: string
+      Amount: number
+      Currency: string
+      EstimatedDelivery?: string
+      LimitedQuantity?: number
+      ClaimedQuantity: number
+      IsActive: boolean
     }>
   }
 }

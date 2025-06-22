@@ -18,6 +18,7 @@ import { ClientProviders } from "@/components/providers/ClientProviders"
 import { ServerProviders } from "@/components/providers/ServerProviders"
 import TrackingScripts from "@/components/providers/TrackingScripts"
 import { Toaster } from "@/components/ui/toaster"
+import DarkReaderFix from "@/components/elementary/DarkReaderFix"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -45,7 +46,7 @@ export default async function RootLayout({ children, params }: LayoutProps) {
       className={cn(fontRoboto.variable)}
       suppressHydrationWarning
     >
-      <body className="bg-background min-h-screen font-sans antialiased">
+      <body className="bg-background min-h-screen font-sans antialiased" suppressHydrationWarning>
         <ErrorBoundary>
           <ServerProviders params={resolvedParams}>
             <ClientProviders>
@@ -57,6 +58,7 @@ export default async function RootLayout({ children, params }: LayoutProps) {
               <Toaster />
               <TailwindIndicator />
               <StrapiPreviewListener />
+              <DarkReaderFix />
             </ClientProviders>
           </ServerProviders>
         </ErrorBoundary>

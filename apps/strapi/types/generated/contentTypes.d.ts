@@ -442,7 +442,7 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
     draftAndPublish: false
   }
   attributes: {
-    author: Schema.Attribute.Relation<
+    Author: Schema.Attribute.Relation<
       "manyToOne",
       "plugin::users-permissions.user"
     >
@@ -476,14 +476,14 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
       "api::comment.comment"
     > &
       Schema.Attribute.Private
-    parent: Schema.Attribute.Relation<"manyToOne", "api::comment.comment">
-    project: Schema.Attribute.Relation<"manyToOne", "api::project.project">
-    projectUpdate: Schema.Attribute.Relation<
+    Parent: Schema.Attribute.Relation<"manyToOne", "api::comment.comment">
+    Project: Schema.Attribute.Relation<"manyToOne", "api::project.project">
+    ProjectUpdate: Schema.Attribute.Relation<
       "manyToOne",
       "api::project-update.project-update"
     >
     publishedAt: Schema.Attribute.DateTime
-    replies: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
+    Replies: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
     ReportReason: Schema.Attribute.Text
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
@@ -520,7 +520,7 @@ export interface ApiDonationDonation extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<"USD">
-    giver: Schema.Attribute.Relation<
+    Giver: Schema.Attribute.Relation<
       "manyToOne",
       "plugin::users-permissions.user"
     >
@@ -551,7 +551,7 @@ export interface ApiDonationDonation extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<"pending">
-    project: Schema.Attribute.Relation<"manyToOne", "api::project.project">
+    Project: Schema.Attribute.Relation<"manyToOne", "api::project.project">
     publishedAt: Schema.Attribute.DateTime
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
@@ -764,11 +764,11 @@ export interface ApiProjectUpdateProjectUpdate
     }
   }
   attributes: {
-    author: Schema.Attribute.Relation<
+    Author: Schema.Attribute.Relation<
       "manyToOne",
       "plugin::users-permissions.user"
     >
-    comments: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
+    Comments: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
     Content: Schema.Attribute.RichText &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -793,7 +793,7 @@ export interface ApiProjectUpdateProjectUpdate
       "oneToMany",
       "api::project-update.project-update"
     >
-    project: Schema.Attribute.Relation<"manyToOne", "api::project.project">
+    Project: Schema.Attribute.Relation<"manyToOne", "api::project.project">
     publishedAt: Schema.Attribute.DateTime
     Title: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -836,7 +836,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     }
   }
   attributes: {
-    backersCount: Schema.Attribute.Integer &
+    BackersCount: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
           min: 0
@@ -844,7 +844,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>
-    category: Schema.Attribute.Enumeration<
+    Category: Schema.Attribute.Enumeration<
       [
         "technology",
         "health",
@@ -868,14 +868,14 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
-    creator: Schema.Attribute.Relation<
+    Creator: Schema.Attribute.Relation<
       "manyToOne",
       "plugin::users-permissions.user"
     >
-    currency: Schema.Attribute.Enumeration<["USD", "EUR", "GBP", "VND"]> &
+    Currency: Schema.Attribute.Enumeration<["USD", "EUR", "GBP", "VND"]> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<"USD">
-    currentFunding: Schema.Attribute.Decimal &
+    CurrentFunding: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
           min: 0
@@ -883,7 +883,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>
-    description: Schema.Attribute.Text &
+    Description: Schema.Attribute.Text &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -891,9 +891,9 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         }
       }>
     Donations: Schema.Attribute.Relation<"oneToMany", "api::donation.donation">
-    endDate: Schema.Attribute.DateTime & Schema.Attribute.Required
-    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
-    fundingGoal: Schema.Attribute.Decimal &
+    EndDate: Schema.Attribute.DateTime & Schema.Attribute.Required
+    Featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
+    FundingGoal: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
@@ -901,21 +901,22 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         },
         number
       >
-    images: Schema.Attribute.Media<"images", true>
     locale: Schema.Attribute.String
     localizations: Schema.Attribute.Relation<
       "oneToMany",
       "api::project.project"
     >
-    projectStatus: Schema.Attribute.Enumeration<
+    Media: Schema.Attribute.Media<"images", true>
+    MediaURL: Schema.Attribute.Component<"utilities.video-url", true>
+    ProjectStatus: Schema.Attribute.Enumeration<
       ["draft", "active", "funded", "ended", "cancelled"]
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<"draft">
     publishedAt: Schema.Attribute.DateTime
-    rewards: Schema.Attribute.Component<"project.reward", true>
-    seo: Schema.Attribute.Component<"shared.seo", false>
-    shortDescription: Schema.Attribute.String &
+    Rewards: Schema.Attribute.Component<"project.reward", true>
+    Seo: Schema.Attribute.Component<"shared.seo", false>
+    ShortDescription: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true
@@ -924,10 +925,10 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 160
       }>
-    slug: Schema.Attribute.UID<"title">
-    startDate: Schema.Attribute.DateTime & Schema.Attribute.Required
-    tags: Schema.Attribute.Relation<"manyToMany", "api::tag.tag">
-    title: Schema.Attribute.String &
+    Slug: Schema.Attribute.UID<"Title">
+    StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required
+    Tags: Schema.Attribute.Relation<"manyToMany", "api::tag.tag">
+    Title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -937,13 +938,10 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
-    updates: Schema.Attribute.Relation<
+    Updates: Schema.Attribute.Relation<
       "oneToMany",
       "api::project-update.project-update"
     >
-    video: Schema.Attribute.Media<"videos">
-    videoUrl: Schema.Attribute.String
-    videoUrls: Schema.Attribute.Component<"utilities.video-url", true>
   }
 }
 
@@ -994,7 +992,7 @@ export interface ApiTagTag extends Struct.CollectionTypeSchema {
     }
   }
   attributes: {
-    color: Schema.Attribute.Enumeration<
+    Color: Schema.Attribute.Enumeration<
       ["blue", "green", "red", "yellow", "purple", "pink", "indigo", "gray"]
     > &
       Schema.Attribute.DefaultTo<"blue">
@@ -1003,7 +1001,7 @@ export interface ApiTagTag extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private
     locale: Schema.Attribute.String
     localizations: Schema.Attribute.Relation<"oneToMany", "api::tag.tag">
-    name: Schema.Attribute.String &
+    Name: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique &
       Schema.Attribute.SetPluginOptions<{
@@ -1011,9 +1009,9 @@ export interface ApiTagTag extends Struct.CollectionTypeSchema {
           localized: true
         }
       }>
-    projects: Schema.Attribute.Relation<"manyToMany", "api::project.project">
+    Projects: Schema.Attribute.Relation<"manyToMany", "api::project.project">
     publishedAt: Schema.Attribute.DateTime
-    slug: Schema.Attribute.UID<"name"> & Schema.Attribute.Required
+    Slug: Schema.Attribute.UID<"Name"> & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
@@ -1475,7 +1473,6 @@ export interface PluginUsersPermissionsUser
   }
   options: {
     draftAndPublish: false
-    timestamps: true
   }
   attributes: {
     avatar: Schema.Attribute.Media<"images">
@@ -1484,17 +1481,13 @@ export interface PluginUsersPermissionsUser
         maxLength: 500
       }>
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
-    collaboratingProjects: Schema.Attribute.Relation<
-      "manyToMany",
-      "api::project.project"
-    >
-    comments: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
+    Comments: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
-    donations: Schema.Attribute.Relation<"oneToMany", "api::donation.donation">
+    Donations: Schema.Attribute.Relation<"oneToMany", "api::donation.donation">
     email: Schema.Attribute.Email &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -1518,17 +1511,13 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100
       }>
-    ownedProjects: Schema.Attribute.Relation<
-      "oneToMany",
-      "api::project.project"
-    >
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6
       }>
-    projects: Schema.Attribute.Relation<"oneToMany", "api::project.project">
-    projectUpdates: Schema.Attribute.Relation<
+    Projects: Schema.Attribute.Relation<"oneToMany", "api::project.project">
+    ProjectUpdates: Schema.Attribute.Relation<
       "oneToMany",
       "api::project-update.project-update"
     >

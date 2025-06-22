@@ -78,6 +78,17 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Support Dark Reader browser extension */
+  /* Let Dark Reader work naturally, just ensure fallbacks */
+  svg {
+    stroke: var(--darkreader-inline-stroke, currentColor);
+    fill: var(--darkreader-inline-fill, currentColor);
+  }
+
+  img[data-nimg] {
+    color: var(--darkreader-inline-color, transparent);
+  }
 }
 
 @keyframes scrollHorizontal {

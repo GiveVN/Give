@@ -18,15 +18,15 @@ export interface ProjectDetailSidebarProps {
     CreatedBy?: string
     Rewards?: Array<{
       id: number
-      title: string
-      description: string
-      amount: number
-      currency: string
-      estimatedDelivery?: string
-      limitedQuantity?: number
-      claimedQuantity: number
-      isActive: boolean
-      image?: {
+      Title: string
+      Description: string
+      Amount: number
+      Currency: string
+      EstimatedDelivery?: string
+      LimitedQuantity?: number
+      ClaimedQuantity: number
+      IsActive: boolean
+      Image?: {
         url: string
         alternativeText?: string
       }
@@ -41,17 +41,17 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
 
   // Use real rewards from Strapi or fallback to mock data
   const rewardTiers = project.Rewards && project.Rewards.length > 0 
-    ? project.Rewards.filter(reward => reward.isActive).map(reward => ({
+    ? project.Rewards.filter(reward => reward.IsActive).map(reward => ({
         id: reward.id.toString(),
-        amount: reward.amount,
-        title: reward.title,
-        description: reward.description,
-        deliveryDate: reward.estimatedDelivery ? new Date(reward.estimatedDelivery).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "March 2025",
-        backers: reward.claimedQuantity || 0,
-        available: !reward.limitedQuantity || reward.claimedQuantity < reward.limitedQuantity,
+        amount: reward.Amount,
+        title: reward.Title,
+        description: reward.Description,
+        deliveryDate: reward.EstimatedDelivery ? new Date(reward.EstimatedDelivery).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "March 2025",
+        backers: reward.ClaimedQuantity || 0,
+        available: !reward.LimitedQuantity || reward.ClaimedQuantity < reward.LimitedQuantity,
         estimated: "Estimated delivery",
         includes: [], // TODO: Add includes field to Strapi rewards schema
-        currency: reward.currency || 'USD'
+        currency: reward.Currency || 'USD'
       }))
     : [
         // Fallback mock data when no Strapi rewards
