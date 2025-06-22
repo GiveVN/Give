@@ -30,35 +30,35 @@
     "EditedAt": {
       "type": "datetime"
     },
-    "author": {
+    "Author": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "comments"
+      "inversedBy": "Comments"
     },
-    "project": {
+    "Project": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::project.project",
       "inversedBy": "Comments"
     },
-    "projectUpdate": {
+    "ProjectUpdate": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::project-update.project-update",
-      "inversedBy": "comments"
+      "inversedBy": "Comments"
     },
-    "parent": {
+    "Parent": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::comment.comment",
-      "inversedBy": "replies"
+      "inversedBy": "Replies"
     },
-    "replies": {
+    "Replies": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::comment.comment",
-      "mappedBy": "parent"
+      "mappedBy": "Parent"
     },
     "IsReported": {
       "type": "boolean",

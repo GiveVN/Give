@@ -16,7 +16,7 @@
     }
   },
   "attributes": {
-    "name": {
+    "Name": {
       "type": "string",
       "required": true,
       "unique": true,
@@ -26,12 +26,12 @@
         }
       }
     },
-    "slug": {
+    "Slug": {
       "type": "uid",
-      "targetField": "name",
+      "targetField": "Name",
       "required": true
     },
-    "color": {
+    "Color": {
       "type": "enumeration",
       "enum": [
         "blue",
@@ -45,11 +45,11 @@
       ],
       "default": "blue"
     },
-    "projects": {
+    "Projects": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::project.project",
-      "inversedBy": "tags"
+      "inversedBy": "Tags"
     }
   }
 }

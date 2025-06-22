@@ -8,40 +8,44 @@ import { Progress } from '@/components/ui/progress'
 
 interface ProjectCardProps {
   project: {
-    id: string
-    documentId: string
-    title: string
-    slug?: string
-    shortDescription?: string
-    description: string
-    category: string
-    fundingGoal: number
-    currentFunding: number
-    currency: string
-    backersCount: number
-    startDate: string
-    endDate: string
-    featured: boolean
-    projectStatus: string
-    images?: Array<{
-      id: number
-      url: string
-      alternativeText?: string
-      width?: number
-      height?: number
+    Id: string
+    DocumentId: string
+    Title: string
+    Slug?: string
+    ShortDescription?: string
+    Description: string
+    Category: string
+    FundingGoal: number
+    CurrentFunding: number
+    Currency: string
+    BackersCount: number
+    StartDate: string
+    EndDate: string
+    Featured: boolean
+    ProjectStatus: string
+    Images?: Array<{
+      Id: number
+      Url: string
+      AlternativeText?: string
+      Width?: number
+      Height?: number
     }>
-    tags?: Array<{
-      id: number
-      name: string
+    Tags?: Array<{
+      Id: number
+      Name: string
     }>
   }
 }
 
-// Helper function to format currency
-const formatCurrency = (amount: number, currency: string = 'USD'): string => {
+// Helper function to format currency – tự động fallback sang USD nếu mã tiền tệ null/không hợp lệ
+const formatCurrency = (amount: number, currency?: string | null): string => {
+  const safeCurrency = (currency && typeof currency === 'string' && currency.trim())
+    ? currency.trim().toUpperCase()
+    : 'USD'
+
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: currency,
+    currency: safeCurrency as string,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount)
@@ -102,27 +106,27 @@ const getCategoryDisplayName = (category: string): string => {
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [isLiked, setIsLiked] = useState(false)
   
-  const progressPercentage = project.fundingGoal > 0 
-    ? Math.round((project.currentFunding / project.fundingGoal) * 100)
+  const progressPercentage = project.FundingGoal > 0 
+    ? Math.round((project.CurrentFunding / project.FundingGoal) * 100)
     : 0
 
-  const endDate = new Date(project.endDate)
+  const endDate = new Date(project.EndDate)
   const today = new Date()
   const timeDiff = endDate.getTime() - today.getTime()
   const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
 
-  const imageUrl = project.images?.[0]?.url 
-    ? `http://localhost:1338${project.images[0].url}`
+  const imageUrl = project.Images?.[0]?.Url 
+    ? `http://localhost:1338${project.Images[0].Url}`
     : null
 
   return (
-    <Link href={`/projects/${project.slug || project.documentId}`} className="block">
+    <Link href={`/projects/${project.Slug || project.DocumentId}`} className="block">
       <div className="group relative">
         
         {/* Main card - no z-index change, no shadow transition to avoid zoom effect */}
         <div className="relative bg-white rounded-lg border border-transparent group-hover:rounded-b-none group-hover:border-t-gray-200 group-hover:border-l-gray-200 group-hover:border-r-gray-200 group-hover:border-b-transparent overflow-visible transition-[border-radius,border-color] duration-200">
           {/* Featured Badge */}
-          {project.featured && (
+          {project.Featured && (
             <div className="absolute top-3 right-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
               Featured
             </div>
@@ -146,15 +150,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
             {/* Status Badge - moved to image corner */}
             <div className="absolute top-3 left-3 z-10">
-              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.projectStatus)}`}>
-                {getStatusDisplayName(project.projectStatus)}
+              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.ProjectStatus)}`}>
+                {getStatusDisplayName(project.ProjectStatus)}
               </span>
             </div>
 
-            {project.images && project.images.length > 0 && project.images[0] ? (
+            {project.Images && project.Images.length > 0 && project.Images[0] ? (
               <Image
-                src={project.images[0].url.startsWith('http') ? project.images[0].url : `http://localhost:1338${project.images[0].url}`}
-                alt={project.images[0].alternativeText || project.title || "Project image"}
+                src={project.Images[0].Url.startsWith('http') ? project.Images[0].Url : `http://localhost:1338${project.Images[0].Url}`}
+                alt={project.Images[0].AlternativeText || project.Title || "Project image"}
                 fill
                 className="object-cover"
               />
@@ -169,7 +173,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <div className="p-4">
             {/* Project Title */}
             <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
-              {project.title}
+              {project.Title}
             </h3>
 
             {/* Progress Bar */}
@@ -181,7 +185,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             <div className="flex justify-between items-center text-sm">
               <div>
                 <span className="font-semibold text-gray-900">
-                  {formatCurrency(project.currentFunding, project.currency)}
+                  {formatCurrency(project.CurrentFunding, project.Currency)}
                 </span>
                 <span className="text-gray-500 ml-1">raised</span>
               </div>
@@ -195,23 +199,23 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Expanded Content - faster timing, shadow only when visible */}
         <div className="absolute top-full left-0 right-0 bg-white rounded-b-lg p-4 space-y-3 opacity-0 invisible border border-transparent group-hover:opacity-100 group-hover:visible group-hover:border-l-gray-200 group-hover:border-r-gray-200 group-hover:border-b-gray-200 group-hover:border-t-transparent group-hover:shadow-lg transition-[opacity,visibility,border-color,box-shadow] duration-200 z-40">
           {/* Short Description */}
-          {project.shortDescription && (
+          {project.ShortDescription && (
             <p className="text-sm text-gray-600 line-clamp-2 pt-2">
-              {project.shortDescription}
+              {project.ShortDescription}
             </p>
           )}
           
           {/* Category and Tags */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-              {getCategoryDisplayName(project.category)}
+              {getCategoryDisplayName(project.Category)}
             </span>
-            {project.tags?.map((tag) => (
+            {project.Tags?.map((tag) => (
               <span 
-                key={tag.id}
+                key={tag.Id}
                 className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
               >
-                {tag.name}
+                {tag.Name}
               </span>
             ))}
           </div>

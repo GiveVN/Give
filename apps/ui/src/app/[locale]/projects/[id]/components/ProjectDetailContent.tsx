@@ -28,9 +28,31 @@ export interface ProjectDetailContentProps {
       url: string
       alternativeText?: string
     }
+    Images?: Array<{
+      url: string
+      alternativeText?: string
+      width?: number
+      height?: number
+    }>
     Category?: string
     CreatedBy?: string
     CreatedAt?: string
+    FundingGoal?: number
+    CurrentFunding?: number
+    BackersCount?: number
+    DaysLeft?: number
+    Slug?: string
+    Rewards?: Array<{
+      id: number
+      title: string
+      description: string
+      amount: number
+      currency: string
+      estimatedDelivery?: string
+      limitedQuantity?: number
+      claimedQuantity: number
+      isActive: boolean
+    }>
   }
 }
 

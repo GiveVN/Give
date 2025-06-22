@@ -460,7 +460,7 @@ export async function getProject(id: string) {
       const strapiProjects = await PublicStrapiClient.fetchMany(
         'api::project.project',
         { 
-          filters: { slug: { $eq: id } },
+          filters: { Slug: { $eq: id } },
           populate: '*'
         }
       )
@@ -495,7 +495,7 @@ export async function getProjectBySlug(slug: string) {
       const strapiProjects = await PublicStrapiClient.fetchMany(
         'api::project.project',
         { 
-          filters: { slug: { $eq: slug } },
+          filters: { Slug: { $eq: slug } },
           populate: '*'
         }
       )

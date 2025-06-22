@@ -9,9 +9,9 @@
     "displayName": "User"
   },
   "options": {
-    "draftAndPublish": false,
-    "timestamps": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "username": {
       "type": "string",
@@ -92,41 +92,29 @@
       "type": "string",
       "maxLength": 100
     },
-    "ownedProjects": {
+    "Projects": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project.project",
-      "mappedBy": "Owner"
+      "mappedBy": "Creator"
     },
-    "projects": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::project.project",
-      "mappedBy": "creator"
-    },
-    "collaboratingProjects": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::project.project",
-      "mappedBy": "Collaborators"
-    },
-    "donations": {
+    "Donations": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::donation.donation",
-      "mappedBy": "giver"
+      "mappedBy": "Giver"
     },
-    "comments": {
+    "Comments": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::comment.comment",
-      "mappedBy": "author"
+      "mappedBy": "Author"
     },
-    "projectUpdates": {
+    "ProjectUpdates": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-update.project-update",
-      "mappedBy": "author"
+      "mappedBy": "Author"
     }
   }
 }

@@ -19,8 +19,8 @@ async function fetchProjects(locale: AppLocale, searchParams: any) {
   try {
     // Direct API call to Strapi as workaround for permissions
     const queryParams = new URLSearchParams({
-      'populate[images][populate]': '*',
-      'populate[tags]': 'true',
+      'populate[Media][populate]': '*',
+      'populate[Tags]': 'true',
       'sort[0]': 'createdAt:desc',
       'pagination[page]': searchParams.page || '1',
       'pagination[pageSize]': '12',
@@ -29,14 +29,14 @@ async function fetchProjects(locale: AppLocale, searchParams: any) {
     
     // Add filters if provided
     if (searchParams.category) {
-      queryParams.append('filters[category][$eq]', searchParams.category)
+      queryParams.append('filters[Category][$eq]', searchParams.category)
     }
     if (searchParams.status) {
-      queryParams.append('filters[status][$eq]', searchParams.status)
+      queryParams.append('filters[ProjectStatus][$eq]', searchParams.status)
     }
     if (searchParams.search) {
-      queryParams.append('filters[$or][0][title][$containsi]', searchParams.search)
-      queryParams.append('filters[$or][1][shortDescription][$containsi]', searchParams.search)
+      queryParams.append('filters[$or][0][Title][$containsi]', searchParams.search)
+      queryParams.append('filters[$or][1][ShortDescription][$containsi]', searchParams.search)
     }
     
     // Use env variable so it works in all environments

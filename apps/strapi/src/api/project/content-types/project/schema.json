@@ -16,7 +16,7 @@
     }
   },
   "attributes": {
-    "title": {
+    "Title": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -25,12 +25,12 @@
       },
       "required": true
     },
-    "slug": {
+    "Slug": {
       "type": "uid",
-      "targetField": "title",
+      "targetField": "Title",
       "required": false
     },
-    "description": {
+    "Description": {
       "type": "text",
       "pluginOptions": {
         "i18n": {
@@ -39,7 +39,7 @@
       },
       "required": true
     },
-    "shortDescription": {
+    "ShortDescription": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -48,7 +48,7 @@
       },
       "maxLength": 160
     },
-    "category": {
+    "Category": {
       "type": "enumeration",
       "required": true,
       "enum": [
@@ -69,7 +69,7 @@
         "publishing"
       ]
     },
-    "projectStatus": {
+    "ProjectStatus": {
       "type": "enumeration",
       "required": true,
       "default": "draft",
@@ -81,17 +81,17 @@
         "cancelled"
       ]
     },
-    "fundingGoal": {
+    "FundingGoal": {
       "type": "decimal",
       "required": true,
       "min": 0
     },
-    "currentFunding": {
+    "CurrentFunding": {
       "type": "decimal",
       "default": 0,
       "min": 0
     },
-    "currency": {
+    "Currency": {
       "type": "enumeration",
       "required": true,
       "default": "USD",
@@ -102,24 +102,24 @@
         "VND"
       ]
     },
-    "backersCount": {
+    "BackersCount": {
       "type": "integer",
       "default": 0,
       "min": 0
     },
-    "startDate": {
+    "StartDate": {
       "type": "datetime",
       "required": true
     },
-    "endDate": {
+    "EndDate": {
       "type": "datetime",
       "required": true
     },
-    "featured": {
+    "Featured": {
       "type": "boolean",
       "default": false
     },
-    "images": {
+    "Media": {
       "type": "media",
       "multiple": true,
       "required": false,
@@ -127,61 +127,48 @@
         "images"
       ]
     },
-    "video": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "videos"
-      ]
-    },
-    "videoUrl": {
-      "type": "string",
-      "required": false,
-      "regex": "^(https?:\\/\\/)?(www\\.)?(youtube\\.com\\/watch\\?v=|youtu\\.be\\/|youtube\\.com\\/embed\\/)[a-zA-Z0-9_-]{11}$"
-    },
-    "videoUrls": {
+    "MediaURL": {
       "type": "component",
       "component": "utilities.video-url",
       "repeatable": true,
       "required": false
     },
-    "creator": {
+    "Creator": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "projects"
+      "inversedBy": "Projects"
     },
-    "tags": {
+    "Tags": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::tag.tag",
-      "mappedBy": "projects"
+      "mappedBy": "Projects"
     },
-    "rewards": {
+    "Rewards": {
       "type": "component",
       "component": "project.reward",
       "repeatable": true
     },
-    "updates": {
+    "Updates": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-update.project-update",
-      "mappedBy": "project"
+      "mappedBy": "Project"
     },
     "Donations": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::donation.donation",
-      "mappedBy": "project"
+      "mappedBy": "Project"
     },
     "Comments": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::comment.comment",
-      "mappedBy": "project"
+      "mappedBy": "Project"
     },
-    "seo": {
+    "Seo": {
       "type": "component",
       "component": "shared.seo",
       "repeatable": false

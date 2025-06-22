@@ -61,23 +61,23 @@
       "default": 0,
       "min": 0
     },
-    "project": {
+    "Project": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::project.project",
-      "inversedBy": "updates"
+      "inversedBy": "Updates"
     },
-    "author": {
+    "Author": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "projectUpdates"
+      "inversedBy": "ProjectUpdates"
     },
-    "comments": {
+    "Comments": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::comment.comment",
-      "mappedBy": "projectUpdate"
+      "mappedBy": "ProjectUpdate"
     }
   }
 }
