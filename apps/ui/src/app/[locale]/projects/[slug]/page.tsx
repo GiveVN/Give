@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 
-import { getProject } from "@/lib/strapi-api/content/project"
+import { getProjectBySlug } from "@/lib/strapi-api/content/project"
 import { Container } from "@/components/elementary/Container"
 
 import { ProjectDetailContent } from "./components/ProjectDetailContent"
@@ -10,7 +10,7 @@ import { ProjectDetailSidebar } from "./components/ProjectDetailSidebar"
 interface ProjectDetailPageProps {
   params: Promise<{
     locale: string
-    id: string
+    slug: string
   }>
 }
 
@@ -18,7 +18,7 @@ export default async function ProjectDetailPage({
   params,
 }: ProjectDetailPageProps) {
   const resolvedParams = await params
-  const project = await getProject(resolvedParams.id)
+  const project = await getProjectBySlug(resolvedParams.slug)
 
   if (!project) {
     notFound()
@@ -49,7 +49,7 @@ export default async function ProjectDetailPage({
 
 export async function generateMetadata({ params }: ProjectDetailPageProps) {
   const resolvedParams = await params
-  const project = await getProject(resolvedParams.id)
+  const project = await getProjectBySlug(resolvedParams.slug)
 
   if (!project) {
     return {
@@ -77,4 +77,4 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
       type: "website",
     },
   }
-}
+} 

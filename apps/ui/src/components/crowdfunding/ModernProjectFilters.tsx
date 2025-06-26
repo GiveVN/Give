@@ -16,6 +16,11 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FunnelIcon } from "@heroicons/react/24/outline"
 
+const types = [
+  { value: "give", label: "❤️ Give", description: "Support charitable causes" },
+  { value: "back", label: "🚀 Back", description: "Fund creative projects" },
+]
+
 const sortOptions = [
   { value: "popular", label: "Most Popular" },
   { value: "newest", label: "Newest" },
@@ -23,14 +28,28 @@ const sortOptions = [
   { value: "goal_high", label: "Goal: High to Low" },
 ]
 
-const categories = [
-  { value: "technology_innovation", label: "Technology" },
-  { value: "environment_sustainability", label: "Environment" },
-  { value: "health_medical", label: "Health" },
-  { value: "arts_culture", label: "Arts & Culture" },
-  { value: "community", label: "Community" },
-  { value: "education", label: "Education" },
-  { value: "business", label: "Business" },
+// Categories for Give (charitable/donation projects)
+const giveCategories = [
+  { value: "disaster_relief", label: "Disaster Relief" },
+  { value: "poverty_alleviation", label: "Poverty Alleviation" },
+  { value: "healthcare", label: "Healthcare" },
+  { value: "education_charity", label: "Education" },
+  { value: "environment_conservation", label: "Environment" },
+  { value: "animal_welfare", label: "Animal Welfare" },
+  { value: "community_development", label: "Community Development" },
+  { value: "humanitarian_aid", label: "Humanitarian Aid" },
+]
+
+// Categories for Back (creative/reward-based projects)
+const backCategories = [
+  { value: "technology", label: "Technology" },
+  { value: "arts", label: "Arts" },
+  { value: "film_video", label: "Film & Video" },
+  { value: "games", label: "Games" },
+  { value: "music", label: "Music" },
+  { value: "publishing", label: "Publishing" },
+  { value: "food_craft", label: "Food & Craft" },
+  { value: "design_fashion", label: "Design & Fashion" },
 ]
 
 const statuses = [
@@ -44,6 +63,7 @@ function cn(...classes: (string | boolean | undefined)[]) {
 }
 
 export default function ModernProjectFilters({
+  currentType,
   currentCategory,
   currentStatus,
   currentSearch,
@@ -52,6 +72,9 @@ export default function ModernProjectFilters({
   const searchParams = useSearchParams()
   const [searchInput, setSearchInput] = useState(currentSearch || "")
 
+  // Select categories based on current type
+  const categories = currentType === "give" ? giveCategories : currentType === "back" ? backCategories : [...giveCategories, ...backCategories]
+
   const updateFilters = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams.toString())
 
@@ -59,6 +82,11 @@ export default function ModernProjectFilters({
       params.set(key, value)
     } else {
       params.delete(key)
+    }
+
+    // Clear category when changing type
+    if (key === "type" && value !== currentType) {
+      params.delete("category")
     }
 
     params.delete("page")
@@ -97,6 +125,46 @@ export default function ModernProjectFilters({
         <FunnelIcon className="h-5 w-5 text-gray-400 lg:hidden" />
       </div>
 
+      {/* Type */}
+      <Disclosure as="div" defaultOpen>
+        {({ open }) => (
+          <div className="border-b border-gray-200 pb-4">
+            <DisclosureButton className="flex w-full items-center justify-between text-sm font-medium text-gray-900">
+              Project Type
+              {open ? <MinusIcon className="h-5 w-5" /> : <PlusIcon className="h-5 w-5" />}
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 space-y-2">
+              {types.map((type) => (
+                <button
+                  key={type.value}
+                  onClick={() => updateFilters("type", type.value === currentType ? null : type.value)}
+                  className={cn(
+                    "flex items-center w-full text-left text-sm gap-3",
+                    type.value === currentType ? "text-indigo-700 font-semibold" : "text-gray-700 hover:text-gray-900"
+                  )}
+                >
+                  {/* Radio appearance */}
+                  <span
+                    className={cn(
+                      "inline-flex h-4 w-4 items-center justify-center rounded-full border transition-colors",
+                      type.value === currentType ? "border-indigo-700" : "border-gray-400"
+                    )}
+                  >
+                    {type.value === currentType && (
+                      <span className="h-2 w-2 rounded-full bg-indigo-700" />
+                    )}
+                  </span>
+                  <div>
+                    <div>{type.label}</div>
+                    <div className="text-xs text-gray-500 font-normal">{type.description}</div>
+                  </div>
+                </button>
+              ))}
+            </DisclosurePanel>
+          </div>
+        )}
+      </Disclosure>
+
       {/* Categories */}
       <Disclosure as="div" defaultOpen>
         {({ open }) => (
@@ -106,18 +174,22 @@ export default function ModernProjectFilters({
               {open ? <MinusIcon className="h-5 w-5" /> : <PlusIcon className="h-5 w-5" />}
             </DisclosureButton>
             <DisclosurePanel className="pt-4 space-y-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.value}
-                  onClick={() => updateFilters("category", cat.value === currentCategory ? null : cat.value)}
-                  className={cn(
-                    cat.value === currentCategory ? "text-indigo-600 font-medium" : "text-gray-600 hover:text-gray-900",
-                    "block w-full text-left text-sm"
-                  )}
-                >
-                  {cat.label}
-                </button>
-              ))}
+              {categories.length === 0 ? (
+                <p className="text-sm text-gray-500 italic">Select a project type first</p>
+              ) : (
+                categories.map((cat) => (
+                  <button
+                    key={cat.value}
+                    onClick={() => updateFilters("category", cat.value === currentCategory ? null : cat.value)}
+                    className={cn(
+                      cat.value === currentCategory ? "text-indigo-600 font-medium" : "text-gray-600 hover:text-gray-900",
+                      "block w-full text-left text-sm"
+                    )}
+                  >
+                    {cat.label}
+                  </button>
+                ))
+              )}
             </DisclosurePanel>
           </div>
         )}

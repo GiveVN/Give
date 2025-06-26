@@ -52,18 +52,21 @@ export function createMediaGallery(images: any[] = [], video?: any, videoUrl?: s
   // Add images
   if (images && images.length > 0) {
     images.forEach(image => {
-      gallery.push({
-        type: 'image',
-        url: image.url,
-        alternativeText: image.alternativeText,
-        width: image.width,
-        height: image.height
-      });
+      // Skip if URL is empty or invalid
+      if (image && image.url && image.url.trim() !== '') {
+        gallery.push({
+          type: 'image',
+          url: image.url,
+          alternativeText: image.alternativeText,
+          width: image.width,
+          height: image.height
+        });
+      }
     });
   }
   
   // Add uploaded video if exists
-  if (video && video.url) {
+  if (video && video.url && video.url.trim() !== '') {
     gallery.push({
       type: 'video',
       url: video.url,
@@ -72,7 +75,7 @@ export function createMediaGallery(images: any[] = [], video?: any, videoUrl?: s
   }
   
   // Add single YouTube video if exists (backward compatibility)
-  if (videoUrl) {
+  if (videoUrl && videoUrl.trim() !== '') {
     const videoId = extractYouTubeVideoId(videoUrl);
     if (videoId) {
       gallery.push({
@@ -88,7 +91,7 @@ export function createMediaGallery(images: any[] = [], video?: any, videoUrl?: s
   if (videoUrls && videoUrls.length > 0) {
     videoUrls.forEach(videoUrlObj => {
       const url = videoUrlObj?.url;
-      if (url) {
+      if (url && url.trim() !== '') {
         const videoId = extractYouTubeVideoId(url);
         if (videoId) {
           gallery.push({

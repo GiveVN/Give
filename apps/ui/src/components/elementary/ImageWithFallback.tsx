@@ -1,44 +1,21 @@
-/* eslint-disable jsx-a11y/alt-text */
-"use client"
+'use client'
 
-import { SyntheticEvent, useEffect, useState } from "react"
-import Image from "next/image"
+import Image, { ImageProps } from 'next/image'
+import { useState } from 'react'
+import { ImageWithBlur } from './ImageWithBlur'
 
-import { ImageExtendedProps } from "@/types/next"
+interface ImageWithFallbackProps extends ImageProps {
+  fallbackSrc?: string
+}
 
-import { FALLBACK_IMAGE_PATH } from "@/lib/constants"
+export function ImageWithFallback({ src, fallbackSrc = '/images/broken-image.png', ...imgProps }: ImageWithFallbackProps) {
+  const [imgSrc, setImgSrc] = useState(src)
 
-import { ImageWithBlur } from "./ImageWithBlur"
-
-const invalidSrc = "/invalid-src.jpg"
-
-export const ImageWithFallback = ({
-  fallbackSrc,
-  src: originalSrc,
-  blurOff,
-  ...imgProps
-}: ImageExtendedProps & { blurOff?: boolean }) => {
-  const [src, setSrc] = useState(originalSrc ?? fallbackSrc ?? invalidSrc)
-
-  useEffect(() => {
-    setSrc(originalSrc ?? fallbackSrc ?? invalidSrc)
-  }, [originalSrc, fallbackSrc])
-
-  const handleLoadError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error(`Error loading image from ${src}:`, e)
-
-    if (fallbackSrc) {
-      setSrc(fallbackSrc)
-    } else {
-      setSrc(FALLBACK_IMAGE_PATH)
+  const handleLoadError = () => {
+    if (imgSrc !== fallbackSrc) {
+      setImgSrc(fallbackSrc)
     }
-
-    imgProps?.onError?.(e)
-  }
-
-  if (blurOff) {
-    return <Image src={src} {...imgProps} alt={imgProps.alt || "Image"} onError={handleLoadError} />
   }
 
   return <ImageWithBlur src={src} {...imgProps} alt={imgProps.alt || "Image"} onError={handleLoadError} />
-}
+} 

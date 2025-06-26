@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Heart, Calendar } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
+import { TypeBadge } from '@/components/ui/TypeBadge'
 
 interface ProjectCardProps {
   project: {
@@ -14,6 +15,7 @@ interface ProjectCardProps {
     Slug?: string
     ShortDescription?: string
     Description: string
+    Type?: 'give' | 'back'
     Category: string
     FundingGoal: number
     CurrentFunding: number
@@ -23,12 +25,21 @@ interface ProjectCardProps {
     EndDate: string
     Featured: boolean
     ProjectStatus: string
+    // Support both Images array and Media array from Strapi
     Images?: Array<{
       Id: number
       Url: string
       AlternativeText?: string
       Width?: number
       Height?: number
+    }>
+    Media?: Array<{
+      id: number
+      url: string
+      alternativeText?: string
+      width?: number
+      height?: number
+      formats?: any
     }>
     Tags?: Array<{
       Id: number
@@ -115,9 +126,24 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const timeDiff = endDate.getTime() - today.getTime()
   const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
 
-  const imageSrc = project.Images && project.Images.length > 0 && project.Images[0]
-    ? (project.Images[0].Url.startsWith('http') ? project.Images[0].Url : `http://localhost:1338${project.Images[0].Url}`)
-    : null
+  // Support both Images and Media fields
+  let imageSrc = null
+  let imageAlt = project.Title || "Project image"
+  
+  // Check Images field first (transformed data)
+  if (project.Images && project.Images.length > 0 && project.Images[0]) {
+    imageSrc = project.Images[0].Url.startsWith('http') 
+      ? project.Images[0].Url 
+      : `http://localhost:1338${project.Images[0].Url}`
+    imageAlt = project.Images[0].AlternativeText || imageAlt
+  }
+  // Check Media field (raw Strapi data)
+  else if (project.Media && project.Media.length > 0 && project.Media[0]) {
+    imageSrc = project.Media[0].url.startsWith('http') 
+      ? project.Media[0].url 
+      : `http://localhost:1338${project.Media[0].url}`
+    imageAlt = project.Media[0].alternativeText || imageAlt
+  }
 
   return (
     <Link href={`/projects/${project.Slug || project.DocumentId}`} className="block">
@@ -158,7 +184,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             {imageSrc ? (
               <Image
                 src={imageSrc}
-                alt={project.Images?.[0]?.AlternativeText || project.Title || "Project image"}
+                alt={imageAlt}
                 fill
                 className="object-cover"
               />
@@ -171,6 +197,13 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
           {/* Project Content */}
           <div className="p-4">
+            {/* Type Badge */}
+            {project.Type && (
+              <div className="mb-2">
+                <TypeBadge type={project.Type} />
+              </div>
+            )}
+
             {/* Project Title */}
             <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
               {project.Title}

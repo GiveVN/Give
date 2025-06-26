@@ -48,26 +48,25 @@
       },
       "maxLength": 160
     },
-    "Category": {
+    "Type": {
       "type": "enumeration",
       "required": true,
+      "default": "give",
       "enum": [
-        "technology",
-        "health",
-        "education",
-        "environment",
-        "arts",
-        "community",
-        "business",
-        "sports",
-        "travel",
-        "food",
-        "fashion",
-        "games",
-        "film",
-        "music",
-        "publishing"
-      ]
+        "give",
+        "back"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "Category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "Projects"
     },
     "ProjectStatus": {
       "type": "enumeration",

@@ -6,10 +6,16 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 export interface ProjectFiltersProps {
+  currentType?: string
   currentCategory?: string
   currentStatus?: string
   currentSearch?: string
 }
+
+const types = [
+  { value: "give", label: "❤️ Give", description: "Support charitable causes" },
+  { value: "back", label: "🚀 Back", description: "Fund creative projects" },
+]
 
 const categories = [
   { value: "technology_innovation", label: "Technology" },
@@ -28,6 +34,7 @@ const statuses = [
 ]
 
 export function ProjectFilters({ 
+  currentType,
   currentCategory, 
   currentStatus, 
   currentSearch 
@@ -61,7 +68,7 @@ export function ProjectFilters({
     router.push("/projects")
   }
 
-  const hasActiveFilters = currentCategory || currentStatus || currentSearch
+  const hasActiveFilters = currentType || currentCategory || currentStatus || currentSearch
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
@@ -91,6 +98,33 @@ export function ProjectFilters({
           </div>
         </div>
       </form>
+
+      {/* Type Filters */}
+      <div className="mb-6">
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Project Type</h3>
+        <div className="flex flex-col gap-2">
+          <Button
+            variant={!currentType ? "default" : "outline"}
+            size="sm"
+            onClick={() => updateFilters("type", null)}
+            className="text-xs justify-start"
+          >
+            All Types
+          </Button>
+          {types.map((type) => (
+            <Button
+              key={type.value}
+              variant={currentType === type.value ? "default" : "outline"}
+              size="sm"
+              onClick={() => updateFilters("type", type.value)}
+              className="text-xs justify-start"
+            >
+              <span className="mr-2">{type.label}</span>
+              <span className="text-gray-500 font-normal">{type.description}</span>
+            </Button>
+          ))}
+        </div>
+      </div>
 
       {/* Category Filters */}
       <div className="mb-6">
@@ -149,6 +183,17 @@ export function ProjectFilters({
         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Active filters:</span>
+            {currentType && (
+              <Badge variant="secondary" className="text-xs">
+                {types.find(t => t.value === currentType)?.label}
+                <button
+                  onClick={() => updateFilters("type", null)}
+                  className="ml-1 hover:text-red-600"
+                >
+                  ×
+                </button>
+              </Badge>
+            )}
             {currentCategory && (
               <Badge variant="secondary" className="text-xs">
                 {categories.find(c => c.value === currentCategory)?.label}

@@ -52,7 +52,7 @@ const nextConfig = {
     ],
   },
 
-  webpack: (config, { dev }) => {
+  webpack: (config, { dev, isServer }) => {
     if (config.cache && !dev) {
       // Switching between memory and filesystem cache
       // Memory cache is faster and can be beneficial in environments with slow or limited disk access,
@@ -62,6 +62,25 @@ const nextConfig = {
         type: env.WEBPACK_CACHE_TYPE || "filesystem",
       })
     }
+    
+    // Fix OpenTelemetry dynamic require issue
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false,
+      }
+    }
+    
+    // Externalize problematic OpenTelemetry modules in server builds
+    if (isServer) {
+      config.externals = [
+        ...config.externals,
+        '@opentelemetry/instrumentation',
+      ]
+    }
+    
     return config
   },
 }

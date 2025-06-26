@@ -31,6 +31,21 @@
       "type": "text",
       "maxLength": 500
     },
+    "Type": {
+      "type": "enumeration",
+      "required": true,
+      "default": "give",
+      "enum": [
+        "give",
+        "back",
+        "both"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "Icon": {
       "type": "string",
       "maxLength": 50

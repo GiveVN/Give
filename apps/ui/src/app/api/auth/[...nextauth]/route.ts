@@ -17,7 +17,7 @@ const authOptions: NextAuthOptions = {
 
         try {
           // Login to Strapi
-          const strapiResponse = await fetch(`${process.env.STRAPI_API_URL}/auth/local`, {
+          const strapiResponse = await fetch(`${process.env.STRAPI_URL}/api/auth/local`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

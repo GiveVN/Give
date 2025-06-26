@@ -51,11 +51,20 @@ export function SignInForm() {
         // Force a hard refresh to ensure server components re-render with new session
         window.location.href = callbackUrl
       } else {
-        const parsedError = safeJSONParse<any>(res.error)
-        const message =
-          "message" in parsedError
-            ? parsedError.message
-            : t("errors.CredentialsSignin")
+        let message = t("errors.CredentialsSignin")
+        
+        // Try to parse error as JSON, but handle non-JSON errors too
+        if (res.error && res.error !== "CredentialsSignin") {
+          try {
+            const parsedError = JSON.parse(res.error)
+            if (parsedError.message) {
+              message = parsedError.message
+            }
+          } catch {
+            // If not JSON, use the error string directly
+            message = res.error
+          }
+        }
 
         toast({
           variant: "destructive",

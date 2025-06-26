@@ -8,6 +8,7 @@ export interface ProjectData {
   description: string
   shortDescription?: string
   slug: string
+  type: 'give' | 'back'
   category: 'technology' | 'health' | 'education' | 'environment' | 'arts' | 'community' | 'business' | 'sports' | 'travel' | 'food' | 'fashion' | 'games' | 'film' | 'music' | 'publishing'
   projectStatus: 'draft' | 'active' | 'funded' | 'ended' | 'cancelled'
   fundingGoal: number
@@ -97,6 +98,7 @@ export interface ProjectData {
 }
 
 export interface ProjectsFilters {
+  type?: 'give' | 'back'
   category?: string
   projectStatus?: string
   featured?: boolean
@@ -128,6 +130,7 @@ export async function fetchProjects({
 
     const params = new URLSearchParams()
     // Filters
+    if (filters.type) params.append('filters[Type][$eq]', filters.type)
     if (filters.category) params.append('filters[Category][$eq]', filters.category)
     if (filters.projectStatus) params.append('filters[ProjectStatus][$eq]', filters.projectStatus)
     if (filters.featured !== undefined) params.append('filters[Featured][$eq]', String(filters.featured))
@@ -199,6 +202,7 @@ export async function fetchProjectById(id: string): Promise<ProjectData | null> 
           description: project.description || project.Description || '',
           shortDescription: project.shortDescription || project.description || '',
           slug: project.slug || id,
+          type: project.type || project.Type || 'give',
           category: project.category || project.Category || 'technology',
           projectStatus: project.projectStatus || project.ProjectStatus || 'active',
           fundingGoal: project.fundingGoal || project.FundingGoal || 0,
@@ -458,20 +462,21 @@ function transformStrapiProject(project: any) {
     Description: project.Description,
     ShortDescription: project.ShortDescription,
     LongDescription: project.Description,
+    Type: project.Type || 'give',
     Images: project.Media?.map((image: any) => ({
-      Url: image.url.startsWith('http')
+      url: image.url.startsWith('http')
         ? image.url
         : `${baseUrl}${image.url}`,
-      AlternativeText: image.alternativeText || project.Title,
-      Width: image.width,
-      Height: image.height
+      alternativeText: image.alternativeText || project.Title,
+      width: image.width,
+      height: image.height
     })) || [],
     // Keep single Image for backward compatibility
     Image: project.Media?.[0] ? {
-      Url: project.Media[0].url.startsWith('http')
+      url: project.Media[0].url.startsWith('http')
         ? project.Media[0].url
         : `${baseUrl}${project.Media[0].url}`,
-      AlternativeText: project.Media[0].alternativeText || project.Title
+      alternativeText: project.Media[0].alternativeText || project.Title
     } : undefined,
     FundingGoal: project.FundingGoal,
     CurrentFunding: project.CurrentFunding,
@@ -504,8 +509,8 @@ function transformStrapiProject(project: any) {
         IsActive: (reward.IsActive ?? reward.isActive) !== false,
         Image: image
           ? {
-              Url: image.url.startsWith('http') ? image.url : `${baseUrl}${image.url}`,
-              AlternativeText: image.alternativeText || title,
+              url: image.url.startsWith('http') ? image.url : `${baseUrl}${image.url}`,
+              alternativeText: image.alternativeText || title,
             }
           : undefined,
       }

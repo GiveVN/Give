@@ -8,6 +8,7 @@ import { AppLocale } from "@/types/general"
 interface ProjectsPageProps {
   params: Promise<{ locale: AppLocale }>
   searchParams: Promise<{ 
+    type?: string
     category?: string
     status?: string
     search?: string
@@ -20,6 +21,7 @@ async function fetchProjects(locale: AppLocale, searchParams: any) {
     // Direct API call to Strapi as workaround for permissions
     const queryParams = new URLSearchParams({
       'populate[Media][populate]': '*',
+      'populate[Category]': 'true',
       'populate[Tags]': 'true',
       'sort[0]': 'createdAt:desc',
       'pagination[page]': searchParams.page || '1',
@@ -28,8 +30,12 @@ async function fetchProjects(locale: AppLocale, searchParams: any) {
     })
     
     // Add filters if provided
+    if (searchParams.type) {
+      queryParams.append('filters[Type][$eq]', searchParams.type)
+    }
     if (searchParams.category) {
-      queryParams.append('filters[Category][$eq]', searchParams.category)
+      // Filter by Category slug
+      queryParams.append('filters[Category][Slug][$eq]', searchParams.category)
     }
     if (searchParams.status) {
       queryParams.append('filters[ProjectStatus][$eq]', searchParams.status)
@@ -84,6 +90,7 @@ export default async function ProjectsPage({ params, searchParams }: ProjectsPag
 
       {/* Mobile filter toggle */}
       <FiltersSheet
+        currentType={resolvedSearchParams.type}
         currentCategory={resolvedSearchParams.category}
         currentStatus={resolvedSearchParams.status}
         currentSearch={resolvedSearchParams.search}
@@ -92,6 +99,7 @@ export default async function ProjectsPage({ params, searchParams }: ProjectsPag
       <div className="pb-12 flex gap-8">
         {/* Sidebar filters (desktop) */}
         <FiltersSidebar
+          currentType={resolvedSearchParams.type}
           currentCategory={resolvedSearchParams.category}
           currentStatus={resolvedSearchParams.status}
           currentSearch={resolvedSearchParams.search}
