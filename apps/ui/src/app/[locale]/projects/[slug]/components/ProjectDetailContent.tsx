@@ -18,6 +18,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link"
+import { BarChart3 } from "lucide-react"
 import DonationHistory from "@/components/crowdfunding/DonationHistory"
 
 export interface ProjectDetailContentProps {
@@ -178,16 +180,24 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
   return (
     <div className="space-y-6">
       {/* Project Navigation/Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-600">
-        <span>Projects</span>
-        <span>/</span>
-        {project.Category && (
-          <>
-            <span>{project.Category}</span>
-            <span>/</span>
-          </>
-        )}
-        <span className="text-gray-900">{project.Title}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <span>Projects</span>
+          <span>/</span>
+          {project.Category && (
+            <>
+              <span>{project.Category}</span>
+              <span>/</span>
+            </>
+          )}
+          <span className="text-gray-900">{project.Title}</span>
+        </div>
+        <Link href={`/projects/${project.Slug}/statistics`}>
+          <Button variant="outline" size="sm">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            View Statistics
+          </Button>
+        </Link>
       </div>
 
       {/* Main Content Tabs */}

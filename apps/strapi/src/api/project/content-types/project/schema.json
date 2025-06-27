@@ -106,6 +106,41 @@
       "default": 0,
       "min": 0
     },
+    "GoalMilestones": {
+      "type": "component",
+      "component": "project.goal-milestone",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "EnableStretchGoals": {
+      "type": "boolean",
+      "default": false
+    },
+    "StretchGoal": {
+      "type": "decimal",
+      "min": 0
+    },
+    "ShowProgressBar": {
+      "type": "boolean",
+      "default": true
+    },
+    "ShowBackersCount": {
+      "type": "boolean",
+      "default": true
+    },
+    "ShowTimeRemaining": {
+      "type": "boolean",
+      "default": true
+    },
+    "MinimumDonation": {
+      "type": "decimal",
+      "default": 1,
+      "min": 0
+    },
     "StartDate": {
       "type": "datetime",
       "required": true

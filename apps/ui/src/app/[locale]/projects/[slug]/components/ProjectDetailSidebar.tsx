@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import DonationModal from "@/components/crowdfunding/DonationModal"
+import { ProjectProgressBar } from "@/components/crowdfunding/ProjectProgressBar"
 
 export interface ProjectDetailSidebarProps {
   project: {
@@ -17,6 +18,10 @@ export interface ProjectDetailSidebarProps {
     BackersCount?: number
     DaysLeft?: number
     CreatedBy?: string
+    Currency?: string
+    ShowProgressBar?: boolean
+    ShowBackersCount?: boolean
+    ShowTimeRemaining?: boolean
     Rewards?: Array<{
       id: number
       Title: string
@@ -200,6 +205,16 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
         {/* Single Scrollable Container for Everything */}
         <div className="flex flex-col overflow-y-auto pr-2 space-y-4 max-h-[calc(100vh-6rem)] scrollbar-thin">
           
+          {/* Progress Bar */}
+          <div className="flex-shrink-0">
+            <ProjectProgressBar 
+              projectId={project.id}
+              showDetails={true}
+              showMilestones={false}
+              refreshInterval={30}
+            />
+          </div>
+
           {/* Support this project header */}
           <div className="flex-shrink-0">
             <h3 className="text-lg font-semibold mb-3">Support this project</h3>
