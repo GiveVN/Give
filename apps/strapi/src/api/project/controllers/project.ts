@@ -235,4 +235,4 @@ export default factories.createCoreController("api::project.project", ({ strapi 
       return ctx.internalServerError('Failed to get project statistics');
     }
   }
-}))
+}));
