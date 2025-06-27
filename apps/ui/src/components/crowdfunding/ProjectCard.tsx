@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { Heart, Calendar } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
 import { TypeBadge } from '@/components/ui/TypeBadge'
+import { formatCurrency } from '@/lib/utils'
+import { getCategoryIcon } from '@/lib/category-icons'
 
 interface ProjectCardProps {
   project: {
@@ -16,7 +18,24 @@ interface ProjectCardProps {
     ShortDescription?: string
     Description: string
     Type?: 'give' | 'back'
-    Category: string
+    Category: string | {
+      id: number
+      documentId: string
+      Name: string
+      Slug: string
+      Description?: string
+      Icon?: string
+      Color?: string
+      Featured?: boolean
+      SortOrder?: number
+      IsActive?: boolean
+      Metadata?: any
+      createdAt?: string
+      updatedAt?: string
+      publishedAt?: string
+      locale?: string
+      Type?: string
+    }
     FundingGoal: number
     CurrentFunding: number
     Currency: string
@@ -48,20 +67,6 @@ interface ProjectCardProps {
   }
 }
 
-// Helper function to format currency – tự động fallback sang USD nếu mã tiền tệ null/không hợp lệ
-const formatCurrency = (amount: number, currency?: string | null): string => {
-  const safeCurrency = (currency && typeof currency === 'string' && currency.trim())
-    ? currency.trim().toUpperCase()
-    : 'USD'
-
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: safeCurrency as string,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount)
-}
-
 // Helper function to get status color
 const getStatusColor = (status: string): string => {
   switch (status) {
@@ -91,7 +96,13 @@ const getStatusDisplayName = (status: string): string => {
 }
 
 // Helper function to get category display name
-const getCategoryDisplayName = (category: string): string => {
+const getCategoryDisplayName = (category: string | any): string => {
+  // If category is an object, get the Name or Slug
+  if (typeof category === 'object' && category !== null) {
+    return category.Name || category.Slug || 'Unknown'
+  }
+  
+  // If category is a string, use existing logic
   switch (category) {
     case 'technology_innovation':
       return 'Technology'
@@ -150,7 +161,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       <div className="group relative">
         
         {/* Main card - no z-index change, no shadow transition to avoid zoom effect */}
-        <div className="relative bg-white rounded-lg border border-transparent group-hover:rounded-b-none group-hover:border-t-gray-200 group-hover:border-l-gray-200 group-hover:border-r-gray-200 group-hover:border-b-transparent overflow-visible transition-[border-radius,border-color] duration-200">
+        <div className="relative bg-white rounded-lg border border-gray-100 group-hover:rounded-b-none group-hover:border-t-gray-200 group-hover:border-l-gray-200 group-hover:border-r-gray-200 group-hover:border-b-transparent overflow-visible transition-all duration-200 group-hover:shadow-sm">
           {/* Featured Badge */}
           {project.Featured && (
             <div className="absolute top-3 right-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -186,7 +197,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                 src={imageSrc}
                 alt={imageAlt}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -211,7 +222,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
             {/* Progress Bar */}
             <div className="mb-3">
-              <Progress value={progressPercentage} className="h-2" />
+              <Progress 
+                value={progressPercentage} 
+                className="h-2 transition-all duration-1000 ease-out" 
+              />
             </div>
 
             {/* Funding Info */}
@@ -224,6 +238,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               </div>
               <div className="text-gray-500">
                 {progressPercentage}% funded
+                {project.BackersCount && project.BackersCount > 0 && (
+                  <span> • {project.BackersCount} backers</span>
+                )}
               </div>
             </div>
           </div>
@@ -240,9 +257,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           
           {/* Category and Tags */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-              {getCategoryDisplayName(project.Category)}
-            </span>
+            {project.Category && (
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                {getCategoryIcon(project.Category)}
+                {getCategoryDisplayName(project.Category)}
+              </span>
+            )}
             {project.Tags?.map((tag) => (
               <span 
                 key={tag.Id}

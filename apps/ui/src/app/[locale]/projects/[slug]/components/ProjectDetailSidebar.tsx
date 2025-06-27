@@ -6,6 +6,7 @@ import { Bookmark, Calendar, Heart, Share2, Star, Users } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import DonationModal from "@/components/crowdfunding/DonationModal"
 
 export interface ProjectDetailSidebarProps {
   project: {
@@ -38,6 +39,11 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
   const [selectedReward, setSelectedReward] = useState<string | null>(null)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [customAmount, setCustomAmount] = useState<string>("")
+  const [donationModal, setDonationModal] = useState<{
+    isOpen: boolean
+    rewardId?: number
+    rewardAmount?: number
+  }>({ isOpen: false })
 
   // Use real rewards from Strapi or fallback to mock data
   const rewardTiers = project.Rewards && project.Rewards.length > 0 
@@ -159,15 +165,19 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
         },
       ]
 
-  const handleBack = (amount: number) => {
-    // In real app, this would handle the backing process
-    console.log(`Backing project with $${amount}`)
+  const handleBack = (rewardId?: string, amount?: number) => {
+    // Open donation modal with reward info
+    setDonationModal({
+      isOpen: true,
+      rewardId: rewardId ? parseInt(rewardId) : undefined,
+      rewardAmount: amount
+    })
   }
 
   const handleCustomPledge = () => {
     const amount = parseFloat(customAmount)
     if (amount && amount > 0) {
-      handleBack(amount)
+      handleBack(undefined, amount)
     }
   }
 
@@ -185,134 +195,146 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
   }
 
   return (
-    <div className="sticky top-6 h-fit max-h-[calc(100vh-3rem)] overflow-hidden">
-      {/* Single Scrollable Container for Everything */}
-      <div className="flex flex-col overflow-y-auto pr-2 space-y-4 max-h-[calc(100vh-6rem)] scrollbar-thin">
-        
-        {/* Support this project header */}
-        <div className="flex-shrink-0">
-          <h3 className="text-lg font-semibold mb-3">Support this project</h3>
-        </div>
+    <>
+      <div className="sticky top-6 h-fit max-h-[calc(100vh-3rem)] overflow-hidden">
+        {/* Single Scrollable Container for Everything */}
+        <div className="flex flex-col overflow-y-auto pr-2 space-y-4 max-h-[calc(100vh-6rem)] scrollbar-thin">
+          
+          {/* Support this project header */}
+          <div className="flex-shrink-0">
+            <h3 className="text-lg font-semibold mb-3">Support this project</h3>
+          </div>
 
-        {/* Custom Pledge - Top Priority (Kickstarter Style) */}
-        <div className="flex-shrink-0">
-          <Card className="border-2 border-blue-200 bg-blue-50/50">
-            <CardContent className="p-4">
-              <div className="mb-3">
-                <h4 className="font-semibold text-blue-900">Make a pledge without a reward</h4>
-                <p className="text-sm text-blue-700">
-                  Back it because you believe in it.
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                  <input
-                    type="number"
-                    placeholder="Enter amount"
-                    value={customAmount}
-                    onChange={(e) => setCustomAmount(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    min="1"
-                  />
-                </div>
-                <Button 
-                  className="bg-blue-600 hover:bg-blue-700"
-                  size="sm"
-                  onClick={handleCustomPledge}
-                  disabled={!customAmount || parseFloat(customAmount) <= 0}
-                >
-                  <Heart className="mr-1 h-3 w-3" />
-                  Pledge
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Rewards Header */}
-        <div className="flex-shrink-0">
-          <h4 className="text-base font-medium text-gray-700">Or choose a reward</h4>
-        </div>
-
-        {/* Rewards List */}
-        <div className="flex-shrink-0 space-y-4">
-          {rewardTiers.map((reward) => (
-            <Card
-              key={reward.id}
-              className={`cursor-pointer transition-all ${
-                selectedReward === reward.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
-              }`}
-              onClick={() => setSelectedReward(reward.id)}
-            >
+          {/* Custom Pledge - Top Priority (Kickstarter Style) */}
+          <div className="flex-shrink-0">
+            <Card className="border-2 border-blue-200 bg-blue-50/50">
               <CardContent className="p-4">
-                <div className="mb-2 flex items-start justify-between">
-                  <div>
-                    <div className="text-lg font-semibold">
-                      {reward.currency === 'USD' ? '$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : '$'}{reward.amount}
-                    </div>
-                    <div className="text-sm font-medium">{reward.title}</div>
+                <div className="mb-3">
+                  <h4 className="font-semibold text-blue-900">Make a pledge without a reward</h4>
+                  <p className="text-sm text-blue-700">
+                    Back it because you believe in it.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <input
+                      type="number"
+                      placeholder="Enter amount"
+                      value={customAmount}
+                      onChange={(e) => setCustomAmount(e.target.value)}
+                      className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      min="1"
+                    />
                   </div>
-                  {reward.available && (
-                    <Badge
-                      variant="outline"
-                      className="border-green-200 text-green-600"
-                    >
-                      Available
-                    </Badge>
-                  )}
-                </div>
-
-                <p 
-                  className="mb-3 text-sm text-gray-600"
-                  dangerouslySetInnerHTML={{ 
-                    __html: reward.description.replace(/\n/g, '<br />') 
-                  }}
-                />
-
-                {/* Includes */}
-                <div className="mb-3 space-y-1">
-                  {reward.includes.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-1 text-xs text-gray-600"
-                    >
-                      <Star className="h-3 w-3 fill-current text-yellow-400" />
-                      {item}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Delivery & Backers */}
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {reward.estimated} {reward.deliveryDate}
-                  </div>
-                  <div>{reward.backers} backers</div>
-                </div>
-
-                {/* Pledge Button */}
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <Button
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
                     size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleBack(reward.amount)
-                    }}
+                    onClick={handleCustomPledge}
+                    disabled={!customAmount || parseFloat(customAmount) <= 0}
                   >
-                    <Heart className="mr-2 h-4 w-4" />
-                    Pledge {reward.currency === 'USD' ? 'US$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : 'US$'} {reward.amount.toLocaleString()}
+                    <Heart className="mr-1 h-3 w-3" />
+                    Pledge
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          ))}
+          </div>
+
+          {/* Rewards Header */}
+          <div className="flex-shrink-0">
+            <h4 className="text-base font-medium text-gray-700">Or choose a reward</h4>
+          </div>
+
+          {/* Rewards List */}
+          <div className="flex-shrink-0 space-y-4">
+            {rewardTiers.map((reward) => (
+              <Card
+                key={reward.id}
+                className={`cursor-pointer transition-all ${
+                  selectedReward === reward.id
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+                onClick={() => setSelectedReward(reward.id)}
+              >
+                <CardContent className="p-4">
+                  <div className="mb-2 flex items-start justify-between">
+                    <div>
+                      <div className="text-lg font-semibold">
+                        {reward.currency === 'USD' ? '$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : '$'}{reward.amount}
+                      </div>
+                      <div className="text-sm font-medium">{reward.title}</div>
+                    </div>
+                    {reward.available && (
+                      <Badge
+                        variant="outline"
+                        className="border-green-200 text-green-600"
+                      >
+                        Available
+                      </Badge>
+                    )}
+                  </div>
+
+                  <p 
+                    className="mb-3 text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{ 
+                      __html: reward.description.replace(/\n/g, '<br />') 
+                    }}
+                  />
+
+                  {/* Includes */}
+                  <div className="mb-3 space-y-1">
+                    {reward.includes.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 text-xs text-gray-600"
+                      >
+                        <Star className="h-3 w-3 fill-current text-yellow-400" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Delivery & Backers */}
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {reward.estimated} {reward.deliveryDate}
+                    </div>
+                    <div>{reward.backers} backers</div>
+                  </div>
+
+                  {/* Pledge Button */}
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <Button
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleBack(reward.id, reward.amount)
+                      }}
+                    >
+                      <Heart className="mr-2 h-4 w-4" />
+                      Pledge {reward.currency === 'USD' ? 'US$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : 'US$'} {reward.amount.toLocaleString()}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Donation Modal */}
+      <DonationModal
+        isOpen={donationModal.isOpen}
+        onClose={() => setDonationModal({ isOpen: false })}
+        projectId={parseInt(project.id)}
+        projectTitle={project.Title}
+        rewardId={donationModal.rewardId}
+        rewardAmount={donationModal.rewardAmount}
+      />
+    </>
   )
 } 

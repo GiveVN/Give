@@ -6,6 +6,7 @@ import {
   Clock,
   FileText,
   Gift,
+  Heart,
   Image as ImageIcon,
   MessageCircle,
   Play,
@@ -17,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import DonationHistory from "@/components/crowdfunding/DonationHistory"
 
 export interface ProjectDetailContentProps {
   project: {
@@ -24,6 +26,7 @@ export interface ProjectDetailContentProps {
     Title: string
     Description?: string
     LongDescription?: string
+    Type?: 'give' | 'back'
     Image?: {
       url: string
       alternativeText?: string
@@ -189,7 +192,7 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="story" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="story" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Story
@@ -197,6 +200,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
           <TabsTrigger value="updates" className="flex items-center gap-2">
             <Bell className="h-4 w-4" />
             Updates
+          </TabsTrigger>
+          <TabsTrigger value="backers" className="flex items-center gap-2">
+            <Heart className="h-4 w-4" />
+            Backers
           </TabsTrigger>
           <TabsTrigger value="comments" className="flex items-center gap-2">
             <MessageCircle className="h-4 w-4" />
@@ -241,20 +248,20 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
             </CardContent>
           </Card>
 
-          {/* Risks and Challenges */}
+          {/* Risks and Challenges / Transparency */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                Risks & Challenges
+                {project.Type === 'give' ? 'Transparency' : 'Risks & Challenges'}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-700">
-                As with any innovative project, we face certain challenges.
-                We've identified potential risks and have contingency plans in
-                place. Our experienced team and thorough planning help mitigate
-                these risks, but we believe in transparency with our backers.
+                {project.Type === 'give' 
+                  ? "We believe in complete transparency about how your donations will be used. Every contribution goes directly toward our stated goals, and we'll provide regular updates on our progress and fund allocation. Our commitment is to ensure your generosity creates the maximum positive impact."
+                  : "As with any innovative project, we face certain challenges. We've identified potential risks and have contingency plans in place. Our experienced team and thorough planning help mitigate these risks, but we believe in transparency with our backers."
+                }
               </p>
             </CardContent>
           </Card>
@@ -287,6 +294,16 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
               </CardContent>
             </Card>
           ))}
+        </TabsContent>
+
+        {/* Backers Tab */}
+        <TabsContent value="backers" className="space-y-4">
+          <DonationHistory 
+            projectId={Number(project.id)}
+            projectType={project.Type}
+            currentFunding={project.CurrentFunding}
+            fundingGoal={project.FundingGoal}
+          />
         </TabsContent>
 
         {/* Comments Tab */}

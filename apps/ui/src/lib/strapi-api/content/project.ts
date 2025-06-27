@@ -412,7 +412,18 @@ export async function getProjectBySlug(slug: string) {
         'api::project.project',
         { 
           filters: { Slug: { $eq: slug } },
-          populate: '*'
+          populate: {
+            Media: true,
+            Category: true,
+            Creator: true,
+            Tags: true,
+            Rewards: true,
+            Updates: true,
+            Donations: true,
+            Comments: true,
+            Seo: true,
+            MediaURL: true
+          }
         }
       )
       
@@ -430,7 +441,20 @@ export async function getProjectBySlug(slug: string) {
       const strapiProject = await PublicStrapiClient.fetchOne(
         'api::project.project',
         slug,
-        { populate: '*' }
+        { 
+          populate: {
+            Media: true,
+            Category: true,
+            Creator: true,
+            Tags: true,
+            Rewards: true,
+            Updates: true,
+            Donations: true,
+            Comments: true,
+            Seo: true,
+            MediaURL: true
+          }
+        }
       )
       
       if (strapiProject?.data) {
@@ -482,7 +506,7 @@ function transformStrapiProject(project: any) {
     CurrentFunding: project.CurrentFunding,
     BackersCount: project.BackersCount,
     DaysLeft: project.EndDate ? Math.ceil((new Date(project.EndDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) : null,
-    Category: project.Category,
+    Category: typeof project.Category === 'object' && project.Category ? project.Category.Name : project.Category || 'General',
     CreatedBy: project.Creator?.username || project.Creator?.email || 'Anonymous Creator',
     Location: project.Location || 'Global',
     Slug: project.Slug,

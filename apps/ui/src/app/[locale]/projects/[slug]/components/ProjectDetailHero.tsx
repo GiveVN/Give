@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TypeBadge } from "@/components/ui/TypeBadge"
 import { createMediaGallery, type MediaItem } from "@/lib/youtube"
+import DonationModal from "@/components/crowdfunding/DonationModal"
 
 export interface ProjectDetailHeroProps {
   project: {
@@ -46,6 +47,7 @@ export interface ProjectDetailHeroProps {
 
 export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false)
   
   // Create unified media gallery with images and videos
   const mediaGallery = createMediaGallery(
@@ -318,6 +320,7 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
               <Button 
                 size="lg" 
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 text-lg"
+                onClick={() => setIsDonationModalOpen(true)}
               >
                 Back this project
               </Button>
@@ -372,6 +375,18 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
           </div>
         </div>
       </div>
+
+      {/* Donation Modal */}
+      <DonationModal
+        isOpen={isDonationModalOpen}
+        onClose={() => setIsDonationModalOpen(false)}
+        projectId={Number(project.id)}
+        projectTitle={project.Title}
+        projectType={project.Type}
+        currentFunding={project.CurrentFunding}
+        fundingGoal={project.FundingGoal}
+        currency={project.Currency}
+      />
     </div>
   )
 } 

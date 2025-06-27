@@ -139,24 +139,33 @@ export default function ModernProjectFilters({
                   key={type.value}
                   onClick={() => updateFilters("type", type.value === currentType ? null : type.value)}
                   className={cn(
-                    "flex items-center w-full text-left text-sm gap-3",
-                    type.value === currentType ? "text-indigo-700 font-semibold" : "text-gray-700 hover:text-gray-900"
+                    "flex items-center w-full text-left text-sm gap-3 p-3 rounded-lg transition-all duration-200",
+                    type.value === currentType 
+                      ? type.value === 'give'
+                        ? "bg-gradient-to-r from-pink-50 to-pink-100 text-pink-800 font-semibold border border-pink-200 shadow-sm"
+                        : "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 font-semibold border border-blue-200 shadow-sm"
+                      : "text-gray-700 hover:bg-gray-50 border border-transparent"
                   )}
                 >
                   {/* Radio appearance */}
                   <span
                     className={cn(
                       "inline-flex h-4 w-4 items-center justify-center rounded-full border transition-colors",
-                      type.value === currentType ? "border-indigo-700" : "border-gray-400"
+                      type.value === currentType 
+                        ? type.value === 'give' ? "border-pink-600" : "border-blue-600"
+                        : "border-gray-400"
                     )}
                   >
                     {type.value === currentType && (
-                      <span className="h-2 w-2 rounded-full bg-indigo-700" />
+                      <span className={cn(
+                        "h-2 w-2 rounded-full",
+                        type.value === 'give' ? "bg-pink-600" : "bg-blue-600"
+                      )} />
                     )}
                   </span>
-                  <div>
-                    <div>{type.label}</div>
-                    <div className="text-xs text-gray-500 font-normal">{type.description}</div>
+                  <div className="flex-1">
+                    <div className="font-medium">{type.label}</div>
+                    <div className="text-xs opacity-75 font-normal">{type.description}</div>
                   </div>
                 </button>
               ))}

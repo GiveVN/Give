@@ -424,6 +424,14 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     SEO: Schema.Attribute.Component<"shared.seo", false>
     Slug: Schema.Attribute.UID<"Name"> & Schema.Attribute.Required
     SortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>
+    Type: Schema.Attribute.Enumeration<["give", "back", "both"]> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false
+        }
+      }> &
+      Schema.Attribute.DefaultTo<"give">
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
@@ -844,26 +852,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>
-    Category: Schema.Attribute.Enumeration<
-      [
-        "technology",
-        "health",
-        "education",
-        "environment",
-        "arts",
-        "community",
-        "business",
-        "sports",
-        "travel",
-        "food",
-        "fashion",
-        "games",
-        "film",
-        "music",
-        "publishing",
-      ]
-    > &
-      Schema.Attribute.Required
+    Category: Schema.Attribute.Relation<"manyToOne", "api::category.category">
     Comments: Schema.Attribute.Relation<"oneToMany", "api::comment.comment">
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
@@ -935,6 +924,14 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
           localized: true
         }
       }>
+    Type: Schema.Attribute.Enumeration<["give", "back"]> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false
+        }
+      }> &
+      Schema.Attribute.DefaultTo<"give">
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
