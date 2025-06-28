@@ -1,6 +1,7 @@
 "use client"
 
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import DonationForm from "./DonationForm"
 
 interface DonationModalProps {
@@ -31,6 +32,11 @@ export default function DonationModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <VisuallyHidden>
+          <DialogTitle>
+            {projectType === 'give' ? '❤️ Support' : '🚀 Back'} {projectTitle}
+          </DialogTitle>
+        </VisuallyHidden>
         <DonationForm
           projectId={projectId}
           projectTitle={projectTitle}

@@ -4,6 +4,7 @@ import { PrivateStrapiClient } from "@/lib/strapi-api"
 import { sendDonationReceipt } from "@/lib/email/donation-receipt"
 import { stripe } from "@/lib/stripe"
 import Stripe from "stripe"
+import { sendMilestoneReachedEmail, sendFundingGoalReachedEmail } from "@/lib/email/milestone-notifications"
 
 // Stripe webhook secret (set in environment variables)
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -11,7 +12,8 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text()
-    const signature = headers().get("stripe-signature")!
+    const headersList = await headers()
+    const signature = headersList.get("stripe-signature")!
 
     let event: Stripe.Event
 
@@ -93,12 +95,90 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       const currentFunding = project.CurrentFunding || 0
       const backersCount = project.BackersCount || 0
       
-      await PrivateStrapiClient.update("projects", project.id, {
+      const updateResponse = await PrivateStrapiClient.update("projects", project.id, {
         data: {
           CurrentFunding: currentFunding + donation.Amount,
           BackersCount: backersCount + 1
         }
       })
+
+      console.log("Project funding updated:", {
+        projectId: project.id,
+        newFunding: currentFunding + donation.Amount,
+        newBackersCount: backersCount + 1,
+      })
+
+      // Get full project data with Creator relation
+      const fullProject = await PrivateStrapiClient.findOne("projects", project.id, {
+        populate: ["Creator", "GoalMilestones"]
+      })
+      
+      if (!fullProject?.data) {
+        console.error('Could not fetch full project data')
+        return
+      }
+      
+      // Check if any milestones were reached
+      if (fullProject.data.GoalMilestones && fullProject.data.GoalMilestones.length > 0) {
+        for (const milestone of fullProject.data.GoalMilestones) {
+          if (!milestone.IsReached && (currentFunding + donation.Amount) >= milestone.TargetAmount) {
+            // Mark milestone as reached
+            const updatedMilestones = fullProject.data.GoalMilestones.map(m => 
+              m.id === milestone.id 
+                ? { ...m, IsReached: true, ReachedAt: new Date().toISOString() }
+                : m
+            )
+            
+            await PrivateStrapiClient.update("projects", project.id, {
+              data: {
+                GoalMilestones: updatedMilestones
+              }
+            })
+            
+            // Send milestone reached email
+            if (fullProject.data.Creator?.email) {
+              await sendMilestoneReachedEmail({
+                projectTitle: fullProject.data.Title,
+                projectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${fullProject.data.Slug}`,
+                milestoneTitle: milestone.Title,
+                milestoneDescription: milestone.Description,
+                targetAmount: milestone.TargetAmount,
+                currentAmount: currentFunding + donation.Amount,
+                currency: fullProject.data.Currency || 'USD',
+                creatorName: fullProject.data.Creator.username || 'Creator',
+                creatorEmail: fullProject.data.Creator.email,
+                backersCount: backersCount + 1,
+                percentageComplete: Math.round(((currentFunding + donation.Amount) / (fullProject.data.FundingGoal || 1)) * 100)
+              })
+            }
+          }
+        }
+      }
+      
+      // Check if funding goal was reached
+      if (fullProject.data.FundingGoal && 
+          currentFunding < fullProject.data.FundingGoal && 
+          (currentFunding + donation.Amount) >= fullProject.data.FundingGoal) {
+        
+        // Send funding goal reached email
+        if (fullProject.data.Creator?.email) {
+          const startDate = new Date(fullProject.data.StartDate || fullProject.data.createdAt)
+          const daysToComplete = Math.ceil((Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+          
+          await sendFundingGoalReachedEmail({
+            projectTitle: fullProject.data.Title,
+            projectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${fullProject.data.Slug}`,
+            fundingGoal: fullProject.data.FundingGoal,
+            currentFunding: currentFunding + donation.Amount,
+            currency: fullProject.data.Currency || 'USD',
+            creatorName: fullProject.data.Creator.username || 'Creator',
+            creatorEmail: fullProject.data.Creator.email,
+            backersCount: backersCount + 1,
+            daysToComplete,
+            nextSteps: fullProject.data.EnableStretchGoals ? 'Consider adding stretch goals to keep the momentum going!' : undefined
+          })
+        }
+      }
     }
 
     // Send receipt email
@@ -146,12 +226,93 @@ async function handlePaymentSuccess(paymentIntent: any) {
     // Update project funding
     const project = fullDonation.data.Project
     if (project) {
-      await PrivateStrapiClient.update("projects", project.id, {
+      const currentFunding = project.CurrentFunding || 0
+      const backersCount = project.BackersCount || 0
+      
+      const updateResponse = await PrivateStrapiClient.update("projects", project.id, {
         data: {
-          CurrentFunding: (project.CurrentFunding || 0) + fullDonation.data.Amount,
-          BackersCount: (project.BackersCount || 0) + 1
+          CurrentFunding: currentFunding + fullDonation.data.Amount,
+          BackersCount: backersCount + 1
         }
       })
+
+      console.log("Project funding updated:", {
+        projectId: project.id,
+        newFunding: currentFunding + fullDonation.data.Amount,
+        newBackersCount: backersCount + 1,
+      })
+
+      // Get full project data with Creator relation
+      const fullProject = await PrivateStrapiClient.findOne("projects", project.id, {
+        populate: ["Creator", "GoalMilestones"]
+      })
+      
+      if (!fullProject?.data) {
+        console.error('Could not fetch full project data')
+        return
+      }
+
+      // Check if any milestones were reached
+      if (fullProject.data.GoalMilestones && fullProject.data.GoalMilestones.length > 0) {
+        for (const milestone of fullProject.data.GoalMilestones) {
+          if (!milestone.IsReached && (currentFunding + fullDonation.data.Amount) >= milestone.TargetAmount) {
+            // Mark milestone as reached
+            const updatedMilestones = fullProject.data.GoalMilestones.map((m: any) => 
+              m.id === milestone.id 
+                ? { ...m, IsReached: true, ReachedAt: new Date().toISOString() }
+                : m
+            )
+            
+            await PrivateStrapiClient.update("projects", project.id, {
+              data: {
+                GoalMilestones: updatedMilestones
+              }
+            })
+            
+            // Send milestone reached email
+            if (fullProject.data.Creator?.email) {
+              await sendMilestoneReachedEmail({
+                projectTitle: fullProject.data.Title,
+                projectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${fullProject.data.Slug}`,
+                milestoneTitle: milestone.Title,
+                milestoneDescription: milestone.Description,
+                targetAmount: milestone.TargetAmount,
+                currentAmount: currentFunding + fullDonation.data.Amount,
+                currency: fullProject.data.Currency || 'USD',
+                creatorName: fullProject.data.Creator.username || 'Creator',
+                creatorEmail: fullProject.data.Creator.email,
+                backersCount: backersCount + 1,
+                percentageComplete: Math.round(((currentFunding + fullDonation.data.Amount) / (fullProject.data.FundingGoal || 1)) * 100)
+              })
+            }
+          }
+        }
+      }
+      
+      // Check if funding goal was reached
+      if (fullProject.data.FundingGoal && 
+          currentFunding < fullProject.data.FundingGoal && 
+          (currentFunding + fullDonation.data.Amount) >= fullProject.data.FundingGoal) {
+        
+        // Send funding goal reached email
+        if (fullProject.data.Creator?.email) {
+          const startDate = new Date(fullProject.data.StartDate || fullProject.data.createdAt)
+          const daysToComplete = Math.ceil((Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+          
+          await sendFundingGoalReachedEmail({
+            projectTitle: fullProject.data.Title,
+            projectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${fullProject.data.Slug}`,
+            fundingGoal: fullProject.data.FundingGoal,
+            currentFunding: currentFunding + fullDonation.data.Amount,
+            currency: fullProject.data.Currency || 'USD',
+            creatorName: fullProject.data.Creator.username || 'Creator',
+            creatorEmail: fullProject.data.Creator.email,
+            backersCount: backersCount + 1,
+            daysToComplete,
+            nextSteps: fullProject.data.EnableStretchGoals ? 'Consider adding stretch goals to keep the momentum going!' : undefined
+          })
+        }
+      }
     }
 
     // Send email receipt
@@ -211,11 +372,20 @@ async function handleRefund(charge: any) {
     // Update project funding (subtract refunded amount)
     const project = donation.Project
     if (project) {
-      await PrivateStrapiClient.update("projects", project.id, {
+      const currentFunding = project.CurrentFunding || 0
+      const backersCount = project.BackersCount || 0
+      
+      const updateResponse = await PrivateStrapiClient.update("projects", project.id, {
         data: {
-          CurrentFunding: Math.max(0, (project.CurrentFunding || 0) - donation.Amount),
-          BackersCount: Math.max(0, (project.BackersCount || 0) - 1)
+          CurrentFunding: Math.max(0, currentFunding - donation.Amount),
+          BackersCount: Math.max(0, backersCount - 1)
         }
+      })
+
+      console.log("Project funding updated after refund:", {
+        projectId: project.id,
+        newFunding: Math.max(0, currentFunding - donation.Amount),
+        newBackersCount: Math.max(0, backersCount - 1),
       })
     }
 

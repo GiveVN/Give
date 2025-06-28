@@ -34,11 +34,11 @@
     "Type": {
       "type": "enumeration",
       "required": true,
-      "default": "give",
+      "default": "Give",
       "enum": [
-        "give",
-        "back",
-        "both"
+        "Give",
+        "Back",
+        "Both"
       ],
       "pluginOptions": {
         "i18n": {

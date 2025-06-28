@@ -424,14 +424,14 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     SEO: Schema.Attribute.Component<"shared.seo", false>
     Slug: Schema.Attribute.UID<"Name"> & Schema.Attribute.Required
     SortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>
-    Type: Schema.Attribute.Enumeration<["give", "back", "both"]> &
+    Type: Schema.Attribute.Enumeration<["Give", "Back", "Both"]> &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: false
         }
       }> &
-      Schema.Attribute.DefaultTo<"give">
+      Schema.Attribute.DefaultTo<"Give">
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private
@@ -880,6 +880,8 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         }
       }>
     Donations: Schema.Attribute.Relation<"oneToMany", "api::donation.donation">
+    EnableStretchGoals: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>
     EndDate: Schema.Attribute.DateTime & Schema.Attribute.Required
     Featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
     FundingGoal: Schema.Attribute.Decimal &
@@ -890,6 +892,12 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
         },
         number
       >
+    GoalMilestones: Schema.Attribute.Component<"project.goal-milestone", true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true
+        }
+      }>
     locale: Schema.Attribute.String
     localizations: Schema.Attribute.Relation<
       "oneToMany",
@@ -897,6 +905,14 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     >
     Media: Schema.Attribute.Media<"images", true>
     MediaURL: Schema.Attribute.Component<"utilities.video-url", true>
+    MinimumDonation: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<1>
     ProjectStatus: Schema.Attribute.Enumeration<
       ["draft", "active", "funded", "ended", "cancelled"]
     > &
@@ -914,8 +930,20 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 160
       }>
+    ShowBackersCount: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>
+    ShowProgressBar: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
+    ShowTimeRemaining: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>
     Slug: Schema.Attribute.UID<"Title">
     StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required
+    StretchGoal: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0
+        },
+        number
+      >
     Tags: Schema.Attribute.Relation<"manyToMany", "api::tag.tag">
     Title: Schema.Attribute.String &
       Schema.Attribute.Required &

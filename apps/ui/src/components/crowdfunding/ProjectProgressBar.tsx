@@ -43,18 +43,40 @@ interface ProjectProgressData {
 
 interface ProjectProgressBarProps {
   projectId: string | number
+  fundingGoal?: number
+  currentFunding?: number
+  currency?: string
+  milestones?: any[]
+  showBackersCount?: boolean
+  backersCount?: number
+  showTimeRemaining?: boolean
+  endDate?: string
+  enableStretchGoals?: boolean
+  stretchGoal?: number
+  autoRefresh?: boolean
+  refreshInterval?: number
   initialData?: ProjectProgressData
   showDetails?: boolean
   showMilestones?: boolean
-  refreshInterval?: number // in seconds
 }
 
 export function ProjectProgressBar({
   projectId,
+  fundingGoal,
+  currentFunding,
+  currency = 'USD',
+  milestones = [],
+  showBackersCount = true,
+  backersCount = 0,
+  showTimeRemaining = true,
+  endDate,
+  enableStretchGoals = false,
+  stretchGoal,
+  autoRefresh = false,
+  refreshInterval = 30,
   initialData,
   showDetails = true,
-  showMilestones = true,
-  refreshInterval = 30
+  showMilestones = true
 }: ProjectProgressBarProps) {
   const [progressData, setProgressData] = useState<ProjectProgressData | null>(initialData || null)
   const [loading, setLoading] = useState(!initialData)
@@ -77,16 +99,39 @@ export function ProjectProgressBar({
   }
 
   useEffect(() => {
-    if (!initialData) {
+    // If we have direct props, use them instead of fetching
+    if (fundingGoal !== undefined && currentFunding !== undefined) {
+      const calculatedProgressData: ProjectProgressData = {
+        projectId: typeof projectId === 'string' ? parseInt(projectId) : projectId,
+        title: '',
+        fundingGoal: fundingGoal,
+        currentFunding: currentFunding,
+        currency: currency,
+        progressPercentage: fundingGoal > 0 ? (currentFunding / fundingGoal) * 100 : 0,
+        backersCount: backersCount,
+        daysRemaining: endDate ? Math.max(0, Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0,
+        isActive: true,
+        isFunded: currentFunding >= fundingGoal,
+        milestones: milestones || [],
+        recentDonations: { count: 0, total: 0 },
+        showProgressBar: true,
+        showBackersCount: showBackersCount,
+        showTimeRemaining: showTimeRemaining,
+        stretchGoal: enableStretchGoals ? stretchGoal : undefined,
+        minimumDonation: 1
+      }
+      setProgressData(calculatedProgressData)
+      setLoading(false)
+    } else if (!initialData) {
       fetchProgress()
     }
 
     // Set up auto-refresh if enabled
-    if (refreshInterval > 0) {
+    if (autoRefresh && refreshInterval > 0) {
       const interval = setInterval(fetchProgress, refreshInterval * 1000)
       return () => clearInterval(interval)
     }
-  }, [projectId, refreshInterval])
+  }, [projectId, fundingGoal, currentFunding, currency, backersCount, endDate, autoRefresh, refreshInterval])
 
   if (loading) {
     return (
@@ -105,25 +150,25 @@ export function ProjectProgressBar({
   }
 
   const {
-    fundingGoal,
-    currentFunding,
-    currency,
+    fundingGoal: dataFundingGoal,
+    currentFunding: dataCurrentFunding,
+    currency: dataCurrency,
     progressPercentage,
-    backersCount,
+    backersCount: dataBackersCount,
     daysRemaining,
     isActive,
     isFunded,
-    milestones,
+    milestones: dataMilestones,
     recentDonations,
     showProgressBar,
-    showBackersCount,
-    showTimeRemaining,
-    stretchGoal
+    showBackersCount: dataShowBackersCount,
+    showTimeRemaining: dataShowTimeRemaining,
+    stretchGoal: dataStretchGoal
   } = progressData
 
   // Calculate stretch goal progress if enabled
-  const stretchProgress = stretchGoal && currentFunding > fundingGoal
-    ? ((currentFunding - fundingGoal) / (stretchGoal - fundingGoal)) * 100
+  const stretchProgress = dataStretchGoal && dataCurrentFunding > dataFundingGoal
+    ? ((dataCurrentFunding - dataFundingGoal) / (dataStretchGoal - dataFundingGoal)) * 100
     : 0
 
   return (
@@ -135,10 +180,10 @@ export function ProjectProgressBar({
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-2xl font-bold">
-                {formatCurrency(currentFunding, currency)}
+                {formatCurrency(dataCurrentFunding, dataCurrency)}
               </p>
               <p className="text-sm text-muted-foreground">
-                raised of {formatCurrency(fundingGoal, currency)} goal
+                raised of {formatCurrency(dataFundingGoal, dataCurrency)} goal
               </p>
             </div>
             {isFunded && (
@@ -155,7 +200,6 @@ export function ProjectProgressBar({
               <Progress 
                 value={progressPercentage} 
                 className="h-3"
-                indicatorClassName={isFunded ? "bg-green-500" : ""}
               />
               <p className="text-sm text-muted-foreground mt-1">
                 {progressPercentage.toFixed(1)}% complete
@@ -164,15 +208,14 @@ export function ProjectProgressBar({
           )}
 
           {/* Stretch Goal Progress */}
-          {stretchGoal && currentFunding >= fundingGoal && (
+          {dataStretchGoal && dataCurrentFunding >= dataFundingGoal && (
             <div className="mb-4 p-3 bg-amber-50 rounded-lg">
               <p className="text-sm font-medium mb-2">
-                🎯 Stretch Goal: {formatCurrency(stretchGoal, currency)}
+                🎯 Stretch Goal: {formatCurrency(dataStretchGoal, dataCurrency)}
               </p>
               <Progress 
                 value={stretchProgress} 
                 className="h-2"
-                indicatorClassName="bg-amber-500"
               />
             </div>
           )}
@@ -180,17 +223,17 @@ export function ProjectProgressBar({
           {/* Stats */}
           {showDetails && (
             <div className="grid grid-cols-3 gap-4 mt-4">
-              {showBackersCount && (
+              {dataShowBackersCount && (
                 <div className="text-center">
                   <div className="flex items-center justify-center text-muted-foreground mb-1">
                     <Users className="w-4 h-4 mr-1" />
                   </div>
-                  <p className="font-semibold">{backersCount}</p>
+                  <p className="font-semibold">{dataBackersCount}</p>
                   <p className="text-xs text-muted-foreground">backers</p>
                 </div>
               )}
               
-              {showTimeRemaining && isActive && (
+              {dataShowTimeRemaining && isActive && (
                 <div className="text-center">
                   <div className="flex items-center justify-center text-muted-foreground mb-1">
                     <Clock className="w-4 h-4 mr-1" />
@@ -215,7 +258,7 @@ export function ProjectProgressBar({
       </Card>
 
       {/* Milestones */}
-      {showMilestones && milestones.length > 0 && (
+      {showMilestones && dataMilestones.length > 0 && (
         <Card>
           <CardContent className="p-6">
             <h3 className="font-semibold mb-4 flex items-center">
@@ -223,7 +266,7 @@ export function ProjectProgressBar({
               Funding Milestones
             </h3>
             <div className="space-y-3">
-              {milestones.map((milestone, index) => (
+              {dataMilestones.map((milestone, index) => (
                 <motion.div
                   key={milestone.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -256,7 +299,7 @@ export function ProjectProgressBar({
                     </div>
                     <div className="text-right ml-4">
                       <p className="font-semibold">
-                        {formatCurrency(milestone.TargetAmount, currency)}
+                        {formatCurrency(milestone.TargetAmount, dataCurrency)}
                       </p>
                       {milestone.IsReached && milestone.ReachedAt && (
                         <p className="text-xs text-muted-foreground">

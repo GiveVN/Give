@@ -36,6 +36,29 @@ export interface FormsNewsletterForm extends Struct.ComponentSchema {
   }
 }
 
+export interface ProjectGoalMilestone extends Struct.ComponentSchema {
+  collectionName: "components_project_goal_milestones"
+  info: {
+    description: "Milestones for project funding goals"
+    displayName: "Goal Milestone"
+  }
+  attributes: {
+    Description: Schema.Attribute.Text
+    IsReached: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
+    ReachedAt: Schema.Attribute.DateTime
+    TargetAmount: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0
+        },
+        number
+      >
+    Title: Schema.Attribute.String & Schema.Attribute.Required
+    UnlockReward: Schema.Attribute.Text
+  }
+}
+
 export interface ProjectReward extends Struct.ComponentSchema {
   collectionName: "components_project_rewards"
   info: {
@@ -585,6 +608,7 @@ declare module "@strapi/strapi" {
       "elements.footer-item": ElementsFooterItem
       "forms.contact-form": FormsContactForm
       "forms.newsletter-form": FormsNewsletterForm
+      "project.goal-milestone": ProjectGoalMilestone
       "project.reward": ProjectReward
       "sections.animated-logo-row": SectionsAnimatedLogoRow
       "sections.carousel": SectionsCarousel

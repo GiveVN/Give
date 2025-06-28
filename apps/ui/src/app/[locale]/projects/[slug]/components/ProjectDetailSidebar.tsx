@@ -8,36 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import DonationModal from "@/components/crowdfunding/DonationModal"
 import { ProjectProgressBar } from "@/components/crowdfunding/ProjectProgressBar"
+import { SocialShareButtons } from "@/components/crowdfunding/SocialShareButtons"
+import { BaseProject } from "@/types/project"
 
 export interface ProjectDetailSidebarProps {
-  project: {
-    id: string
-    Title: string
-    FundingGoal?: number
-    CurrentFunding?: number
-    BackersCount?: number
-    DaysLeft?: number
-    CreatedBy?: string
-    Currency?: string
-    ShowProgressBar?: boolean
-    ShowBackersCount?: boolean
-    ShowTimeRemaining?: boolean
-    Rewards?: Array<{
-      id: number
-      Title: string
-      Description: string
-      Amount: number
-      Currency: string
-      EstimatedDelivery?: string
-      LimitedQuantity?: number
-      ClaimedQuantity: number
-      IsActive: boolean
-      Image?: {
-        url: string
-        alternativeText?: string
-      }
-    }>
-  }
+  project: BaseProject
 }
 
 export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
@@ -206,12 +181,36 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
         <div className="flex flex-col overflow-y-auto pr-2 space-y-4 max-h-[calc(100vh-6rem)] scrollbar-thin">
           
           {/* Progress Bar */}
-          <div className="flex-shrink-0">
-            <ProjectProgressBar 
-              projectId={project.id}
-              showDetails={true}
-              showMilestones={false}
-              refreshInterval={30}
+          {project.ShowProgressBar && (
+            <div className="mb-6">
+              <ProjectProgressBar 
+                projectId={project.id}
+                fundingGoal={project.FundingGoal || 0}
+                currentFunding={project.CurrentFunding || 0}
+                currency={project.Currency || 'USD'}
+                milestones={project.GoalMilestones}
+                showBackersCount={project.ShowBackersCount}
+                backersCount={project.BackersCount || 0}
+                showTimeRemaining={project.ShowTimeRemaining}
+                endDate={project.EndDate}
+                enableStretchGoals={project.EnableStretchGoals}
+                stretchGoal={project.StretchGoal}
+                autoRefresh={true}
+                refreshInterval={30000}
+              />
+            </div>
+          )}
+
+          {/* Social Share */}
+          <div className="mb-6 flex justify-center">
+            <SocialShareButtons
+              projectTitle={project.Title}
+              projectDescription={project.ShortDescription || project.Description || ''}
+              projectUrl={`/projects/${project.Slug}`}
+              currentFunding={project.CurrentFunding || 0}
+              fundingGoal={project.FundingGoal || 0}
+              currency={project.Currency || 'USD'}
+              imageUrl={project.Media?.[0]?.url}
             />
           </div>
 

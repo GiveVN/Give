@@ -20,11 +20,11 @@ export default factories.createCoreController("api::project.project", ({ strapi 
           Donations: {
             fields: ['Amount', 'Currency', 'createdAt'],
             filters: {
-              Status: 'completed'
+              PaymentStatus: 'completed'
             }
           }
         }
-      });
+      }) as any;
 
       if (!project) {
         return ctx.notFound('Project not found');
@@ -38,7 +38,7 @@ export default factories.createCoreController("api::project.project", ({ strapi 
       // Calculate days remaining
       const now = new Date();
       const endDate = new Date(project.EndDate);
-      const daysRemaining = Math.max(0, Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)));
+      const daysRemaining = Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
 
       // Check and update milestones
       const updatedMilestones = project.GoalMilestones?.map(milestone => {
@@ -119,8 +119,8 @@ export default factories.createCoreController("api::project.project", ({ strapi 
       }
 
       // Update funding and backers count
-      const newFunding = parseFloat(project.CurrentFunding) + parseFloat(amount);
-      const newBackersCount = project.BackersCount + 1;
+      const newFunding = parseFloat(project.CurrentFunding?.toString() || '0') + parseFloat(amount);
+      const newBackersCount = (project.BackersCount || 0) + 1;
 
       // Check if project reached its goal
       const wasNotFunded = project.CurrentFunding < project.FundingGoal;
@@ -170,16 +170,16 @@ export default factories.createCoreController("api::project.project", ({ strapi 
           Donations: {
             fields: ['Amount', 'Currency', 'createdAt', 'IsAnonymous'],
             filters: {
-              Status: 'completed'
+              PaymentStatus: 'completed'
             },
             populate: {
-              User: {
+              Giver: {
                 fields: ['username', 'email']
               }
             }
           }
         }
-      });
+      }) as any;
 
       if (!project) {
         return ctx.notFound('Project not found');
@@ -207,11 +207,11 @@ export default factories.createCoreController("api::project.project", ({ strapi 
 
       // Get top backers (non-anonymous)
       const topBackers = project.Donations
-        ?.filter(d => !d.IsAnonymous && d.User)
+        ?.filter(d => !d.IsAnonymous && d.Giver)
         .sort((a, b) => parseFloat(b.Amount) - parseFloat(a.Amount))
         .slice(0, 10)
         .map(d => ({
-          username: d.User.username,
+          username: d.Giver.username,
           amount: d.Amount,
           date: d.createdAt
         })) || [];

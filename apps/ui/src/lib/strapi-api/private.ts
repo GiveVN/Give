@@ -60,4 +60,89 @@ export class PrivateClient extends BaseStrapiClient {
     const session = await getSession()
     return session?.strapiJWT
   }
+
+  /**
+   * Find multiple documents
+   */
+  public async find(
+    contentType: string,
+    params?: any,
+    options?: CustomFetchOptions
+  ) {
+    const path = `/${contentType}`
+    return await this.fetchAPI(path, params, undefined, options)
+  }
+
+  /**
+   * Find one document by ID
+   */
+  public async findOne(
+    contentType: string,
+    documentId: string,
+    params?: any,
+    options?: CustomFetchOptions
+  ) {
+    const path = `/${contentType}/${documentId}`
+    return await this.fetchAPI(path, params, undefined, options)
+  }
+
+  /**
+   * Create a new document
+   */
+  public async create(
+    contentType: string,
+    data: any,
+    options?: CustomFetchOptions
+  ) {
+    const path = `/${contentType}`
+    return await this.fetchAPI(
+      path,
+      {},
+      {
+        method: "POST",
+        body: JSON.stringify({ data }),
+      },
+      options
+    )
+  }
+
+  /**
+   * Update a document by ID
+   */
+  public async update(
+    contentType: string,
+    documentId: string,
+    data: any,
+    options?: CustomFetchOptions
+  ) {
+    const path = `/${contentType}/${documentId}`
+    return await this.fetchAPI(
+      path,
+      {},
+      {
+        method: "PUT",
+        body: JSON.stringify({ data }),
+      },
+      options
+    )
+  }
+
+  /**
+   * Delete a document by ID
+   */
+  public async delete(
+    contentType: string,
+    documentId: string,
+    options?: CustomFetchOptions
+  ) {
+    const path = `/${contentType}/${documentId}`
+    return await this.fetchAPI(
+      path,
+      {},
+      {
+        method: "DELETE",
+      },
+      options
+    )
+  }
 }
