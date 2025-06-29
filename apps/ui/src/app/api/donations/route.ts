@@ -9,6 +9,9 @@ import {
 } from "@/lib/payment/security-compliance"
 import { stripe, formatAmountForStripe } from "@/lib/stripe"
 
+const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:1338'
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || ''
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -144,22 +147,58 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const donation = await PrivateStrapiClient.create("donations", {
-        data: donationData
+      const response = await fetch(`${STRAPI_URL}/api/donations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(STRAPI_API_TOKEN && { 'Authorization': `Bearer ${STRAPI_API_TOKEN}` })
+        },
+        body: JSON.stringify(donationData),
       })
-
-      // Update project funding only for non-Stripe payments
-      // Stripe payments will be updated via webhook after confirmation
-      if (paymentMethod !== 'stripe' && project?.data) {
-        const currentFunding = project.data.CurrentFunding || 0
-        const backersCount = project.data.BackersCount || 0
-        
-        await PrivateStrapiClient.update("projects", projectId, {
-          data: {
-            CurrentFunding: currentFunding + amount,
-            BackersCount: backersCount + 1
+      
+      if (!response.ok) {
+        const error = await response.text()
+        console.error('Strapi error:', error)
+        return NextResponse.json(
+          { error: 'Failed to save donation to Strapi' },
+          { status: response.status }
+        )
+      }
+      
+      const result = await response.json()
+      
+      // Update project funding amount
+      try {
+        // Get current project data
+        const projectResponse = await fetch(`${STRAPI_URL}/api/projects/${projectId}`, {
+          headers: {
+            ...(STRAPI_API_TOKEN && { 'Authorization': `Bearer ${STRAPI_API_TOKEN}` })
           }
         })
+        
+        if (projectResponse.ok) {
+          const projectData = await projectResponse.json()
+          const currentFunding = projectData.data?.CurrentFunding || 0
+          const backersCount = projectData.data?.BackersCount || 0
+          
+          // Update project with new funding amount
+          await fetch(`${STRAPI_URL}/api/projects/${projectId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(STRAPI_API_TOKEN && { 'Authorization': `Bearer ${STRAPI_API_TOKEN}` })
+            },
+            body: JSON.stringify({
+              data: {
+                CurrentFunding: currentFunding + amount,
+                BackersCount: backersCount + 1
+              }
+            }),
+          })
+        }
+      } catch (error) {
+        console.error('Error updating project funding:', error)
+        // Continue anyway - donation is saved
       }
 
       // Send email receipt if email provided
@@ -167,7 +206,7 @@ export async function POST(request: NextRequest) {
         try {
           const { sendDonationReceipt } = await import("@/lib/email/donation-receipt")
           await sendDonationReceipt(email, {
-            ...donation.data,
+            ...result.data,
             Project: project?.data || { Title: "Unknown Project" }
           })
         } catch (emailError) {
@@ -178,7 +217,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        donation: donation.data,
+        data: result.data,
         transactionId: paymentId,
         sessionUrl: sessionUrl, // For Stripe checkout redirect
         message: paymentMethod === 'stripe' 

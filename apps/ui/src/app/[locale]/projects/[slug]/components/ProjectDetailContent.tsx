@@ -21,10 +21,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { BarChart3 } from "lucide-react"
 import DonationHistory from "@/components/crowdfunding/DonationHistory"
+import ProjectUpdates from "@/components/crowdfunding/ProjectUpdates"
+import ProjectComments from "@/components/crowdfunding/ProjectComments"
 
 export interface ProjectDetailContentProps {
   project: {
     id: string
+    documentId?: string
     Title: string
     Description?: string
     LongDescription?: string
@@ -58,6 +61,10 @@ export interface ProjectDetailContentProps {
       ClaimedQuantity: number
       IsActive: boolean
     }>
+    Creator?: {
+      username?: string
+      email?: string
+    }
   }
 }
 
@@ -279,31 +286,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
 
         {/* Updates Tab */}
         <TabsContent value="updates" className="space-y-4">
-          {updates.map((update) => (
-            <Card key={update.id}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {getUpdateIcon(update.type)}
-                    <div>
-                      <CardTitle className="text-lg">{update.title}</CardTitle>
-                      <p className="text-sm text-gray-600">{update.date}</p>
-                    </div>
-                  </div>
-                  {getUpdateBadge(update.type)}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-gray-700">{update.content}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="h-4 w-4" />
-                    {update.commentsCount} comments
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          <ProjectUpdates 
+            projectId={project.documentId || project.id}
+            projectTitle={project.Title}
+            authorName={project.Creator?.username || project.CreatedBy}
+          />
         </TabsContent>
 
         {/* Backers Tab */}
@@ -318,21 +305,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
 
         {/* Comments Tab */}
         <TabsContent value="comments" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Project Comments</CardTitle>
-              <p className="text-sm text-gray-600">
-                Join the conversation and connect with other backers
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="py-8 text-center text-gray-500">
-                <MessageCircle className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-                <p>No comments yet. Be the first to start the conversation!</p>
-                <Button className="mt-4">Write a comment</Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ProjectComments 
+            projectId={project.documentId || project.id}
+            projectTitle={project.Title}
+          />
         </TabsContent>
 
         {/* FAQ Tab */}

@@ -406,7 +406,7 @@ export async function getProjectBySlug(slug: string) {
   try {
     console.log(`Fetching project by slug: ${slug}`)
     
-    // Try to find by slug first using PublicStrapiClient
+    // Try to find by slug using PublicStrapiClient
     try {
       const strapiProjects = await PublicStrapiClient.fetchMany(
         'api::project.project',
@@ -433,7 +433,7 @@ export async function getProjectBySlug(slug: string) {
         return transformStrapiProject(project)
       }
     } catch (error) {
-      console.log(`Slug fetch failed, trying by documentId: ${slug}`)
+      console.log(`Slug fetch failed: ${error}`)
     }
     
     // If slug doesn't work, try by documentId (fallback for old URLs)
@@ -462,7 +462,7 @@ export async function getProjectBySlug(slug: string) {
         return transformStrapiProject(strapiProject.data)
       }
     } catch (error) {
-      console.log(`DocumentId fetch failed for: ${slug}`)
+      console.log(`DocumentId fetch failed: ${error}`)
     }
     
     console.log(`Project not found by slug or documentId: ${slug}`)

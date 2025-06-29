@@ -1518,6 +1518,8 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6
       }>
+    emailNotifications: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>
     firstName: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 50

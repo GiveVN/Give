@@ -92,6 +92,11 @@
       "type": "string",
       "maxLength": 100
     },
+    "emailNotifications": {
+      "type": "boolean",
+      "default": true,
+      "required": false
+    },
     "Projects": {
       "type": "relation",
       "relation": "oneToMany",

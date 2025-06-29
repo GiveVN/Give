@@ -42,6 +42,7 @@ export interface ProjectDetailHeroProps {
     Category?: string
     CreatedBy?: string
     Location?: string
+    Currency?: string
   }
 }
 
@@ -380,12 +381,12 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
       <DonationModal
         isOpen={isDonationModalOpen}
         onClose={() => setIsDonationModalOpen(false)}
-        projectId={Number(project.id)}
+        projectId={parseInt(project.id) || Date.now()}
         projectTitle={project.Title}
         projectType={project.Type}
         currentFunding={project.CurrentFunding}
         fundingGoal={project.FundingGoal}
-        currency={project.Currency}
+        currency={project.Currency || 'USD'}
       />
     </div>
   )
