@@ -115,6 +115,101 @@
       "relation": "oneToMany",
       "target": "api::project-update.project-update",
       "mappedBy": "Author"
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Public display name for the user profile"
+    },
+    "vanityUrl": {
+      "type": "uid",
+      "targetField": "username",
+      "description": "Custom URL slug for user profile (give.local/u/vanityUrl)"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Cover image for user profile"
+    },
+    "timezone": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "User's timezone (e.g., America/New_York)"
+    },
+    "socialLinks": {
+      "type": "component",
+      "component": "user.social-link",
+      "repeatable": true,
+      "description": "Social media links"
+    },
+    "isVerified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Account verification status"
+    },
+    "verificationLevel": {
+      "type": "enumeration",
+      "enum": [
+        "none",
+        "email",
+        "phone",
+        "identity",
+        "premium"
+      ],
+      "default": "none",
+      "description": "Level of account verification"
+    },
+    "reputation": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "description": "User reputation score"
+    },
+    "totalDonated": {
+      "type": "decimal",
+      "default": 0,
+      "min": 0,
+      "description": "Total amount donated by user"
+    },
+    "totalRaised": {
+      "type": "decimal",
+      "default": 0,
+      "min": 0,
+      "description": "Total amount raised by user's projects"
+    },
+    "followersCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "description": "Number of followers"
+    },
+    "followingCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "description": "Number of users being followed"
+    },
+    "privacySettings": {
+      "type": "component",
+      "component": "user.privacy-settings",
+      "description": "Privacy control settings"
+    },
+    "notificationSettings": {
+      "type": "component",
+      "component": "user.notification-settings",
+      "description": "Notification preferences"
+    },
+    "lastActiveAt": {
+      "type": "datetime",
+      "description": "Last activity timestamp"
+    },
+    "isOnline": {
+      "type": "boolean",
+      "default": false,
+      "description": "Online status"
     }
   }
 }

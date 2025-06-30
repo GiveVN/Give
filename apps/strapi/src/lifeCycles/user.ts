@@ -13,8 +13,86 @@ export const registerUserSubscriber = async ({
 
     async afterCreate(event) {
       await sendEmail(strapi, event)
+      // await initializeUserProfile(strapi, event) // Temporarily disabled for testing
     },
   })
+}
+
+/**
+ * Initialize user profile with default settings
+ */
+const initializeUserProfile = async (strapi: Core.Strapi, event: Event) => {
+  const { id, username, firstName, lastName } = event.result ?? {}
+
+  if (!id) {
+    return
+  }
+
+  try {
+    // Generate default vanity URL from username
+    let vanityUrl = username?.toLowerCase().replace(/[^a-z0-9]/g, '') || `user${id}`
+
+    // Ensure vanity URL is unique
+    let counter = 1
+    let originalVanityUrl = vanityUrl
+    while (true) {
+      const existingUser = await strapi.entityService.findMany('plugin::users-permissions.user', {
+        filters: { vanityUrl },
+      })
+
+      if (existingUser.length === 0) {
+        break
+      }
+
+      vanityUrl = `${originalVanityUrl}${counter}`
+      counter++
+    }
+
+    // Create default display name
+    const displayName = [firstName, lastName].filter(Boolean).join(' ') || username || `User ${id}`
+
+    // Initialize profile with default settings
+    await strapi.entityService.update('plugin::users-permissions.user', id, {
+      data: {
+        displayName,
+        vanityUrl,
+        privacySettings: {
+          showEmail: false,
+          showLocation: true,
+          showBackedProjects: true,
+          showCreatedProjects: true,
+          allowMessages: 'all',
+          showActivityFeed: true,
+          showDonationHistory: false,
+          profileVisibility: 'public',
+        },
+        notificationSettings: {
+          emailNotifications: true,
+          pushNotifications: true,
+          projectUpdates: true,
+          newFollowers: true,
+          messages: true,
+          marketingEmails: false,
+          weeklyDigest: true,
+          donationReceipts: true,
+          projectMilestones: true,
+          commentReplies: true,
+        },
+        reputation: 0,
+        totalDonated: 0,
+        totalRaised: 0,
+        followersCount: 0,
+        followingCount: 0,
+        isVerified: false,
+        verificationLevel: 'none',
+        isOnline: false,
+      }
+    })
+
+    console.log(`User profile initialized for ${username} (${id}) with vanity URL: ${vanityUrl}`)
+  } catch (error) {
+    console.error('Failed to initialize user profile:', error)
+  }
 }
 
 /**

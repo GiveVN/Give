@@ -1,0 +1,52 @@
+{
+    "collectionName": "components_user_privacy_settings",
+    "info": {
+        "displayName": "Privacy Settings",
+        "description": "Privacy control settings for user profiles"
+    },
+    "options": {},
+    "attributes": {
+        "showEmail": {
+            "type": "boolean",
+            "default": false
+        },
+        "showLocation": {
+            "type": "boolean",
+            "default": true
+        },
+        "showBackedProjects": {
+            "type": "boolean",
+            "default": true
+        },
+        "showCreatedProjects": {
+            "type": "boolean",
+            "default": true
+        },
+        "allowMessages": {
+            "type": "enumeration",
+            "enum": [
+                "all",
+                "following",
+                "none"
+            ],
+            "default": "all"
+        },
+        "showActivityFeed": {
+            "type": "boolean",
+            "default": true
+        },
+        "showDonationHistory": {
+            "type": "boolean",
+            "default": false
+        },
+        "profileVisibility": {
+            "type": "enumeration",
+            "enum": [
+                "public",
+                "authenticated",
+                "private"
+            ],
+            "default": "public"
+        }
+    }
+}

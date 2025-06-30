@@ -1,0 +1,41 @@
+{
+    "collectionName": "components_user_social_links",
+    "info": {
+        "displayName": "Social Link",
+        "description": "Social media links for user profiles"
+    },
+    "options": {},
+    "attributes": {
+        "platform": {
+            "type": "enumeration",
+            "enum": [
+                "twitter",
+                "facebook",
+                "linkedin",
+                "instagram",
+                "youtube",
+                "website",
+                "github",
+                "discord"
+            ],
+            "required": true
+        },
+        "url": {
+            "type": "string",
+            "required": true,
+            "maxLength": 500
+        },
+        "username": {
+            "type": "string",
+            "maxLength": 100
+        },
+        "isVerified": {
+            "type": "boolean",
+            "default": false
+        },
+        "isPublic": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}

@@ -1,0 +1,50 @@
+{
+    "collectionName": "components_user_notification_settings",
+    "info": {
+        "displayName": "Notification Settings",
+        "description": "Notification preferences for user profiles"
+    },
+    "options": {},
+    "attributes": {
+        "emailNotifications": {
+            "type": "boolean",
+            "default": true
+        },
+        "pushNotifications": {
+            "type": "boolean",
+            "default": true
+        },
+        "projectUpdates": {
+            "type": "boolean",
+            "default": true
+        },
+        "newFollowers": {
+            "type": "boolean",
+            "default": true
+        },
+        "messages": {
+            "type": "boolean",
+            "default": true
+        },
+        "marketingEmails": {
+            "type": "boolean",
+            "default": false
+        },
+        "weeklyDigest": {
+            "type": "boolean",
+            "default": true
+        },
+        "donationReceipts": {
+            "type": "boolean",
+            "default": true
+        },
+        "projectMilestones": {
+            "type": "boolean",
+            "default": true
+        },
+        "commentReplies": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}
