@@ -8,6 +8,7 @@ import { PublicStrapiClient } from "@/lib/strapi-api"
 import { cn } from "@/lib/styles"
 import AppLink from "@/components/elementary/AppLink"
 import { LoggedUserMenu } from "@/components/page-builder/single-types/navbar/LoggedUserMenu"
+import { SignInLink } from "@/components/page-builder/single-types/navbar/SignInLink"
 import StrapiImageWithLink from "@/components/page-builder/components/utilities/StrapiImageWithLink"
 import StrapiLink from "@/components/page-builder/components/utilities/StrapiLink"
 
@@ -165,13 +166,7 @@ export async function StrapiNavbarNew({ locale }: { locale: AppLocale }) {
           {session?.user ? (
             <LoggedUserMenu user={session.user} />
           ) : (
-            <AppLink
-              href={`/${locale}/auth/signin`}
-              variant="link"
-              className="text-sm font-medium leading-6 text-gray-700 hover:text-green-600 transition-colors duration-200 px-3 py-2"
-            >
-              Sign in
-            </AppLink>
+            <SignInLink />
           )}
 
           <AppLink

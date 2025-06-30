@@ -48,7 +48,19 @@ export default [
       },
     },
   },
-  "strapi::cors",
+  {
+    name: "strapi::cors",
+    config: {
+      enabled: true,
+      headers: "*",
+      origin: [
+        "http://localhost:3003",
+        "http://127.0.0.1:3003",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+      ],
+    },
+  },
   "strapi::poweredBy",
   "strapi::logger",
   "strapi::query",
