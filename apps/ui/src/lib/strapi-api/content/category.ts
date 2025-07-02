@@ -34,38 +34,36 @@ export interface CategoryResponse {
   }
 }
 
-export async function getCategories(type?: "give" | "back"): Promise<Category[]> {
+export async function getCategories(
+  type?: "give" | "back"
+): Promise<Category[]> {
   try {
     const filters: any = {
-      IsActive: { $eq: true }
+      IsActive: { $eq: true },
     }
 
     if (type) {
       // Get categories that match the type OR are marked as "both"
-      filters.$or = [
-        { Type: { $eq: type } },
-        { Type: { $eq: "both" } }
-      ]
+      filters.$or = [{ Type: { $eq: type } }, { Type: { $eq: "both" } }]
     }
 
-    const response = await PrivateStrapiClient.fetchAPI<StrapiResponse<CategoryResponse[]>>(
-      "/categories",
-      {
-        params: {
-          filters,
-          sort: ["SortOrder:asc", "Name:asc"],
-          pagination: {
-            pageSize: 100
-          }
-        }
-      }
-    )
+    const response = await PrivateStrapiClient.fetchAPI<
+      StrapiResponse<CategoryResponse[]>
+    >("/categories", {
+      params: {
+        filters,
+        sort: ["SortOrder:asc", "Name:asc"],
+        pagination: {
+          pageSize: 100,
+        },
+      },
+    })
 
     if (!response.data) {
       return []
     }
 
-    return response.data.map(item => ({
+    return response.data.map((item) => ({
       id: item.id,
       documentId: item.documentId,
       Name: item.attributes.Name,
@@ -76,7 +74,7 @@ export async function getCategories(type?: "give" | "back"): Promise<Category[]>
       Color: item.attributes.Color,
       SortOrder: item.attributes.SortOrder,
       IsActive: item.attributes.IsActive,
-      Featured: item.attributes.Featured
+      Featured: item.attributes.Featured,
     }))
   } catch (error) {
     console.error("Error fetching categories:", error)
@@ -84,18 +82,19 @@ export async function getCategories(type?: "give" | "back"): Promise<Category[]>
   }
 }
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+export async function getCategoryBySlug(
+  slug: string
+): Promise<Category | null> {
   try {
-    const response = await PrivateStrapiClient.fetchAPI<StrapiResponse<CategoryResponse[]>>(
-      "/categories",
-      {
-        params: {
-          filters: {
-            Slug: { $eq: slug }
-          }
-        }
-      }
-    )
+    const response = await PrivateStrapiClient.fetchAPI<
+      StrapiResponse<CategoryResponse[]>
+    >("/categories", {
+      params: {
+        filters: {
+          Slug: { $eq: slug },
+        },
+      },
+    })
 
     if (!response.data || response.data.length === 0) {
       return null
@@ -113,10 +112,10 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
       Color: item.attributes.Color,
       SortOrder: item.attributes.SortOrder,
       IsActive: item.attributes.IsActive,
-      Featured: item.attributes.Featured
+      Featured: item.attributes.Featured,
     }
   } catch (error) {
     console.error("Error fetching category by slug:", error)
     return null
   }
-} 
+}

@@ -6,10 +6,10 @@ const buildEslintCommand = (filenames) => {
     .map((f) => {
       const relativePath = path.relative(process.cwd(), f)
       // Replace backslashes with forward slashes for Windows compatibility
-      return relativePath.replace(/\\/g, '/')
+      return relativePath.replace(/\\/g, "/")
     })
     .join(" --file ")
-  
+
   return `next lint --fix --file ${files}`
 }
 

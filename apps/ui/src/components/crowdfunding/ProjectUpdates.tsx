@@ -1,22 +1,29 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { formatDistanceToNow } from "date-fns"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { 
-  MessageSquare, 
-  Eye, 
-  Pin, 
-  ChevronDown, 
-  ChevronUp,
+import {
   Calendar,
-  User
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  MessageSquare,
+  Pin,
+  User,
 } from "lucide-react"
+
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface ProjectUpdate {
   id: string
@@ -48,10 +55,10 @@ interface ProjectUpdatesProps {
   authorName?: string
 }
 
-export default function ProjectUpdates({ 
-  projectId, 
+export default function ProjectUpdates({
+  projectId,
   projectTitle,
-  authorName 
+  authorName,
 }: ProjectUpdatesProps) {
   const [updates, setUpdates] = useState<ProjectUpdate[]>([])
   const [loading, setLoading] = useState(true)
@@ -65,50 +72,49 @@ export default function ProjectUpdates({
   const fetchUpdates = async () => {
     try {
       setLoading(true)
-      
+
       // Build query string manually to handle Strapi's filter syntax
-      let queryString = ''
-      
+      let queryString = ""
+
       // projectId can be either documentId or numeric id
-      if (projectId.includes('-')) {
+      if (projectId.includes("-")) {
         // It's a documentId
         queryString = `filters[Project][documentId][$eq]=${projectId}`
       } else {
         // It's a numeric id
         queryString = `filters[Project][id][$eq]=${projectId}`
       }
-      
+
       // Add other parameters
-      queryString += '&populate[Author]=true'
-      queryString += '&populate[Images]=true'
-      queryString += '&populate[Comments]=true'
-      queryString += '&sort[0]=IsPinned:desc'
-      queryString += '&sort[1]=createdAt:desc'
-      queryString += '&pagination[page]=1'
-      queryString += '&pagination[pageSize]=20'
-      
-      console.log('Fetching updates with query:', queryString)
-      
+      queryString += "&populate[Author]=true"
+      queryString += "&populate[Images]=true"
+      queryString += "&populate[Comments]=true"
+      queryString += "&sort[0]=IsPinned:desc"
+      queryString += "&sort[1]=createdAt:desc"
+      queryString += "&pagination[page]=1"
+      queryString += "&pagination[pageSize]=20"
+
+      console.log("Fetching updates with query:", queryString)
+
       const response = await fetch(`/api/project-updates?${queryString}`)
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch updates')
+        throw new Error("Failed to fetch updates")
       }
-      
+
       const data = await response.json()
-      console.log('Updates data:', data)
+      console.log("Updates data:", data)
       setUpdates(data.data || [])
-      
     } catch (err) {
-      console.error('Error fetching updates:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load updates')
+      console.error("Error fetching updates:", err)
+      setError(err instanceof Error ? err.message : "Failed to load updates")
     } finally {
       setLoading(false)
     }
   }
 
   const toggleUpdateExpansion = (updateId: string) => {
-    setExpandedUpdates(prev => {
+    setExpandedUpdates((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(updateId)) {
         newSet.delete(updateId)
@@ -122,9 +128,9 @@ export default function ProjectUpdates({
   const formatContent = (content: string) => {
     // Convert markdown-style content to HTML
     return content
-      .split('\n\n')
-      .map(paragraph => `<p class="mb-4">${paragraph}</p>`)
-      .join('')
+      .split("\n\n")
+      .map((paragraph) => `<p class="mb-4">${paragraph}</p>`)
+      .join("")
   }
 
   if (loading) {
@@ -148,7 +154,7 @@ export default function ProjectUpdates({
   if (error) {
     return (
       <Card>
-        <CardContent className="text-center py-8">
+        <CardContent className="py-8 text-center">
           <p className="text-red-500">Error loading updates: {error}</p>
           <Button onClick={fetchUpdates} variant="outline" className="mt-4">
             Try Again
@@ -161,9 +167,11 @@ export default function ProjectUpdates({
   if (updates.length === 0) {
     return (
       <Card>
-        <CardContent className="text-center py-12">
-          <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No updates yet</h3>
+        <CardContent className="py-12 text-center">
+          <MessageSquare className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
+            No updates yet
+          </h3>
           <p className="text-gray-600">
             The project creator hasn't posted any updates yet. Check back later!
           </p>
@@ -177,19 +185,23 @@ export default function ProjectUpdates({
       {updates.map((update) => {
         const isExpanded = expandedUpdates.has(update.documentId)
         const hasLongContent = update.Content.length > 300
-        const displayContent = hasLongContent && !isExpanded 
-          ? update.Excerpt || update.Content.substring(0, 300) + '...'
-          : update.Content
+        const displayContent =
+          hasLongContent && !isExpanded
+            ? update.Excerpt || update.Content.substring(0, 300) + "..."
+            : update.Content
 
         return (
-          <Card key={update.documentId} className={cn(
-            "overflow-hidden",
-            update.IsPinned && "border-primary"
-          )}>
+          <Card
+            key={update.documentId}
+            className={cn(
+              "overflow-hidden",
+              update.IsPinned && "border-primary"
+            )}
+          >
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="mb-2 flex items-center gap-2">
                     {update.IsPinned && (
                       <Badge variant="secondary" className="gap-1">
                         <Pin className="h-3 w-3" />
@@ -200,27 +212,31 @@ export default function ProjectUpdates({
                       <Badge variant="outline">Backers Only</Badge>
                     )}
                   </div>
-                  
+
                   <CardTitle className="text-xl">{update.Title}</CardTitle>
-                  
-                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+
+                  <div className="text-muted-foreground mt-2 flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
-                      {formatDistanceToNow(new Date(update.createdAt), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(update.createdAt), {
+                        addSuffix: true,
+                      })}
                     </div>
-                    
+
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
-                      {update.Author?.username || authorName || 'Project Creator'}
+                      {update.Author?.username ||
+                        authorName ||
+                        "Project Creator"}
                     </div>
-                    
+
                     {update.ViewCount > 0 && (
                       <div className="flex items-center gap-1">
                         <Eye className="h-3 w-3" />
                         {update.ViewCount} views
                       </div>
                     )}
-                    
+
                     {update.Comments && update.Comments.length > 0 && (
                       <div className="flex items-center gap-1">
                         <MessageSquare className="h-3 w-3" />
@@ -231,26 +247,28 @@ export default function ProjectUpdates({
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent>
-              <div 
+              <div
                 className="prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: formatContent(displayContent) }}
+                dangerouslySetInnerHTML={{
+                  __html: formatContent(displayContent),
+                }}
               />
-              
+
               {update.Images && update.Images.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3">
                   {update.Images.map((image, index) => (
                     <img
                       key={index}
                       src={image.url}
                       alt={image.alternativeText || `Update image ${index + 1}`}
-                      className="rounded-lg object-cover w-full h-32"
+                      className="h-32 w-full rounded-lg object-cover"
                     />
                   ))}
                 </div>
               )}
-              
+
               {hasLongContent && (
                 <Button
                   variant="ghost"
@@ -277,4 +295,4 @@ export default function ProjectUpdates({
       })}
     </div>
   )
-} 
+}

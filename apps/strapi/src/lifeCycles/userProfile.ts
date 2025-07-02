@@ -27,7 +27,8 @@ export const registerUserProfileSubscriber = async ({
  * This prevents race conditions when multiple users register simultaneously
  */
 const initializeUserProfile = async (strapi: Core.Strapi, event: Event) => {
-  const { id, username, email, firstName, lastName, documentId } = event.result ?? {}
+  const { id, username, email, firstName, lastName, documentId } =
+    event.result ?? {}
 
   if (!id || !username) {
     return
@@ -37,7 +38,7 @@ const initializeUserProfile = async (strapi: Core.Strapi, event: Event) => {
   await strapi.db.transaction(async ({ trx }) => {
     try {
       // Generate base vanity URL from username
-      let vanityUrl = username.toLowerCase().replace(/[^a-z0-9]/g, '')
+      let vanityUrl = username.toLowerCase().replace(/[^a-z0-9]/g, "")
       let counter = 1
       let isUnique = false
 
@@ -45,63 +46,66 @@ const initializeUserProfile = async (strapi: Core.Strapi, event: Event) => {
       while (!isUnique) {
         // Check if vanity URL exists
         const existing = await strapi.db
-          .query('plugin::users-permissions.user')
+          .query("plugin::users-permissions.user")
           .findOne({
             where: { vanityUrl },
-            select: ['id'],
+            select: ["id"],
           })
 
         if (!existing) {
           isUnique = true
         } else {
           // If exists, append counter and try again
-          vanityUrl = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}${counter}`
+          vanityUrl = `${username.toLowerCase().replace(/[^a-z0-9]/g, "")}${counter}`
           counter++
         }
       }
 
       // Create default display name
-      const displayName = [firstName, lastName].filter(Boolean).join(' ') || username || `User ${id}`
+      const displayName =
+        [firstName, lastName].filter(Boolean).join(" ") ||
+        username ||
+        `User ${id}`
 
       // Update user with profile data
-      await strapi.db
-        .query('plugin::users-permissions.user')
-        .update({
-          where: { id },
-          data: {
-            vanityUrl,
-            displayName,
-            bio: '',
-            location: '',
-            website: '',
-            isPublic: true,
+      await strapi.db.query("plugin::users-permissions.user").update({
+        where: { id },
+        data: {
+          vanityUrl,
+          displayName,
+          bio: "",
+          location: "",
+          website: "",
+          isPublic: true,
+          emailNotifications: true,
+          privacySettings: {
+            showEmail: false,
+            showLocation: true,
+            showBackedProjects: true,
+            showCreatedProjects: true,
+            allowMessages: "all",
+            showActivityFeed: true,
+            showDonationHistory: false,
+            profileVisibility: "public",
+          },
+          notificationSettings: {
             emailNotifications: true,
-            privacySettings: {
-              showEmail: false,
-              showLocation: true,
-              showBackedProjects: true,
-              showCreatedProjects: true,
-              allowMessages: 'all',
-              showActivityFeed: true,
-              showDonationHistory: false,
-              profileVisibility: 'public'
-            },
-            notificationSettings: {
-              emailNotifications: true,
-              projectUpdates: true,
-              newFollowers: true,
-              messages: true,
-              marketingEmails: false,
-              weeklyDigest: true
-            },
-            reputation: 0,
-            lastActiveAt: new Date()
-          }
-        })
+            projectUpdates: true,
+            newFollowers: true,
+            messages: true,
+            marketingEmails: false,
+            weeklyDigest: true,
+          },
+          reputation: 0,
+          lastActiveAt: new Date(),
+        },
+      })
 
-      console.log(`User profile initialized for ${username} with vanity URL: ${vanityUrl}`)
+      console.log(
+        `User profile initialized for ${username} with vanity URL: ${vanityUrl}`
+      )
     } catch (error) {
-      console.error('Error initializing user profile:', error)
+      console.error("Error initializing user profile:", error)
       throw error // This will rollback the transaction
     }
   })
@@ -114,7 +118,7 @@ const validateProfileUpdate = async (strapi: Core.Strapi, event: Event) => {
   // In Strapi 5, event structure is different
   const data = event.params?.data || {}
   const where = event.params?.where || {}
-  
+
   // Get user ID from where clause
   const userId = where.id
 
@@ -125,16 +129,16 @@ const validateProfileUpdate = async (strapi: Core.Strapi, event: Event) => {
   // Rate limiting check - allow max 10 updates per hour
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
   const recentUpdates = await strapi.db
-    .query('plugin::users-permissions.user')
+    .query("plugin::users-permissions.user")
     .count({
       where: {
         id: userId,
-        updatedAt: { $gte: oneHourAgo }
-      }
+        updatedAt: { $gte: oneHourAgo },
+      },
     })
 
   if (recentUpdates >= 10) {
-    throw new Error('Too many profile updates. Please try again later.')
+    throw new Error("Too many profile updates. Please try again later.")
   }
 
   // Validate social links if provided
@@ -160,15 +164,24 @@ const validateProfileUpdate = async (strapi: Core.Strapi, event: Event) => {
  * Validate social links URLs
  */
 const validateSocialLinks = (socialLinks: any[]) => {
-  const validPlatforms = ['twitter', 'facebook', 'linkedin', 'instagram', 'youtube', 'github', 'discord']
+  const validPlatforms = [
+    "twitter",
+    "facebook",
+    "linkedin",
+    "instagram",
+    "youtube",
+    "github",
+    "discord",
+  ]
   const urlPatterns = {
     twitter: /^https?:\/\/(www\.)?twitter\.com\/[a-zA-Z0-9_]+$/,
     facebook: /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9.]+$/,
     linkedin: /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-]+$/,
     instagram: /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9_.]+$/,
-    youtube: /^https?:\/\/(www\.)?youtube\.com\/(c|channel|user)\/[a-zA-Z0-9_-]+$/,
+    youtube:
+      /^https?:\/\/(www\.)?youtube\.com\/(c|channel|user)\/[a-zA-Z0-9_-]+$/,
     github: /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9-]+$/,
-    discord: /^https?:\/\/(www\.)?discord\.(gg|com\/invite)\/[a-zA-Z0-9]+$/
+    discord: /^https?:\/\/(www\.)?discord\.(gg|com\/invite)\/[a-zA-Z0-9]+$/,
   }
 
   for (const link of socialLinks) {
@@ -199,40 +212,46 @@ const validateWebsiteUrl = (url: string) => {
   try {
     const urlObj = new URL(url)
     // Only allow http and https protocols
-    if (!['http:', 'https:'].includes(urlObj.protocol)) {
-      throw new Error('Invalid website URL protocol')
+    if (!["http:", "https:"].includes(urlObj.protocol)) {
+      throw new Error("Invalid website URL protocol")
     }
   } catch {
-    throw new Error('Invalid website URL format')
+    throw new Error("Invalid website URL format")
   }
 }
 
 /**
  * Validate vanity URL uniqueness
  */
-const validateVanityUrl = async (strapi: Core.Strapi, vanityUrl: string, userId: number) => {
+const validateVanityUrl = async (
+  strapi: Core.Strapi,
+  vanityUrl: string,
+  userId: number
+) => {
   // Validate format - only lowercase letters, numbers, and hyphens
   if (!/^[a-z0-9-]+$/.test(vanityUrl)) {
-    throw new Error('Vanity URL can only contain lowercase letters, numbers, and hyphens')
+    throw new Error(
+      "Vanity URL can only contain lowercase letters, numbers, and hyphens"
+    )
   }
 
   // Check length
   if (vanityUrl.length < 3 || vanityUrl.length > 30) {
-    throw new Error('Vanity URL must be between 3 and 30 characters')
+    throw new Error("Vanity URL must be between 3 and 30 characters")
   }
 
   // Check uniqueness
   const existing = await strapi.db
-    .query('plugin::users-permissions.user')
+    .query("plugin::users-permissions.user")
     .findOne({
       where: {
         vanityUrl,
-        id: { $ne: userId }
-      }
+        id: { $ne: userId },
+      },
     })
 
   if (existing) {
-    throw new Error('This vanity URL is already taken')
+    throw new Error("This vanity URL is already taken")
   }
 }
 
@@ -240,7 +259,8 @@ const validateVanityUrl = async (strapi: Core.Strapi, vanityUrl: string, userId:
  * Send welcome email after registration
  */
 const sendWelcomeEmail = async (strapi: Core.Strapi, event: Event) => {
-  const { email, documentId, firstName, lastName, confirmed } = event.result ?? {}
+  const { email, documentId, firstName, lastName, confirmed } =
+    event.result ?? {}
 
   if (confirmed) {
     console.log(`User ${email} is already confirmed. Skipping welcome email.`)
@@ -271,7 +291,7 @@ const sendWelcomeEmail = async (strapi: Core.Strapi, event: Event) => {
     const html = `
       <h2>Welcome to Give Platform!</h2>
       <h3>Your account has been created successfully</h3>
-      <p>Hello ${name || 'there'},</p>
+      <p>Hello ${name || "there"},</p>
       <p>Welcome to our crowdfunding community! We're excited to have you on board.</p>
       <p>To get started, please activate your account and set your password:</p>
       <p><a href="${feAccountActivationUrl}?code=${resetPasswordToken}&email=${email}&name=${name}" target="_blank" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Activate Account</a></p>
@@ -294,6 +314,6 @@ const sendWelcomeEmail = async (strapi: Core.Strapi, event: Event) => {
 
     console.log(`Welcome email sent to ${email}`)
   } catch (err) {
-    console.error('Error sending welcome email:', err)
+    console.error("Error sending welcome email:", err)
   }
-} 
+}

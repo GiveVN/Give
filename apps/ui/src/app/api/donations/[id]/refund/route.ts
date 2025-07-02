@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { PrivateStrapiClient } from "@/lib/strapi-api"
+
 import { sendRefundNotification } from "@/lib/email/donation-receipt"
+import { PrivateStrapiClient } from "@/lib/strapi-api"
 
 export async function POST(
   request: NextRequest,
@@ -12,15 +13,16 @@ export async function POST(
     const { reason, email } = body
 
     // Get donation details
-    const donation = await PrivateStrapiClient.findOne("donations", donationId, {
-      populate: ["Project", "Giver"]
-    })
+    const donation = await PrivateStrapiClient.findOne(
+      "donations",
+      donationId,
+      {
+        populate: ["Project", "Giver"],
+      }
+    )
 
     if (!donation?.data) {
-      return NextResponse.json(
-        { error: "Donation not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Donation not found" }, { status: 404 })
     }
 
     // Check if already refunded
@@ -48,25 +50,28 @@ export async function POST(
 
     // For MVP, simulate refund
     const refundId = `REFUND-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    
+
     // Update donation status
     await PrivateStrapiClient.update("donations", donationId, {
       data: {
-        PaymentStatus: "refunded"
-      }
+        PaymentStatus: "refunded",
+      },
     })
 
     // Update project funding
     const project = donation.data.Project
     if (project) {
-      const newFunding = Math.max(0, (project.CurrentFunding || 0) - donation.data.Amount)
+      const newFunding = Math.max(
+        0,
+        (project.CurrentFunding || 0) - donation.data.Amount
+      )
       const newBackersCount = Math.max(0, (project.BackersCount || 0) - 1)
-      
+
       await PrivateStrapiClient.update("projects", project.id, {
         data: {
           CurrentFunding: newFunding,
-          BackersCount: newBackersCount
-        }
+          BackersCount: newBackersCount,
+        },
       })
     }
 
@@ -87,8 +92,8 @@ export async function POST(
         id: donation.data.id,
         amount: donation.data.Amount,
         currency: donation.data.Currency,
-        status: "refunded"
-      }
+        status: "refunded",
+      },
     })
   } catch (error) {
     console.error("Refund error:", error)
@@ -97,4 +102,4 @@ export async function POST(
       { status: 500 }
     )
   }
-} 
+}

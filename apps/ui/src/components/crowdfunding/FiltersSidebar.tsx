@@ -1,14 +1,15 @@
 "use client"
 
-import ModernProjectFilters from "./ModernProjectFilters"
 import type { ProjectFiltersProps } from "./ProjectFilters"
+
+import ModernProjectFilters from "./ModernProjectFilters"
 
 export default function FiltersSidebar(props: ProjectFiltersProps) {
   return (
-    <aside className="hidden lg:block w-64 shrink-0 mt-6">
+    <aside className="mt-6 hidden w-64 shrink-0 lg:block">
       <div className="sticky top-28">
         <ModernProjectFilters {...props} />
       </div>
     </aside>
   )
-} 
+}

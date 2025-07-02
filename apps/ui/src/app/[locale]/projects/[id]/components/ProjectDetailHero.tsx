@@ -1,13 +1,29 @@
 "use client"
 
-import { Calendar, MapPin, Users, ChevronLeft, ChevronRight, Heart, Share2, Bookmark, Facebook, Twitter, Mail, Link, Play } from "lucide-react"
 import { useState } from "react"
+import {
+  Bookmark,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Facebook,
+  Heart,
+  Link,
+  Mail,
+  MapPin,
+  Play,
+  Share2,
+  Twitter,
+  Users,
+} from "lucide-react"
 
+import type { MediaItem } from "@/lib/youtube"
+
+import { createMediaGallery } from "@/lib/youtube"
 import { ImageWithFallback } from "@/components/elementary/ImageWithFallback"
 import { YouTubePlayer } from "@/components/elementary/YouTubePlayer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { createMediaGallery, type MediaItem } from "@/lib/youtube"
 
 export interface ProjectDetailHeroProps {
   project: {
@@ -44,7 +60,7 @@ export interface ProjectDetailHeroProps {
 
 export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
-  
+
   // Create unified media gallery with images and videos
   const mediaGallery = createMediaGallery(
     project.Images || (project.Image ? [project.Image] : []),
@@ -62,7 +78,9 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
   }
 
   const prevMedia = () => {
-    setCurrentMediaIndex((prev) => (prev - 1 + mediaGallery.length) % mediaGallery.length)
+    setCurrentMediaIndex(
+      (prev) => (prev - 1 + mediaGallery.length) % mediaGallery.length
+    )
   }
 
   return (
@@ -70,11 +88,11 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header Section - Title & Description */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl leading-tight font-bold text-gray-900 lg:text-3xl xl:text-4xl mb-4">
+          <h1 className="mb-4 text-2xl leading-tight font-bold text-gray-900 lg:text-3xl xl:text-4xl">
             {project.Title}
           </h1>
           {(project.ShortDescription || project.Description) && (
-            <p className="text-lg leading-relaxed text-gray-600 max-w-4xl mx-auto">
+            <p className="mx-auto max-w-4xl text-lg leading-relaxed text-gray-600">
               {project.ShortDescription || project.Description}
             </p>
           )}
@@ -90,20 +108,22 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                   {/* Render current media item */}
                   {(() => {
                     const currentMedia = mediaGallery[currentMediaIndex]
-                    
+
                     if (!currentMedia) return null
-                    
+
                     switch (currentMedia.type) {
-                      case 'youtube':
+                      case "youtube":
                         return (
                           <YouTubePlayer
                             videoId={currentMedia.videoId!}
-                            title={currentMedia.alternativeText || project.Title}
+                            title={
+                              currentMedia.alternativeText || project.Title
+                            }
                             className="h-full w-full"
                             showThumbnail={true}
                           />
                         )
-                      case 'video':
+                      case "video":
                         return (
                           <video
                             src={currentMedia.url}
@@ -114,12 +134,16 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                             Your browser does not support the video tag.
                           </video>
                         )
-                      case 'image':
+                      case "image":
                       default:
                         return (
                           <ImageWithFallback
                             src={currentMedia.url}
-                            alt={currentMedia.alternativeText || project.Title || "Project media"}
+                            alt={
+                              currentMedia.alternativeText ||
+                              project.Title ||
+                              "Project media"
+                            }
                             width={600}
                             height={400}
                             className="h-full w-full object-cover"
@@ -127,14 +151,14 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                         )
                     }
                   })()}
-                  
+
                   {/* Navigation arrows for multiple media items */}
                   {mediaGallery.length > 1 && (
                     <>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70 z-10"
+                        className="absolute top-1/2 left-2 z-10 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70"
                         onClick={prevMedia}
                       >
                         <ChevronLeft className="h-4 w-4" />
@@ -142,14 +166,14 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70 z-10"
+                        className="absolute top-1/2 right-2 z-10 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70"
                         onClick={nextMedia}
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>
-                      
+
                       {/* Media counter */}
-                      <div className="absolute bottom-2 right-2 rounded bg-black/50 px-2 py-1 text-xs text-white z-10">
+                      <div className="absolute right-2 bottom-2 z-10 rounded bg-black/50 px-2 py-1 text-xs text-white">
                         {currentMediaIndex + 1} / {mediaGallery.length}
                       </div>
                     </>
@@ -165,7 +189,7 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                 />
               )}
             </div>
-            
+
             {/* Thumbnail Gallery */}
             {mediaGallery.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
@@ -180,20 +204,23 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    {media.type === 'youtube' ? (
+                    {media.type === "youtube" ? (
                       <>
                         <img
                           src={`https://img.youtube.com/vi/${media.videoId}/mqdefault.jpg`}
-                          alt={media.alternativeText || `YouTube video ${index + 1}`}
+                          alt={
+                            media.alternativeText ||
+                            `YouTube video ${index + 1}`
+                          }
                           className="h-15 w-20 object-cover"
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="bg-red-600 rounded-full p-1">
-                            <Play className="h-3 w-3 text-white fill-white" />
+                          <div className="rounded-full bg-red-600 p-1">
+                            <Play className="h-3 w-3 fill-white text-white" />
                           </div>
                         </div>
                       </>
-                    ) : media.type === 'video' ? (
+                    ) : media.type === "video" ? (
                       <>
                         <video
                           src={media.url}
@@ -201,15 +228,17 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                           muted
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="bg-black/70 rounded-full p-1">
-                            <Play className="h-3 w-3 text-white fill-white" />
+                          <div className="rounded-full bg-black/70 p-1">
+                            <Play className="h-3 w-3 fill-white text-white" />
                           </div>
                         </div>
                       </>
                     ) : (
                       <ImageWithFallback
                         src={media.url}
-                        alt={media.alternativeText || `Project image ${index + 1}`}
+                        alt={
+                          media.alternativeText || `Project image ${index + 1}`
+                        }
                         width={80}
                         height={60}
                         className="h-15 w-20 object-cover"
@@ -224,7 +253,7 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
           {/* Right: Project Info - 40% width */}
           <div className="space-y-6 lg:col-span-4">
             {/* Category & Status */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="mb-4 flex items-center gap-2">
               {project.Category && (
                 <Badge variant="secondary" className="text-sm">
                   {project.Category}
@@ -259,7 +288,9 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                 <div>
                   <div className="text-3xl font-bold text-gray-900">
                     ${(project.CurrentFunding || 0).toLocaleString()}
-                    <span className="text-base font-normal text-gray-600 ml-2">USD</span>
+                    <span className="ml-2 text-base font-normal text-gray-600">
+                      USD
+                    </span>
                   </div>
                 </div>
                 <div className="text-right">
@@ -288,7 +319,10 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
                     of ${(project.FundingGoal || 0).toLocaleString()}
                   </span>
                   {fundingPercentage > 100 && (
-                    <Badge variant="outline" className="text-xs border-green-500 text-green-600 bg-green-50">
+                    <Badge
+                      variant="outline"
+                      className="border-green-500 bg-green-50 text-xs text-green-600"
+                    >
                       Flexible Goal
                     </Badge>
                   )}
@@ -310,11 +344,11 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
             </div>
 
             {/* Action Buttons Section - Kickstarter Style */}
-            <div className="space-y-4 pt-4 border-t">
+            <div className="space-y-4 border-t pt-4">
               {/* Primary Action Button */}
-              <Button 
-                size="lg" 
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 text-lg"
+              <Button
+                size="lg"
+                className="w-full bg-green-600 py-4 text-lg font-semibold text-white hover:bg-green-700"
               >
                 Back this project
               </Button>
@@ -323,7 +357,11 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
               <div className="flex items-center justify-between">
                 {/* Left: Remind Me & Bookmark */}
                 <div className="flex items-center gap-3">
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
                     <Bookmark className="h-4 w-4" />
                     Remind me
                   </Button>
@@ -347,22 +385,26 @@ export function ProjectDetailHero({ project }: ProjectDetailHeroProps) {
               </div>
 
               {/* All or Nothing Notice */}
-              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded border-l-4 border-orange-400">
-                <span className="font-medium text-gray-900">All or nothing.</span>{" "}
+              <div className="rounded border-l-4 border-orange-400 bg-gray-50 p-3 text-sm text-gray-600">
+                <span className="font-medium text-gray-900">
+                  All or nothing.
+                </span>{" "}
                 This project will only be funded if it reaches its goal by{" "}
                 <span className="font-medium">
-                  {project.DaysLeft ? 
-                    new Date(Date.now() + project.DaysLeft * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
-                      weekday: 'short',
-                      month: 'short', 
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      timeZoneName: 'short'
-                    }) : 
-                    'the deadline'
-                  }.
+                  {project.DaysLeft
+                    ? new Date(
+                        Date.now() + project.DaysLeft * 24 * 60 * 60 * 1000
+                      ).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        timeZoneName: "short",
+                      })
+                    : "the deadline"}
+                  .
                 </span>
               </div>
             </div>

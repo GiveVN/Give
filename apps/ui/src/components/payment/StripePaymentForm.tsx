@@ -2,17 +2,17 @@
 
 import { useState } from "react"
 import {
-  PaymentElement,
   Elements,
-  useStripe,
+  PaymentElement,
   useElements,
+  useStripe,
 } from "@stripe/react-stripe-js"
 import { StripeElementsOptions } from "@stripe/stripe-js"
-
-import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
+
 import { getStripe } from "@/lib/payment/stripe"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 
 interface StripePaymentFormProps {
   clientSecret: string
@@ -22,11 +22,11 @@ interface StripePaymentFormProps {
   onError: (error: string) => void
 }
 
-function CheckoutForm({ 
-  amount, 
-  currency, 
-  onSuccess, 
-  onError 
+function CheckoutForm({
+  amount,
+  currency,
+  onSuccess,
+  onError,
 }: Omit<StripePaymentFormProps, "clientSecret">) {
   const stripe = useStripe()
   const elements = useElements()
@@ -69,7 +69,7 @@ function CheckoutForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <PaymentElement 
+      <PaymentElement
         options={{
           layout: "tabs",
           defaultValues: {
@@ -79,7 +79,7 @@ function CheckoutForm({
           },
         }}
       />
-      
+
       {errorMessage && (
         <Alert variant="destructive">
           <AlertDescription>{errorMessage}</AlertDescription>
@@ -97,8 +97,8 @@ function CheckoutForm({
             Processing...
           </>
         ) : (
-          `Pay ${new Intl.NumberFormat('en-US', {
-            style: 'currency',
+          `Pay ${new Intl.NumberFormat("en-US", {
+            style: "currency",
             currency: currency,
           }).format(amount / 100)}`
         )}
@@ -142,4 +142,4 @@ export default function StripePaymentForm({
       />
     </Elements>
   )
-} 
+}

@@ -1,28 +1,47 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import {
-  BarChart,
+  CreditCard,
+  DollarSign,
+  Globe,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react"
+import {
   Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts"
-import { TrendingUp, TrendingDown, Users, DollarSign, Globe, CreditCard } from "lucide-react"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface AnalyticsData {
   overview: {
@@ -58,9 +77,18 @@ interface DonationAnalyticsProps {
   projectId: string
 }
 
-const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
+const COLORS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+]
 
-export default function DonationAnalytics({ projectId }: DonationAnalyticsProps) {
+export default function DonationAnalytics({
+  projectId,
+}: DonationAnalyticsProps) {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [timeRange, setTimeRange] = useState("30d")
@@ -76,7 +104,7 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
         `/api/donations/analytics?projectId=${projectId}&range=${timeRange}`
       )
       if (!response.ok) throw new Error("Failed to fetch analytics")
-      
+
       const data = await response.json()
       setAnalyticsData(data)
     } catch (error) {
@@ -99,7 +127,13 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
     )
   }
 
-  const { overview, timeSeriesData, paymentMethodData, geographicData, topDonors } = analyticsData
+  const {
+    overview,
+    timeSeriesData,
+    paymentMethodData,
+    geographicData,
+    topDonors,
+  } = analyticsData
 
   return (
     <div className="space-y-6">
@@ -124,21 +158,21 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Raised</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               ${overview.totalRaised.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground flex items-center">
+            <p className="text-muted-foreground flex items-center text-xs">
               {overview.trend > 0 ? (
                 <>
-                  <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
-                  +{overview.trend}% from last period
+                  <TrendingUp className="mr-1 h-3 w-3 text-green-500" />+
+                  {overview.trend}% from last period
                 </>
               ) : (
                 <>
-                  <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
+                  <TrendingDown className="mr-1 h-3 w-3 text-red-500" />
                   {overview.trend}% from last period
                 </>
               )}
@@ -148,12 +182,14 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Donations</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">
+              Total Donations
+            </CardTitle>
+            <CreditCard className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{overview.totalDonations}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Completed transactions
             </p>
           </CardContent>
@@ -162,11 +198,11 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Unique Donors</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{overview.uniqueDonors}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Individual supporters
             </p>
           </CardContent>
@@ -174,16 +210,16 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Donation</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">
+              Average Donation
+            </CardTitle>
+            <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               ${overview.averageDonation.toFixed(2)}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Per transaction
-            </p>
+            <p className="text-muted-foreground text-xs">Per transaction</p>
           </CardContent>
         </Card>
       </div>
@@ -216,8 +252,13 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
                   <YAxis yAxisId="left" />
                   <YAxis yAxisId="right" orientation="right" />
                   <Tooltip
-                    labelFormatter={(value) => format(new Date(value), "MMM d, yyyy")}
-                    formatter={(value: number) => [`$${value.toLocaleString()}`, "Amount"]}
+                    labelFormatter={(value) =>
+                      format(new Date(value), "MMM d, yyyy")
+                    }
+                    formatter={(value: number) => [
+                      `$${value.toLocaleString()}`,
+                      "Amount",
+                    ]}
                   />
                   <Legend />
                   <Line
@@ -256,16 +297,23 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ method, percent }) => `${method} ${(percent * 100).toFixed(0)}%`}
+                    label={({ method, percent }) =>
+                      `${method} ${(percent * 100).toFixed(0)}%`
+                    }
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="amount"
                   >
                     {paymentMethodData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                  <Tooltip
+                    formatter={(value: number) => `$${value.toLocaleString()}`}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
@@ -276,9 +324,7 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
           <Card>
             <CardHeader>
               <CardTitle>Geographic Distribution</CardTitle>
-              <CardDescription>
-                Donations by country
-              </CardDescription>
+              <CardDescription>Donations by country</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={350}>
@@ -286,7 +332,9 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="country" />
                   <YAxis />
-                  <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                  <Tooltip
+                    formatter={(value: number) => `$${value.toLocaleString()}`}
+                  />
                   <Bar dataKey="amount" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
@@ -298,27 +346,31 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
           <Card>
             <CardHeader>
               <CardTitle>Top Donors</CardTitle>
-              <CardDescription>
-                Highest contributing supporters
-              </CardDescription>
+              <CardDescription>Highest contributing supporters</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {topDonors.map((donor, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center space-x-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+                      <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full font-semibold">
                         {index + 1}
                       </div>
                       <div>
                         <p className="font-medium">{donor.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {donor.donations} donation{donor.donations > 1 ? "s" : ""}
+                        <p className="text-muted-foreground text-sm">
+                          {donor.donations} donation
+                          {donor.donations > 1 ? "s" : ""}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">${donor.amount.toLocaleString()}</p>
+                      <p className="font-semibold">
+                        ${donor.amount.toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -329,4 +381,4 @@ export default function DonationAnalytics({ projectId }: DonationAnalyticsProps)
       </Tabs>
     </div>
   )
-} 
+}

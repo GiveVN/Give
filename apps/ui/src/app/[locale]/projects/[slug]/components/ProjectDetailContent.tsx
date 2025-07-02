@@ -1,6 +1,8 @@
 "use client"
 
+import Link from "next/link"
 import {
+  BarChart3,
   Bell,
   CheckCircle,
   Clock,
@@ -13,16 +15,14 @@ import {
   Video,
 } from "lucide-react"
 
+import DonationHistory from "@/components/crowdfunding/DonationHistory"
+import ProjectComments from "@/components/crowdfunding/ProjectComments"
+import ProjectUpdates from "@/components/crowdfunding/ProjectUpdates"
 import { ImageWithFallback } from "@/components/elementary/ImageWithFallback"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Link from "next/link"
-import { BarChart3 } from "lucide-react"
-import DonationHistory from "@/components/crowdfunding/DonationHistory"
-import ProjectUpdates from "@/components/crowdfunding/ProjectUpdates"
-import ProjectComments from "@/components/crowdfunding/ProjectComments"
 
 export interface ProjectDetailContentProps {
   project: {
@@ -31,7 +31,7 @@ export interface ProjectDetailContentProps {
     Title: string
     Description?: string
     LongDescription?: string
-    Type?: 'give' | 'back'
+    Type?: "give" | "back"
     Image?: {
       url: string
       alternativeText?: string
@@ -201,7 +201,7 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
         </div>
         <Link href={`/projects/${project.Slug}/statistics`}>
           <Button variant="outline" size="sm">
-            <BarChart3 className="w-4 h-4 mr-2" />
+            <BarChart3 className="mr-2 h-4 w-4" />
             View Statistics
           </Button>
         </Link>
@@ -270,15 +270,16 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                {project.Type === 'give' ? 'Transparency' : 'Risks & Challenges'}
+                {project.Type === "give"
+                  ? "Transparency"
+                  : "Risks & Challenges"}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-700">
-                {project.Type === 'give' 
+                {project.Type === "give"
                   ? "We believe in complete transparency about how your donations will be used. Every contribution goes directly toward our stated goals, and we'll provide regular updates on our progress and fund allocation. Our commitment is to ensure your generosity creates the maximum positive impact."
-                  : "As with any innovative project, we face certain challenges. We've identified potential risks and have contingency plans in place. Our experienced team and thorough planning help mitigate these risks, but we believe in transparency with our backers."
-                }
+                  : "As with any innovative project, we face certain challenges. We've identified potential risks and have contingency plans in place. Our experienced team and thorough planning help mitigate these risks, but we believe in transparency with our backers."}
               </p>
             </CardContent>
           </Card>
@@ -286,7 +287,7 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
 
         {/* Updates Tab */}
         <TabsContent value="updates" className="space-y-4">
-          <ProjectUpdates 
+          <ProjectUpdates
             projectId={project.documentId || project.id}
             projectTitle={project.Title}
             authorName={project.Creator?.username || project.CreatedBy}
@@ -295,7 +296,7 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
 
         {/* Backers Tab */}
         <TabsContent value="backers" className="space-y-4">
-          <DonationHistory 
+          <DonationHistory
             projectId={Number(project.id)}
             projectType={project.Type}
             currentFunding={project.CurrentFunding}
@@ -305,7 +306,7 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
 
         {/* Comments Tab */}
         <TabsContent value="comments" className="space-y-4">
-          <ProjectComments 
+          <ProjectComments
             projectId={project.documentId || project.id}
             projectTitle={project.Title}
           />
@@ -327,4 +328,4 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
       </Tabs>
     </div>
   )
-} 
+}

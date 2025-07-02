@@ -77,4 +77,4 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
       type: "website",
     },
   }
-} 
+}

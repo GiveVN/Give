@@ -14,8 +14,9 @@ export function getDonationConfirmationEmail(data: {
   donationId: string
   projectUrl: string
 }): EmailTemplate {
-  const { donorName, projectTitle, amount, currency, donationId, projectUrl } = data
-  
+  const { donorName, projectTitle, amount, currency, donationId, projectUrl } =
+    data
+
   return {
     subject: `Thank you for supporting ${projectTitle}!`,
     html: `
@@ -94,7 +95,7 @@ Best regards,
 The Give Platform Team
 
 This is a confirmation email for your donation. Please keep it for your records.
-    `.trim()
+    `.trim(),
   }
 }
 
@@ -108,8 +109,16 @@ export function getNewDonationNotificationEmail(data: {
   message?: string
   projectUrl: string
 }): EmailTemplate {
-  const { creatorName, projectTitle, donorName, amount, currency, message, projectUrl } = data
-  
+  const {
+    creatorName,
+    projectTitle,
+    donorName,
+    amount,
+    currency,
+    message,
+    projectUrl,
+  } = data
+
   return {
     subject: `New donation for ${projectTitle}!`,
     html: `
@@ -144,12 +153,16 @@ export function getNewDonationNotificationEmail(data: {
                 ${currency} ${amount.toLocaleString()}
               </div>
               
-              ${message ? `
+              ${
+                message
+                  ? `
                 <div class="message">
                   <p><strong>Message from ${donorName}:</strong></p>
                   <p>"${message}"</p>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
               
               <p>This brings you one step closer to your funding goal. Keep up the great work!</p>
               
@@ -174,7 +187,7 @@ Hi ${creatorName},
 
 Great news! ${donorName} just donated ${currency} ${amount.toLocaleString()} to your project ${projectTitle}!
 
-${message ? `Message from ${donorName}: "${message}"` : ''}
+${message ? `Message from ${donorName}: "${message}"` : ""}
 
 This brings you one step closer to your funding goal. Keep up the great work!
 
@@ -184,7 +197,7 @@ Remember to thank your backers and keep them updated on your progress!
 
 Best regards,
 The Give Platform Team
-    `.trim()
+    `.trim(),
   }
 }
 
@@ -197,7 +210,7 @@ export function getRefundNotificationEmail(data: {
   refundReason?: string
 }): EmailTemplate {
   const { donorName, projectTitle, amount, currency, refundReason } = data
-  
+
   return {
     subject: `Refund processed for ${projectTitle}`,
     html: `
@@ -236,7 +249,7 @@ export function getRefundNotificationEmail(data: {
                 <ul>
                   <li>Project: ${projectTitle}</li>
                   <li>Refund Amount: ${currency} ${amount.toLocaleString()}</li>
-                  ${refundReason ? `<li>Reason: ${refundReason}</li>` : ''}
+                  ${refundReason ? `<li>Reason: ${refundReason}</li>` : ""}
                   <li>Processing Time: 5-10 business days</li>
                 </ul>
               </div>
@@ -267,7 +280,7 @@ We've processed a refund of ${currency} ${amount.toLocaleString()} for your dona
 Refund Details:
 - Project: ${projectTitle}
 - Refund Amount: ${currency} ${amount.toLocaleString()}
-${refundReason ? `- Reason: ${refundReason}` : ''}
+${refundReason ? `- Reason: ${refundReason}` : ""}
 - Processing Time: 5-10 business days
 
 The refund will be credited to your original payment method within 5-10 business days.
@@ -276,6 +289,6 @@ If you have any questions, please contact our support team.
 
 Best regards,
 The Give Platform Team
-    `.trim()
+    `.trim(),
   }
-} 
+}

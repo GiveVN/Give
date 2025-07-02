@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from "react"
 import Script from "next/script"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
-import { PAYPAL_CLIENT_ID, createPayPalOrder, capturePayPalOrder } from "@/lib/payment/paypal"
+
+import {
+  capturePayPalOrder,
+  createPayPalOrder,
+  PAYPAL_CLIENT_ID,
+} from "@/lib/payment/paypal"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface PayPalPaymentButtonProps {
   amount: number
@@ -52,7 +57,8 @@ export default function PayPalPaymentButton({
             })
             return order.id
           } catch (err) {
-            const message = err instanceof Error ? err.message : "Failed to create order"
+            const message =
+              err instanceof Error ? err.message : "Failed to create order"
             setError(message)
             onError(message)
             throw err
@@ -67,7 +73,8 @@ export default function PayPalPaymentButton({
               throw new Error("Payment not completed")
             }
           } catch (err) {
-            const message = err instanceof Error ? err.message : "Failed to capture payment"
+            const message =
+              err instanceof Error ? err.message : "Failed to capture payment"
             setError(message)
             onError(message)
             throw err
@@ -115,4 +122,4 @@ export default function PayPalPaymentButton({
       )}
     </>
   )
-} 
+}

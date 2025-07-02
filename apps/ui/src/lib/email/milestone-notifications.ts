@@ -1,4 +1,5 @@
 import { PrivateStrapiClient } from "@/lib/strapi-api"
+
 import { sendEmail } from "./send-email"
 
 interface MilestoneEmailData {
@@ -66,7 +67,7 @@ export function getMilestoneReachedTemplate(data: MilestoneEmailData): string {
           
           <div class="milestone-box">
             <h2 style="margin: 0 0 10px 0; color: #10b981;">${data.milestoneTitle}</h2>
-            ${data.milestoneDescription ? `<p style="margin: 0;">${data.milestoneDescription}</p>` : ''}
+            ${data.milestoneDescription ? `<p style="margin: 0;">${data.milestoneDescription}</p>` : ""}
             <p style="font-size: 18px; margin: 15px 0 0 0;">
               <strong>Target:</strong> ${formatCurrency(data.targetAmount, data.currency)} ✓
             </p>
@@ -111,7 +112,9 @@ export function getMilestoneReachedTemplate(data: MilestoneEmailData): string {
 }
 
 // Email template for funding goal reached
-export function getFundingGoalReachedTemplate(data: FundingGoalEmailData): string {
+export function getFundingGoalReachedTemplate(
+  data: FundingGoalEmailData
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -181,7 +184,7 @@ export function getFundingGoalReachedTemplate(data: FundingGoalEmailData): strin
               <li><strong>Prepare for fulfillment</strong> - Start planning to deliver on your promises</li>
               <li><strong>Stay connected</strong> - Keep your backers updated on progress</li>
             </ol>
-            ${data.nextSteps ? `<p><strong>Your notes:</strong> ${data.nextSteps}</p>` : ''}
+            ${data.nextSteps ? `<p><strong>Your notes:</strong> ${data.nextSteps}</p>` : ""}
           </div>
           
           <center>
@@ -270,13 +273,20 @@ export function getDailyProgressTemplate(data: {
             • ${data.daysRemaining} days remaining
           </p>
           
-          ${data.newBackers.length > 0 ? `
+          ${
+            data.newBackers.length > 0
+              ? `
             <h3>New Backers Today</h3>
             <ul>
-              ${data.newBackers.slice(0, 5).map(name => `<li>${name}</li>`).join('')}
-              ${data.newBackers.length > 5 ? `<li>...and ${data.newBackers.length - 5} more!</li>` : ''}
+              ${data.newBackers
+                .slice(0, 5)
+                .map((name) => `<li>${name}</li>`)
+                .join("")}
+              ${data.newBackers.length > 5 ? `<li>...and ${data.newBackers.length - 5} more!</li>` : ""}
             </ul>
-          ` : ''}
+          `
+              : ""
+          }
           
           <center style="margin: 30px 0;">
             <a href="${data.projectUrl}" class="button">View Full Details</a>
@@ -290,9 +300,9 @@ export function getDailyProgressTemplate(data: {
 
 // Helper function to format currency
 function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency || 'USD',
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency || "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount)
@@ -301,19 +311,19 @@ function formatCurrency(amount: number, currency: string): string {
 // Send milestone reached notification
 export async function sendMilestoneReachedEmail(data: MilestoneEmailData) {
   const html = getMilestoneReachedTemplate(data)
-  
+
   try {
     await sendEmail({
       to: data.creatorEmail,
       subject: `🎉 Milestone Reached: ${data.milestoneTitle} - ${data.projectTitle}`,
       html,
-      text: `Congratulations! Your project "${data.projectTitle}" has reached the milestone: ${data.milestoneTitle}. Target amount of ${formatCurrency(data.targetAmount, data.currency)} has been achieved!`
+      text: `Congratulations! Your project "${data.projectTitle}" has reached the milestone: ${data.milestoneTitle}. Target amount of ${formatCurrency(data.targetAmount, data.currency)} has been achieved!`,
     })
-    
+
     console.log(`Milestone notification sent to ${data.creatorEmail}`)
     return { success: true }
   } catch (error) {
-    console.error('Failed to send milestone email:', error)
+    console.error("Failed to send milestone email:", error)
     return { success: false, error }
   }
 }
@@ -321,19 +331,19 @@ export async function sendMilestoneReachedEmail(data: MilestoneEmailData) {
 // Send funding goal reached notification
 export async function sendFundingGoalReachedEmail(data: FundingGoalEmailData) {
   const html = getFundingGoalReachedTemplate(data)
-  
+
   try {
     await sendEmail({
       to: data.creatorEmail,
       subject: `🎊 Congratulations! ${data.projectTitle} is Fully Funded!`,
       html,
-      text: `Amazing news! Your project "${data.projectTitle}" has reached its funding goal of ${formatCurrency(data.fundingGoal, data.currency)}! You now have ${data.backersCount} backers supporting your vision.`
+      text: `Amazing news! Your project "${data.projectTitle}" has reached its funding goal of ${formatCurrency(data.fundingGoal, data.currency)}! You now have ${data.backersCount} backers supporting your vision.`,
     })
-    
+
     console.log(`Funding goal notification sent to ${data.creatorEmail}`)
     return { success: true }
   } catch (error) {
-    console.error('Failed to send funding goal email:', error)
+    console.error("Failed to send funding goal email:", error)
     return { success: false, error }
   }
 }
@@ -343,32 +353,39 @@ export async function sendDailyProgressEmail(projectId: string) {
   try {
     // Get project data
     const project = await PrivateStrapiClient.findOne("projects", projectId, {
-      populate: ["Creator", "Donations"]
+      populate: ["Creator", "Donations"],
     })
-    
+
     if (!project.data || !project.data.Creator?.email) {
-      console.error('Project or creator email not found')
-      return { success: false, error: 'Invalid project data' }
+      console.error("Project or creator email not found")
+      return { success: false, error: "Invalid project data" }
     }
-    
+
     // Calculate today's donations
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    
-    const todayDonations = project.data.Donations?.filter(d => {
-      const donationDate = new Date(d.createdAt)
-      return donationDate >= today && d.PaymentStatus === 'completed'
-    }) || []
-    
-    const todayAmount = todayDonations.reduce((sum, d) => sum + (d.Amount || 0), 0)
+
+    const todayDonations =
+      project.data.Donations?.filter((d) => {
+        const donationDate = new Date(d.createdAt)
+        return donationDate >= today && d.PaymentStatus === "completed"
+      }) || []
+
+    const todayAmount = todayDonations.reduce(
+      (sum, d) => sum + (d.Amount || 0),
+      0
+    )
     const newBackers = todayDonations
-      .filter(d => !d.IsAnonymous)
-      .map(d => d.Name || 'Anonymous')
-    
+      .filter((d) => !d.IsAnonymous)
+      .map((d) => d.Name || "Anonymous")
+
     // Calculate days remaining
     const endDate = new Date(project.data.EndDate)
-    const daysRemaining = Math.max(0, Math.ceil((endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
-    
+    const daysRemaining = Math.max(
+      0,
+      Math.ceil((endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    )
+
     const emailData = {
       projectTitle: project.data.Title,
       projectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${project.data.Slug}`,
@@ -376,25 +393,28 @@ export async function sendDailyProgressEmail(projectId: string) {
       todayAmount,
       totalAmount: project.data.CurrentFunding || 0,
       fundingGoal: project.data.FundingGoal || 0,
-      percentageComplete: Math.round(((project.data.CurrentFunding || 0) / (project.data.FundingGoal || 1)) * 100),
-      currency: project.data.Currency || 'USD',
+      percentageComplete: Math.round(
+        ((project.data.CurrentFunding || 0) / (project.data.FundingGoal || 1)) *
+          100
+      ),
+      currency: project.data.Currency || "USD",
       daysRemaining,
-      newBackers
+      newBackers,
     }
-    
+
     const html = getDailyProgressTemplate(emailData)
-    
+
     await sendEmail({
       to: project.data.Creator.email,
       subject: `Daily Progress Report: ${project.data.Title}`,
       html,
-      text: `Today's progress for ${project.data.Title}: ${todayDonations.length} new donations totaling ${formatCurrency(todayAmount, project.data.Currency)}. Total raised: ${formatCurrency(project.data.CurrentFunding, project.data.Currency)} (${emailData.percentageComplete}% of goal).`
+      text: `Today's progress for ${project.data.Title}: ${todayDonations.length} new donations totaling ${formatCurrency(todayAmount, project.data.Currency)}. Total raised: ${formatCurrency(project.data.CurrentFunding, project.data.Currency)} (${emailData.percentageComplete}% of goal).`,
     })
-    
+
     console.log(`Daily progress email sent for project ${projectId}`)
     return { success: true }
   } catch (error) {
-    console.error('Failed to send daily progress email:', error)
+    console.error("Failed to send daily progress email:", error)
     return { success: false, error }
   }
-} 
+}

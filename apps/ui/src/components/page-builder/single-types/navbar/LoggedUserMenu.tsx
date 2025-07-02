@@ -35,7 +35,10 @@ export function LoggedUserMenu({ user }: { readonly user: Session["user"] }) {
         </DropdownMenuItem>
 
         <DropdownMenuItem>
-          <Link href="/my-contributions" className="flex w-full items-center gap-1">
+          <Link
+            href="/my-contributions"
+            className="flex w-full items-center gap-1"
+          >
             <span>{t("actions.myContributions")}</span>
           </Link>
         </DropdownMenuItem>

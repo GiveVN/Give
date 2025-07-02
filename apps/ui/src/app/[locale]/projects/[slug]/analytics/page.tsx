@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+
 import { PrivateStrapiClient } from "@/lib/strapi-api"
 import { AnalyticsDashboard } from "@/components/crowdfunding/AnalyticsDashboard"
 
@@ -9,15 +10,17 @@ interface ProjectAnalyticsPageProps {
   }
 }
 
-export default async function ProjectAnalyticsPage({ params }: ProjectAnalyticsPageProps) {
+export default async function ProjectAnalyticsPage({
+  params,
+}: ProjectAnalyticsPageProps) {
   const { slug, locale } = params
 
   // Fetch project data
   const project = await PrivateStrapiClient.findOne("projects", undefined, {
     filters: {
-      Slug: { $eq: slug }
+      Slug: { $eq: slug },
     },
-    populate: ["Creator"]
+    populate: ["Creator"],
   })
 
   if (!project?.data) {
@@ -29,7 +32,7 @@ export default async function ProjectAnalyticsPage({ params }: ProjectAnalyticsP
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <AnalyticsDashboard 
+      <AnalyticsDashboard
         projectId={project.data.id}
         projectTitle={project.data.Title}
       />
@@ -42,8 +45,8 @@ export async function generateMetadata({ params }: ProjectAnalyticsPageProps) {
 
   const project = await PrivateStrapiClient.findOne("projects", undefined, {
     filters: {
-      Slug: { $eq: slug }
-    }
+      Slug: { $eq: slug },
+    },
   })
 
   if (!project?.data) {
@@ -56,4 +59,4 @@ export async function generateMetadata({ params }: ProjectAnalyticsPageProps) {
     title: `Analytics - ${project.data.Title}`,
     description: `View detailed analytics and insights for ${project.data.Title}`,
   }
-} 
+}

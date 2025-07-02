@@ -6,34 +6,34 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
    * Uses select and populate to minimize data transfer
    */
   async findOneOptimized(userId: string, includePrivate = false) {
-    const query = strapi.db.query('plugin::users-permissions.user')
-    
+    const query = strapi.db.query("plugin::users-permissions.user")
+
     // Base fields to select
     const selectFields = [
-      'id',
-      'username',
-      'email',
-      'firstName',
-      'lastName',
-      'displayName',
-      'bio',
-      'location',
-      'website',
-      'vanityUrl',
-      'isVerified',
-      'isPublic',
-      'reputation',
-      'createdAt',
-      'updatedAt',
-      'lastActiveAt'
+      "id",
+      "username",
+      "email",
+      "firstName",
+      "lastName",
+      "displayName",
+      "bio",
+      "location",
+      "website",
+      "vanityUrl",
+      "isVerified",
+      "isPublic",
+      "reputation",
+      "createdAt",
+      "updatedAt",
+      "lastActiveAt",
     ]
 
     // Add private fields if requested
     if (includePrivate) {
       selectFields.push(
-        'privacySettings',
-        'notificationSettings',
-        'emailNotifications'
+        "privacySettings",
+        "notificationSettings",
+        "emailNotifications"
       )
     }
 
@@ -42,16 +42,16 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       select: selectFields,
       populate: {
         avatar: {
-          select: ['url', 'alternativeText', 'width', 'height']
+          select: ["url", "alternativeText", "width", "height"],
         },
         coverImage: {
-          select: ['url', 'alternativeText', 'width', 'height']
+          select: ["url", "alternativeText", "width", "height"],
         },
         socialLinks: {
-          select: ['platform', 'url', 'isVerified', 'isPublic'],
-          where: includePrivate ? {} : { isPublic: true }
-        }
-      }
+          select: ["platform", "url", "isVerified", "isPublic"],
+          where: includePrivate ? {} : { isPublic: true },
+        },
+      },
     })
 
     if (!user) {
@@ -61,13 +61,13 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     // Get aggregated stats in parallel for performance
     const [projectStats, donationStats] = await Promise.all([
       this.getProjectStats(userId),
-      this.getDonationStats(userId)
+      this.getDonationStats(userId),
     ])
 
     return {
       ...user,
       ...projectStats,
-      ...donationStats
+      ...donationStats,
     }
   },
 
@@ -77,22 +77,25 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async getProjectStats(userId: string) {
     const [projectCount, totalRaised] = await Promise.all([
       // Count user's projects
-      strapi.db.query('api::project.project').count({
-        where: { Creator: userId }
+      strapi.db.query("api::project.project").count({
+        where: { Creator: userId },
       }),
-      
+
       // Sum total raised from all projects
-      strapi.db.connection.raw(`
+      strapi.db.connection.raw(
+        `
         SELECT COALESCE(SUM(p."FundingGoal"), 0) as total_raised
         FROM projects p
         WHERE p."Creator" = ?
         AND p."Status" = 'funded'
-      `, [userId])
+      `,
+        [userId]
+      ),
     ])
 
     return {
       projectCount,
-      totalRaised: totalRaised.rows[0]?.total_raised || 0
+      totalRaised: totalRaised.rows[0]?.total_raised || 0,
     }
   },
 
@@ -100,18 +103,21 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
    * Get donation statistics for a user
    */
   async getDonationStats(userId: string) {
-    const result = await strapi.db.connection.raw(`
+    const result = await strapi.db.connection.raw(
+      `
       SELECT 
         COUNT(*) as donation_count,
         COALESCE(SUM(d."Amount"), 0) as total_donated
       FROM donations d
       WHERE d."Giver" = ?
       AND d."Status" = 'completed'
-    `, [userId])
+    `,
+      [userId]
+    )
 
     return {
-      donationCount: parseInt(result.rows[0]?.donation_count || '0'),
-      totalDonated: parseFloat(result.rows[0]?.total_donated || '0')
+      donationCount: parseInt(result.rows[0]?.donation_count || "0"),
+      totalDonated: parseFloat(result.rows[0]?.total_donated || "0"),
     }
   },
 
@@ -121,47 +127,51 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async findMany({
     page = 1,
     pageSize = 20,
-    sort = 'reputation:desc',
-    filters = {}
+    sort = "reputation:desc",
+    filters = {},
   }) {
     const offset = (page - 1) * pageSize
 
     // Build where clause
     const where: any = {
       isPublic: true,
-      ...filters
+      ...filters,
     }
 
     // Parse sort parameter
-    const [sortField, sortOrder] = sort.split(':')
-    const orderBy = { [sortField]: sortOrder || 'asc' }
+    const [sortField, sortOrder] = sort.split(":")
+    const orderBy = { [sortField]: sortOrder || "asc" }
 
     // Get users with minimal fields for listing
-    const users = await strapi.db.query('plugin::users-permissions.user').findMany({
-      where,
-      select: [
-        'id',
-        'username',
-        'displayName',
-        'bio',
-        'location',
-        'vanityUrl',
-        'isVerified',
-        'reputation',
-        'lastActiveAt'
-      ],
-      populate: {
-        avatar: {
-          select: ['url', 'alternativeText']
-        }
-      },
-      orderBy,
-      offset,
-      limit: pageSize
-    })
+    const users = await strapi.db
+      .query("plugin::users-permissions.user")
+      .findMany({
+        where,
+        select: [
+          "id",
+          "username",
+          "displayName",
+          "bio",
+          "location",
+          "vanityUrl",
+          "isVerified",
+          "reputation",
+          "lastActiveAt",
+        ],
+        populate: {
+          avatar: {
+            select: ["url", "alternativeText"],
+          },
+        },
+        orderBy,
+        offset,
+        limit: pageSize,
+      })
 
     // Get total count for pagination
-    const total = await strapi.db.query('plugin::users-permissions.user').count({ where })
+    const total = await strapi.db
+      .query("plugin::users-permissions.user")
+      .count({ where })
 
     return {
       data: users,
@@ -170,9 +180,9 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
           page,
           pageSize,
           pageCount: Math.ceil(total / pageSize),
-          total
-        }
-      }
+          total,
+        },
+      },
     }
   },
 
@@ -186,7 +196,8 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
 
     const searchQuery = `%${query.toLowerCase()}%`
 
-    const results = await strapi.db.connection.raw(`
+    const results = await strapi.db.connection.raw(
+      `
       SELECT 
         id,
         username,
@@ -212,12 +223,18 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         END,
         reputation DESC
       LIMIT ?
-    `, [
-      searchQuery, searchQuery, searchQuery,
-      query.toLowerCase(), query.toLowerCase(),
-      `${query.toLowerCase()}%`, `${query.toLowerCase()}%`,
-      limit
-    ])
+    `,
+      [
+        searchQuery,
+        searchQuery,
+        searchQuery,
+        query.toLowerCase(),
+        query.toLowerCase(),
+        `${query.toLowerCase()}%`,
+        `${query.toLowerCase()}%`,
+        limit,
+      ]
+    )
 
     return results.rows
   },
@@ -229,17 +246,23 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     const offset = (page - 1) * pageSize
 
     // Get user's privacy settings
-    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
-      where: { id: userId },
-      select: ['privacySettings']
-    })
+    const user = await strapi.db
+      .query("plugin::users-permissions.user")
+      .findOne({
+        where: { id: userId },
+        select: ["privacySettings"],
+      })
 
     if (!user?.privacySettings?.showActivityFeed) {
-      return { data: [], meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } } }
+      return {
+        data: [],
+        meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } },
+      }
     }
 
     // Get activities from multiple sources
-    const activities = await strapi.db.connection.raw(`
+    const activities = await strapi.db.connection.raw(
+      `
       (
         SELECT 
           'project_created' as type,
@@ -248,7 +271,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
           p."createdAt" as created_at
         FROM projects p
         WHERE p."Creator" = ?
-        ${user.privacySettings.showCreatedProjects ? '' : 'AND 1=0'}
+        ${user.privacySettings.showCreatedProjects ? "" : "AND 1=0"}
       )
       UNION ALL
       (
@@ -261,7 +284,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         JOIN projects p ON d."Project" = p.id
         WHERE d."Giver" = ?
         AND d."Status" = 'completed'
-        ${user.privacySettings.showDonationHistory ? '' : 'AND 1=0'}
+        ${user.privacySettings.showDonationHistory ? "" : "AND 1=0"}
       )
       UNION ALL
       (
@@ -276,22 +299,27 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       )
       ORDER BY created_at DESC
       LIMIT ? OFFSET ?
-    `, [userId, userId, userId, pageSize, offset])
+    `,
+      [userId, userId, userId, pageSize, offset]
+    )
 
     // Get total count
-    const totalResult = await strapi.db.connection.raw(`
+    const totalResult = await strapi.db.connection.raw(
+      `
       SELECT COUNT(*) as total FROM (
         SELECT 1 FROM projects WHERE "Creator" = ?
-        ${user.privacySettings.showCreatedProjects ? '' : 'AND 1=0'}
+        ${user.privacySettings.showCreatedProjects ? "" : "AND 1=0"}
         UNION ALL
         SELECT 1 FROM donations WHERE "Giver" = ? AND "Status" = 'completed'
-        ${user.privacySettings.showDonationHistory ? '' : 'AND 1=0'}
+        ${user.privacySettings.showDonationHistory ? "" : "AND 1=0"}
         UNION ALL
         SELECT 1 FROM comments WHERE "Author" = ?
       ) as activities
-    `, [userId, userId, userId])
+    `,
+      [userId, userId, userId]
+    )
 
-    const total = parseInt(totalResult.rows[0]?.total || '0')
+    const total = parseInt(totalResult.rows[0]?.total || "0")
 
     return {
       data: activities.rows,
@@ -300,9 +328,9 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
           page,
           pageSize,
           pageCount: Math.ceil(total / pageSize),
-          total
-        }
-      }
+          total,
+        },
+      },
     }
   },
 
@@ -311,24 +339,27 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
    */
   async updateReputation(userId: string) {
     // Calculate reputation based on various factors
-    const factors = await strapi.db.connection.raw(`
+    const factors = await strapi.db.connection.raw(
+      `
       SELECT 
         (SELECT COUNT(*) * 10 FROM projects WHERE "Creator" = ? AND "Status" = 'funded') as funded_projects,
         (SELECT COUNT(*) * 5 FROM projects WHERE "Creator" = ?) as total_projects,
         (SELECT COUNT(*) * 2 FROM donations WHERE "Giver" = ? AND "Status" = 'completed') as donations_made,
         (SELECT COUNT(*) FROM comments WHERE "Author" = ?) as comments_posted,
         (SELECT COUNT(*) * 3 FROM project_updates WHERE "Author" = ?) as updates_posted
-    `, [userId, userId, userId, userId, userId])
+    `,
+      [userId, userId, userId, userId, userId]
+    )
 
-    const { 
-      funded_projects, 
-      total_projects, 
-      donations_made, 
-      comments_posted, 
-      updates_posted 
+    const {
+      funded_projects,
+      total_projects,
+      donations_made,
+      comments_posted,
+      updates_posted,
     } = factors.rows[0]
 
-    const reputation = 
+    const reputation =
       parseInt(funded_projects || 0) +
       parseInt(total_projects || 0) +
       parseInt(donations_made || 0) +
@@ -336,11 +367,11 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       parseInt(updates_posted || 0)
 
     // Update user reputation
-    await strapi.db.query('plugin::users-permissions.user').update({
+    await strapi.db.query("plugin::users-permissions.user").update({
       where: { id: userId },
-      data: { reputation }
+      data: { reputation },
     })
 
     return reputation
-  }
-}) 
+  },
+})

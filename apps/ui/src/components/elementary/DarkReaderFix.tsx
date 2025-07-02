@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect } from "react"
 
 /**
  * Removes Dark Reader inline attributes that cause React hydration mismatch.
@@ -8,12 +8,13 @@ import { useLayoutEffect } from 'react'
  */
 export default function DarkReaderFix() {
   useLayoutEffect(() => {
-    const selector = '[data-darkreader-inline-stroke], [data-darkreader-inline-fill], [data-darkreader-inline-color]'
+    const selector =
+      "[data-darkreader-inline-stroke], [data-darkreader-inline-fill], [data-darkreader-inline-color]"
     const clean = () => {
       document.querySelectorAll(selector).forEach((el) => {
-        el.removeAttribute('data-darkreader-inline-stroke')
-        el.removeAttribute('data-darkreader-inline-fill')
-        el.removeAttribute('data-darkreader-inline-color')
+        el.removeAttribute("data-darkreader-inline-stroke")
+        el.removeAttribute("data-darkreader-inline-fill")
+        el.removeAttribute("data-darkreader-inline-color")
       })
     }
 
@@ -22,9 +23,12 @@ export default function DarkReaderFix() {
 
     // Also observe mutations and clean again
     const observer = new MutationObserver(() => clean())
-    observer.observe(document.documentElement, { attributes: true, subtree: true })
+    observer.observe(document.documentElement, {
+      attributes: true,
+      subtree: true,
+    })
     return () => observer.disconnect()
   }, [])
 
   return null
-} 
+}

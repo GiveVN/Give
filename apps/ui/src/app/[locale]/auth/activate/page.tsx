@@ -32,7 +32,7 @@ export default function ActivateAccountPage() {
       <h4 className="text-2xl">
         {name ? `${t("welcome")}, ${name}!` : t("status.success")}
       </h4>
-      <p className="text-base text-center max-w-sm">
+      <p className="max-w-sm text-center text-base">
         {t("emailConfirmed", { email: email ?? "" })}
       </p>
       <Button asChild variant="default">

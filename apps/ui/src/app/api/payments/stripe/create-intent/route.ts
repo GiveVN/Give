@@ -38,17 +38,17 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Stripe payment intent error:", error)
-    
+
     if (error instanceof Stripe.errors.StripeError) {
       return NextResponse.json(
         { error: error.message },
         { status: error.statusCode || 500 }
       )
     }
-    
+
     return NextResponse.json(
       { error: "Failed to create payment intent" },
       { status: 500 }
     )
   }
-} 
+}

@@ -1,5 +1,5 @@
-import { render } from '@react-email/render'
-import nodemailer from 'nodemailer'
+import { render } from "@react-email/render"
+import nodemailer from "nodemailer"
 
 // Email template component
 interface DonationReceiptProps {
@@ -19,7 +19,7 @@ const DonationReceiptEmail = ({
   projectTitle,
   transactionId,
   donationDate,
-  message
+  message,
 }: DonationReceiptProps) => {
   return `
     <!DOCTYPE html>
@@ -45,7 +45,7 @@ const DonationReceiptEmail = ({
           </div>
           
           <div class="content">
-            <p>Dear ${donorName || 'Generous Supporter'},</p>
+            <p>Dear ${donorName || "Generous Supporter"},</p>
             
             <p>Thank you for your generous donation to <strong>${projectTitle}</strong>. Your support means the world to us and brings us one step closer to our goal.</p>
             
@@ -67,12 +67,16 @@ const DonationReceiptEmail = ({
                 <span>Project:</span>
                 <span>${projectTitle}</span>
               </div>
-              ${message ? `
+              ${
+                message
+                  ? `
                 <div class="receipt-item">
                   <span>Your Message:</span>
                   <span>"${message}"</span>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
             </div>
             
             <p>This receipt serves as confirmation of your donation. Please keep it for your records.</p>
@@ -98,24 +102,24 @@ const DonationReceiptEmail = ({
 // Email transporter configuration
 const createTransporter = () => {
   // For development, use Ethereal Email or local SMTP
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     return nodemailer.createTransport({
-      host: 'localhost',
+      host: "localhost",
       port: 1025, // MailHog or similar
       secure: false,
-      ignoreTLS: true
+      ignoreTLS: true,
     })
   }
 
   // For production, use real SMTP service
   return nodemailer.createTransporter({
     host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_SECURE === 'true',
+    port: parseInt(process.env.SMTP_PORT || "587"),
+    secure: process.env.SMTP_SECURE === "true",
     auth: {
       user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
+      pass: process.env.SMTP_PASS,
+    },
   })
 }
 
@@ -137,30 +141,30 @@ export async function sendDonationReceipt(
 ) {
   try {
     const transporter = createTransporter()
-    
+
     const html = DonationReceiptEmail({
-      donorName: donation.GiverName || 'Anonymous',
+      donorName: donation.GiverName || "Anonymous",
       amount: donation.Amount,
       currency: donation.Currency,
       projectTitle: donation.Project.Title,
       transactionId: donation.PaymentId,
       donationDate: new Date(donation.createdAt).toLocaleDateString(),
-      message: donation.Message
+      message: donation.Message,
     })
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'Give Platform <noreply@give.local>',
+      from: process.env.SMTP_FROM || "Give Platform <noreply@give.local>",
       to: email,
       subject: `Thank you for supporting ${donation.Project.Title}!`,
-      html
+      html,
     }
 
     const info = await transporter.sendMail(mailOptions)
-    console.log('Email sent:', info.messageId)
-    
+    console.log("Email sent:", info.messageId)
+
     return { success: true, messageId: info.messageId }
   } catch (error) {
-    console.error('Email send error:', error)
+    console.error("Email send error:", error)
     return { success: false, error }
   }
 }
@@ -180,7 +184,7 @@ export async function sendRefundNotification(
 ) {
   try {
     const transporter = createTransporter()
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -208,7 +212,7 @@ export async function sendRefundNotification(
                 <p><strong>Project:</strong> ${donation.Project.Title}</p>
                 <p><strong>Amount:</strong> ${donation.Currency} ${donation.Amount}</p>
                 <p><strong>Transaction ID:</strong> ${donation.PaymentId}</p>
-                ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ''}
+                ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ""}
               </div>
               
               <p>The refund should appear in your account within 5-10 business days.</p>
@@ -221,16 +225,16 @@ export async function sendRefundNotification(
     `
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'Give Platform <noreply@give.local>',
+      from: process.env.SMTP_FROM || "Give Platform <noreply@give.local>",
       to: email,
-      subject: 'Refund Processed - Give Platform',
-      html
+      subject: "Refund Processed - Give Platform",
+      html,
     }
 
     await transporter.sendMail(mailOptions)
     return { success: true }
   } catch (error) {
-    console.error('Refund email error:', error)
+    console.error("Refund email error:", error)
     return { success: false, error }
   }
-} 
+}

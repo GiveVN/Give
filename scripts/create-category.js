@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch")
 
 async function createCategory() {
   try {
@@ -7,59 +7,64 @@ async function createCategory() {
         Name: "Education",
         Slug: "education",
         Description: "Educational projects and scholarships",
-        Icon: "📚"
+        Icon: "📚",
       },
       {
         Name: "Technology",
         Slug: "technology",
         Description: "Tech innovations and digital solutions",
-        Icon: "💻"
+        Icon: "💻",
       },
       {
         Name: "Environment",
         Slug: "environment",
         Description: "Environmental protection and sustainability",
-        Icon: "🌱"
+        Icon: "🌱",
       },
       {
         Name: "Community",
         Slug: "community",
         Description: "Community development and social impact",
-        Icon: "🤝"
-      }
-    ];
+        Icon: "🤝",
+      },
+    ]
 
     for (const category of categories) {
       const categoryData = {
         data: {
           ...category,
-          publishedAt: new Date().toISOString()
-        }
-      };
-
-      const response = await fetch('http://localhost:1338/api/categories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+          publishedAt: new Date().toISOString(),
         },
-        body: JSON.stringify(categoryData)
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        console.error(`Failed to create category ${category.Name}:`, response.status, error);
-        continue;
       }
 
-      const created = await response.json();
-      console.log(`✅ Created category: ${category.Name} (ID: ${created.data.id})`);
+      const response = await fetch("http://localhost:1338/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryData),
+      })
+
+      if (!response.ok) {
+        const error = await response.text()
+        console.error(
+          `Failed to create category ${category.Name}:`,
+          response.status,
+          error
+        )
+        continue
+      }
+
+      const created = await response.json()
+      console.log(
+        `✅ Created category: ${category.Name} (ID: ${created.data.id})`
+      )
     }
 
-    console.log('\n✅ All categories created successfully!');
-    
+    console.log("\n✅ All categories created successfully!")
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error)
   }
 }
 
-createCategory(); 
+createCategory()

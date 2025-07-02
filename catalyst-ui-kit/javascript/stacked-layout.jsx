@@ -1,8 +1,9 @@
-'use client'
+"use client"
 
-import * as Headless from '@headlessui/react'
-import React, { useState } from 'react'
-import { NavbarItem } from './navbar'
+import React, { useState } from "react"
+import * as Headless from "@headlessui/react"
+
+import { NavbarItem } from "./navbar"
 
 function OpenMenuIcon() {
   return (
@@ -57,7 +58,10 @@ export function StackedLayout({ navbar, sidebar, children }) {
       {/* Navbar */}
       <header className="flex items-center px-4">
         <div className="py-2.5 lg:hidden">
-          <NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
+          <NavbarItem
+            onClick={() => setShowSidebar(true)}
+            aria-label="Open navigation"
+          >
             <OpenMenuIcon />
           </NavbarItem>
         </div>

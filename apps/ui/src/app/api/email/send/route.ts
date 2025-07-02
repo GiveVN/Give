@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { PrivateStrapiClient } from "@/lib/strapi-api"
+
 import {
   getDonationConfirmationEmail,
   getNewDonationNotificationEmail,
   getRefundNotificationEmail,
 } from "@/lib/email/templates"
+import { PrivateStrapiClient } from "@/lib/strapi-api"
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,9 +56,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Email sending error:", error)
-    return NextResponse.json(
-      { error: "Failed to send email" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to send email" }, { status: 500 })
   }
-} 
+}

@@ -1,12 +1,15 @@
 # DEVELOPMENT ROADMAP & TIMELINE
-*Lộ trình phát triển chi tiết cho crowdfunding platform mới*
+
+_Lộ trình phát triển chi tiết cho crowdfunding platform mới_
 
 ## 🎯 PROJECT OVERVIEW
 
 ### Vision
+
 Xây dựng một crowdfunding platform hiện đại, tối ưu performance, và user-friendly cho cộng đồng Việt Nam và quốc tế.
 
 ### Success Criteria
+
 - Platform stable trong 2 tuần đầu sau launch
 - Load time < 2 giây cho tất cả pages
 - Support 1000+ concurrent users
@@ -14,13 +17,15 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - Mobile-responsive hoàn hảo
 
 ### Budget Timeline: **9-11 tuần**
-*So với 15+ tuần nếu fix Giveth technical debt*
+
+_So với 15+ tuần nếu fix Giveth technical debt_
 
 ## 📅 PROGRESS TRACKING
 
 ### 🎉 COMPLETED MILESTONES (Updated 2025-06-18)
 
 **✅ Authentication System UX Improvements**
+
 - **Loading States**: Spinner animation + button disable during form submission
 - **Session Management**: Real-time session updates without manual refresh
 - **User Feedback**: Toast notifications for success/error states
@@ -36,6 +41,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 1: Environment & Architecture Setup
 
 **🛠️ Development Environment**
+
 - [ ] Setup workspace structure
 - [ ] Configure Docker development environment
 - [ ] Initialize Git repository với proper .gitignore
@@ -43,6 +49,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Configure development tools (ESLint, Prettier, Husky)
 
 **📊 Database Design**
+
 - [ ] Design database schema (Prisma)
 - [ ] Create migration files
 - [ ] Setup PostgreSQL + Redis với Docker
@@ -50,6 +57,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Create performance indexes
 
 **🏗️ Backend Foundation**
+
 - [ ] Initialize NestJS project
 - [ ] Setup GraphQL với Apollo Server
 - [ ] Configure JWT authentication
@@ -57,12 +65,14 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Setup validation (Zod + Class-validator)
 
 **⚡ Performance Setup**
+
 - [ ] Configure Redis caching
 - [ ] Implement query optimization
 - [ ] Setup monitoring (Sentry)
 - [ ] Create health check endpoints
 
 **Deliverables:**
+
 - ✅ Working development environment
 - ✅ Database schema complete
 - ✅ Basic backend API functional
@@ -71,6 +81,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 2: Core Backend Features
 
 **👤 User Management**
+
 - [ ] User registration/login
 - [ ] Email verification
 - [ ] Password reset functionality
@@ -78,6 +89,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Role-based access control
 
 **📁 Project System**
+
 - [ ] Project CRUD operations
 - [ ] Image upload với Cloudinary
 - [ ] Project categorization
@@ -85,6 +97,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Project status workflow
 
 **🔍 Search & Filtering**
+
 - [ ] Basic search functionality
 - [ ] Category filtering
 - [ ] Status filtering
@@ -92,12 +105,14 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Pagination system
 
 **🔐 Security**
+
 - [ ] Input validation và sanitization
 - [ ] Rate limiting
 - [ ] CORS configuration
 - [ ] Security headers
 
 **Deliverables:**
+
 - ✅ Complete user management system
 - ✅ Project management functional
 - ✅ Search và filtering working
@@ -108,6 +123,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 3: Frontend Foundation
 
 **⚡ Next.js Setup**
+
 - [ ] Initialize Next.js 14 project
 - [ ] Configure Tailwind CSS + Shadcn/ui
 - [ ] Setup Apollo Client
@@ -115,6 +131,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Configure TypeScript strict mode
 
 **🎨 UI Components**
+
 - [ ] Design system components
 - [ ] Navigation và header
 - [ ] Footer với links
@@ -122,6 +139,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Error handling UI
 
 **🔐 Authentication UI**
+
 - [x] Login/Register forms ✅ **COMPLETED (2025-06-18)**
   - [x] Loading states implemented
   - [x] Session management fixed
@@ -134,6 +152,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Protected routes
 
 **Deliverables:**
+
 - ✅ Frontend foundation complete
 - ✅ Authentication UI working
 - ✅ Basic navigation functional
@@ -142,6 +161,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 4: Project Management UI
 
 **📋 Project Pages**
+
 - [ ] Project listing page
 - [ ] Project detail page
 - [ ] Project creation form
@@ -149,6 +169,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Image gallery component
 
 **🔍 Discovery Features**
+
 - [ ] Search interface
 - [ ] Filter sidebar
 - [ ] Category browsing
@@ -156,12 +177,14 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Featured projects
 
 **👤 User Dashboard**
+
 - [ ] User profile dashboard
 - [ ] My projects management
 - [ ] Donation history
 - [ ] Account settings
 
 **Deliverables:**
+
 - ✅ Project management UI complete
 - ✅ Discovery features working
 - ✅ User dashboard functional
@@ -170,6 +193,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 5: Payment Integration
 
 **💳 Stripe Integration**
+
 - [ ] Stripe checkout flow
 - [ ] Payment intent creation
 - [ ] Webhook handling
@@ -177,6 +201,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Refund functionality
 
 **📊 Donation System**
+
 - [ ] Donation tracking
 - [ ] Donation history
 - [ ] Anonymous donations
@@ -184,6 +209,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Thank you flows
 
 **💰 Financial Management**
+
 - [ ] Project funding tracking
 - [ ] Payout calculations
 - [ ] Fee handling
@@ -191,6 +217,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Financial analytics
 
 **Deliverables:**
+
 - ✅ Payment system functional
 - ✅ Donation tracking complete
 - ✅ Financial management working
@@ -199,6 +226,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 6: Admin Dashboard
 
 **⚙️ Admin Interface**
+
 - [ ] Admin authentication
 - [ ] User management
 - [ ] Project moderation
@@ -206,6 +234,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] System settings
 
 **📈 Analytics & Reporting**
+
 - [ ] User registration metrics
 - [ ] Project creation stats
 - [ ] Donation volume tracking
@@ -213,6 +242,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Financial reporting
 
 **🛡️ Moderation Tools**
+
 - [ ] Content flagging system
 - [ ] User suspension
 - [ ] Project approval workflow
@@ -220,6 +250,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Abuse reporting
 
 **Deliverables:**
+
 - ✅ Admin dashboard complete
 - ✅ Analytics system working
 - ✅ Moderation tools functional
@@ -230,6 +261,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 7: Blockchain Integration
 
 **⛓️ Web3 Setup**
+
 - [ ] Wallet connection (MetaMask, WalletConnect)
 - [ ] Smart contract integration
 - [ ] Blockchain transaction handling
@@ -237,6 +269,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Gas estimation
 
 **💎 Crypto Payments**
+
 - [ ] ETH/ERC-20 token donations
 - [ ] Transaction verification
 - [ ] Blockchain event listening
@@ -244,6 +277,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Wallet balance checking
 
 **🔗 DeFi Integration**
+
 - [ ] Yield farming cho idle funds
 - [ ] Staking rewards
 - [ ] Liquidity provision
@@ -251,6 +285,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] DAO functionality
 
 **Deliverables:**
+
 - ✅ Blockchain integration complete
 - ✅ Crypto payments working
 - ✅ Multi-chain support implemented
@@ -259,6 +294,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 8: Advanced Search & Discovery
 
 **🔍 Enhanced Search**
+
 - [ ] Elasticsearch integration
 - [ ] Advanced filtering options
 - [ ] Autocomplete suggestions
@@ -266,6 +302,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Personalized recommendations
 
 **📊 Algorithm Implementation**
+
 - [ ] Project ranking algorithm
 - [ ] User reputation system
 - [ ] Trending calculation
@@ -273,6 +310,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Content scoring
 
 **🏷️ Tagging & Categorization**
+
 - [ ] Advanced tagging system
 - [ ] Category hierarchies
 - [ ] Tag suggestions
@@ -280,6 +318,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Content classification
 
 **Deliverables:**
+
 - ✅ Advanced search functional
 - ✅ Recommendation system working
 - ✅ Tagging system implemented
@@ -288,6 +327,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 9: Communication Features
 
 **💬 Messaging System**
+
 - [ ] In-app messaging
 - [ ] Project updates
 - [ ] Notification system
@@ -295,6 +335,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Push notifications
 
 **📢 Social Features**
+
 - [ ] Project comments
 - [ ] User following system
 - [ ] Social sharing
@@ -302,6 +343,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] User reviews
 
 **📱 Mobile App Preparation**
+
 - [ ] PWA configuration
 - [ ] Mobile-optimized UI
 - [ ] Offline functionality
@@ -309,6 +351,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] App store preparation
 
 **Deliverables:**
+
 - ✅ Communication system complete
 - ✅ Social features working
 - ✅ Mobile optimization done
@@ -317,6 +360,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 10: Integrations & Partnerships
 
 **🔗 Third-party Integrations**
+
 - [ ] Social media APIs
 - [ ] Email service providers
 - [ ] Analytics platforms
@@ -324,6 +368,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Banking APIs
 
 **🤝 Partnership Features**
+
 - [ ] Organization accounts
 - [ ] Partner dashboards
 - [ ] White-label solutions
@@ -331,6 +376,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Revenue sharing
 
 **📊 Advanced Analytics**
+
 - [ ] Google Analytics 4
 - [ ] Mixpanel integration
 - [ ] Hotjar heatmaps
@@ -338,6 +384,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Conversion tracking
 
 **Deliverables:**
+
 - ✅ All integrations working
 - ✅ Partnership features complete
 - ✅ Advanced analytics implemented
@@ -348,6 +395,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 11: Performance Optimization
 
 **⚡ Backend Optimization**
+
 - [ ] Database query optimization
 - [ ] Caching strategy implementation
 - [ ] API response time optimization
@@ -355,6 +403,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Concurrent request handling
 
 **🚀 Frontend Optimization**
+
 - [ ] Bundle size optimization
 - [ ] Image optimization
 - [ ] Code splitting
@@ -362,6 +411,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Core Web Vitals optimization
 
 **🔧 Infrastructure Optimization**
+
 - [ ] CDN setup
 - [ ] Load balancing
 - [ ] Auto-scaling configuration
@@ -369,6 +419,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Redis optimization
 
 **Deliverables:**
+
 - ✅ Performance targets met
 - ✅ Load testing completed
 - ✅ Infrastructure optimized
@@ -377,6 +428,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ### Week 12: Security & Launch Preparation
 
 **🛡️ Security Audit**
+
 - [ ] Penetration testing
 - [ ] Vulnerability scanning
 - [ ] Security headers check
@@ -384,6 +436,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Compliance verification
 
 **📚 Documentation**
+
 - [ ] API documentation
 - [ ] User guides
 - [ ] Admin manuals
@@ -391,6 +444,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Deployment guides
 
 **🚀 Launch Preparation**
+
 - [ ] Production deployment
 - [ ] Domain setup
 - [ ] SSL certificates
@@ -398,6 +452,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] Backup systems
 
 **📋 Quality Assurance**
+
 - [ ] End-to-end testing
 - [ ] Cross-browser testing
 - [ ] Mobile device testing
@@ -405,6 +460,7 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 - [ ] User acceptance testing
 
 **Deliverables:**
+
 - ✅ Security audit completed
 - ✅ Documentation complete
 - ✅ Production deployment ready
@@ -413,53 +469,57 @@ Xây dựng một crowdfunding platform hiện đại, tối ưu performance, v�
 ## 🎯 SUCCESS METRICS
 
 ### Technical KPIs
+
 ```typescript
 const technicalKPIs = {
   performance: {
-    pageLoadTime: '< 2 seconds',
-    apiResponseTime: '< 200ms',
-    databaseQueryTime: '< 50ms',
-    coreWebVitals: 'All green',
-    uptime: '> 99.9%'
+    pageLoadTime: "< 2 seconds",
+    apiResponseTime: "< 200ms",
+    databaseQueryTime: "< 50ms",
+    coreWebVitals: "All green",
+    uptime: "> 99.9%",
   },
-  
+
   scalability: {
-    concurrentUsers: '1000+',
-    transactionsPerMinute: '100+',
-    dataStorageGrowth: 'Sustainable',
-    serverResponseTime: 'Consistent under load'
-  }
+    concurrentUsers: "1000+",
+    transactionsPerMinute: "100+",
+    dataStorageGrowth: "Sustainable",
+    serverResponseTime: "Consistent under load",
+  },
 }
 ```
 
 ### Business KPIs
+
 ```typescript
 const businessKPIs = {
   userEngagement: {
-    dailyActiveUsers: 'Growing trend',
-    sessionDuration: '> 5 minutes',
-    bounceRate: '< 40%',
-    conversionRate: '> 2%'
+    dailyActiveUsers: "Growing trend",
+    sessionDuration: "> 5 minutes",
+    bounceRate: "< 40%",
+    conversionRate: "> 2%",
   },
-  
+
   revenue: {
-    totalTransactionVolume: 'Tracking',
-    averageProjectFunding: 'Monitoring',
-    platformFees: 'Sustainable',
-    userRetention: '> 60% monthly'
-  }
+    totalTransactionVolume: "Tracking",
+    averageProjectFunding: "Monitoring",
+    platformFees: "Sustainable",
+    userRetention: "> 60% monthly",
+  },
 }
 ```
 
 ## 🚨 RISK MITIGATION
 
 ### Technical Risks
+
 - **Performance Issues**: Extensive load testing, performance monitoring
 - **Security Vulnerabilities**: Regular security audits, penetration testing
 - **Scalability Challenges**: Cloud-native architecture, auto-scaling
 - **Data Loss**: Regular backups, disaster recovery plan
 
 ### Business Risks
+
 - **User Adoption**: MVP approach, early user feedback
 - **Competition**: Unique value proposition, rapid iteration
 - **Regulatory Compliance**: Legal consultation, compliance framework
@@ -468,15 +528,17 @@ const businessKPIs = {
 ## 📊 RESOURCE ALLOCATION
 
 ### Team Structure
+
 ```
 🏗️ Fullstack Developer: 100% (You + AI Assistant)
 📊 Database Design: 15% of time
-⚡ Backend Development: 40% of time  
+⚡ Backend Development: 40% of time
 🎨 Frontend Development: 35% of time
 🔧 DevOps/Deployment: 10% of time
 ```
 
 ### Technology Budget
+
 - **Development Tools**: Free (VS Code, Git, Docker)
 - **Hosting**: $50-100/month (Vercel + Railway)
 - **Database**: $25-50/month (PostgreSQL + Redis)
@@ -485,9 +547,10 @@ const businessKPIs = {
 - **Domain + SSL**: $15/year
 
 ### Time Allocation
+
 ```
 Phase 1 (Foundation): 20% - 2 weeks
-Phase 2 (Core Features): 40% - 4 weeks  
+Phase 2 (Core Features): 40% - 4 weeks
 Phase 3 (Advanced Features): 30% - 4 weeks
 Phase 4 (Optimization): 10% - 1 week
 ```
@@ -495,6 +558,7 @@ Phase 4 (Optimization): 10% - 1 week
 ## 🎉 LAUNCH STRATEGY
 
 ### Pre-Launch (Week 10-11)
+
 - [ ] Beta testing với selected users
 - [ ] Bug fixes và performance tuning
 - [ ] Content creation (landing pages, about)
@@ -502,6 +566,7 @@ Phase 4 (Optimization): 10% - 1 week
 - [ ] Press kit preparation
 
 ### Launch Week (Week 12)
+
 - [ ] Production deployment
 - [ ] Monitoring setup
 - [ ] Support system ready
@@ -509,6 +574,7 @@ Phase 4 (Optimization): 10% - 1 week
 - [ ] Community outreach
 
 ### Post-Launch (Week 13+)
+
 - [ ] User feedback collection
 - [ ] Performance monitoring
 - [ ] Feature requests prioritization
@@ -517,4 +583,4 @@ Phase 4 (Optimization): 10% - 1 week
 
 ---
 
-*Roadmap này được thiết kế dựa trên lessons learned từ Giveth project, tối ưu hóa để tránh các technical debt và performance issues. Mục tiêu là launch một platform stable, scalable, và user-friendly trong 12 tuần.* 
+_Roadmap này được thiết kế dựa trên lessons learned từ Giveth project, tối ưu hóa để tránh các technical debt và performance issues. Mục tiêu là launch một platform stable, scalable, và user-friendly trong 12 tuần._

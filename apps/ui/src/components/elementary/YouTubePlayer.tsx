@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import { Play } from "lucide-react"
-import { Button } from "@/components/ui/button"
+
 import { getYouTubeEmbedUrl, getYouTubeThumbnail } from "@/lib/youtube"
+import { Button } from "@/components/ui/button"
 
 interface YouTubePlayerProps {
   videoId: string
@@ -13,42 +14,42 @@ interface YouTubePlayerProps {
   showThumbnail?: boolean
 }
 
-export function YouTubePlayer({ 
-  videoId, 
-  title = "Video", 
-  className = "", 
+export function YouTubePlayer({
+  videoId,
+  title = "Video",
+  className = "",
   autoplay = false,
-  showThumbnail = true 
+  showThumbnail = true,
 }: YouTubePlayerProps) {
   const [isPlaying, setIsPlaying] = useState(autoplay)
-  
+
   const handlePlay = () => {
     setIsPlaying(true)
   }
-  
+
   if (!isPlaying && showThumbnail) {
     return (
-      <div 
-        className={`relative aspect-video overflow-hidden rounded-lg bg-gray-100 cursor-pointer group ${className}`}
+      <div
+        className={`group relative aspect-video cursor-pointer overflow-hidden rounded-lg bg-gray-100 ${className}`}
         onClick={handlePlay}
       >
         <img
-          src={getYouTubeThumbnail(videoId, 'high')}
+          src={getYouTubeThumbnail(videoId, "high")}
           alt={title}
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-          <div className="h-16 w-16 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-lg">
-            <Play className="h-6 w-6 text-white fill-current ml-1" />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/30">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 shadow-lg hover:bg-red-700">
+            <Play className="ml-1 h-6 w-6 fill-current text-white" />
           </div>
         </div>
-        <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 text-xs rounded">
+        <div className="absolute right-2 bottom-2 rounded bg-black/80 px-2 py-1 text-xs text-white">
           YouTube
         </div>
       </div>
     )
   }
-  
+
   return (
     <div className={`aspect-video overflow-hidden rounded-lg ${className}`}>
       <iframe
@@ -60,4 +61,4 @@ export function YouTubePlayer({
       />
     </div>
   )
-} 
+}

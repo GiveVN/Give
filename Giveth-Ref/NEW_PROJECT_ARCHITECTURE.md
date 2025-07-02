@@ -1,5 +1,6 @@
 # NEW PROJECT ARCHITECTURE RECOMMENDATIONS
-*Kiến trúc tối ưu cho crowdfunding platform dựa trên lessons learned từ Giveth*
+
+_Kiến trúc tối ưu cho crowdfunding platform dựa trên lessons learned từ Giveth_
 
 ## 🏗️ SYSTEM ARCHITECTURE OVERVIEW
 
@@ -25,6 +26,7 @@
 ## 🎯 CORE TECHNOLOGY STACK
 
 ### Backend Stack
+
 ```yaml
 Framework: NestJS
 Language: TypeScript
@@ -39,7 +41,8 @@ File Upload: Multer + Cloudinary
 Payment: Stripe + Blockchain wallets
 ```
 
-### Frontend Stack  
+### Frontend Stack
+
 ```yaml
 Framework: Next.js 14 (App Router)
 Language: TypeScript
@@ -53,6 +56,7 @@ Icons: Lucide React
 ```
 
 ### Infrastructure
+
 ```yaml
 Containerization: Docker + Docker Compose
 Database: PostgreSQL (primary) + Redis (cache)
@@ -65,6 +69,7 @@ CI/CD: GitHub Actions
 ## 📊 DATABASE SCHEMA DESIGN
 
 ### Core Entities
+
 ```typescript
 // User Management
 User {
@@ -79,7 +84,7 @@ User {
   isVerified: boolean
   createdAt: DateTime
   updatedAt: DateTime
-  
+
   // Relations
   projects: Project[]
   donations: Donation[]
@@ -102,17 +107,17 @@ Project {
   status: ProjectStatus (DRAFT, ACTIVE, COMPLETED, CANCELLED)
   endDate: DateTime?
   userId: string (Foreign Key)
-  
+
   // SEO & Discovery
   seoTitle: string?
   seoDescription: string?
   featured: boolean
   trending: boolean
-  
+
   // Timestamps
   createdAt: DateTime
   updatedAt: DateTime
-  
+
   // Relations
   user: User
   donations: Donation[]
@@ -130,16 +135,16 @@ Donation {
   donorName: string? (for anonymous)
   message: string?
   isAnonymous: boolean
-  
+
   // Payment Details
   paymentMethod: PaymentMethod (STRIPE, CRYPTO)
   paymentId: string (Stripe/Blockchain transaction)
   paymentStatus: PaymentStatus (PENDING, COMPLETED, FAILED)
-  
+
   // Timestamps
   createdAt: DateTime
   updatedAt: DateTime
-  
+
   // Relations
   project: Project
   user: User?
@@ -154,7 +159,7 @@ Category {
   icon: string?
   color: string?
   parentId: string? (Foreign Key - for subcategories)
-  
+
   // Relations
   parent: Category?
   children: Category[]
@@ -163,6 +168,7 @@ Category {
 ```
 
 ### Indexes & Performance
+
 ```sql
 -- Critical indexes for performance
 CREATE INDEX idx_projects_status_featured ON projects (status, featured);
@@ -179,13 +185,14 @@ CREATE INDEX idx_projects_search ON projects USING gin(to_tsvector('english', ti
 ## 🔐 AUTHENTICATION & AUTHORIZATION
 
 ### Authentication Methods
+
 ```typescript
 // Multi-provider authentication
 interface AuthProvider {
-  EMAIL_PASSWORD: 'email/password with verification'
-  GOOGLE: 'Google OAuth'
-  GITHUB: 'GitHub OAuth'  
-  WALLET: 'Ethereum wallet (MetaMask, WalletConnect)'
+  EMAIL_PASSWORD: "email/password with verification"
+  GOOGLE: "Google OAuth"
+  GITHUB: "GitHub OAuth"
+  WALLET: "Ethereum wallet (MetaMask, WalletConnect)"
 }
 
 // JWT Payload
@@ -200,26 +207,34 @@ interface JWTPayload {
 ```
 
 ### Authorization Levels
+
 ```typescript
 enum UserRole {
-  USER = 'USER',           // Basic user - create projects, donate
-  VERIFIED = 'VERIFIED',   // Verified user - higher limits
-  MODERATOR = 'MODERATOR', // Moderate content, suspend users
-  ADMIN = 'ADMIN'          // Full system access
+  USER = "USER", // Basic user - create projects, donate
+  VERIFIED = "VERIFIED", // Verified user - higher limits
+  MODERATOR = "MODERATOR", // Moderate content, suspend users
+  ADMIN = "ADMIN", // Full system access
 }
 
 // Permission matrix
 const permissions = {
-  USER: ['read', 'create_project', 'donate', 'comment'],
-  VERIFIED: ['read', 'create_project', 'donate', 'comment', 'featured_project'],
-  MODERATOR: ['read', 'create_project', 'donate', 'comment', 'moderate_content'],
-  ADMIN: ['*'] // All permissions
+  USER: ["read", "create_project", "donate", "comment"],
+  VERIFIED: ["read", "create_project", "donate", "comment", "featured_project"],
+  MODERATOR: [
+    "read",
+    "create_project",
+    "donate",
+    "comment",
+    "moderate_content",
+  ],
+  ADMIN: ["*"], // All permissions
 }
 ```
 
 ## 🚀 API DESIGN PATTERNS
 
 ### GraphQL Schema
+
 ```graphql
 type Query {
   # Project queries
@@ -228,14 +243,14 @@ type Query {
     sort: ProjectSort
     pagination: PaginationInput
   ): ProjectConnection
-  
+
   project(id: ID, slug: String): Project
   featuredProjects(limit: Int = 6): [Project!]!
-  
+
   # User queries
   me: User
   user(id: ID, username: String): User
-  
+
   # Category queries
   categories: [Category!]!
   category(id: ID, slug: String): Category
@@ -245,15 +260,15 @@ type Mutation {
   # Authentication
   register(input: RegisterInput!): AuthPayload
   login(input: LoginInput!): AuthPayload
-  
+
   # Project management
   createProject(input: CreateProjectInput!): Project
   updateProject(id: ID!, input: UpdateProjectInput!): Project
   deleteProject(id: ID!): Boolean
-  
+
   # Donations
   createDonation(input: CreateDonationInput!): Donation
-  
+
   # Comments
   createComment(input: CreateCommentInput!): Comment
 }
@@ -267,37 +282,39 @@ type ProjectConnection {
 ```
 
 ### REST API Endpoints
+
 ```typescript
 // Core REST endpoints for specific use cases
 const restEndpoints = {
   // File uploads
-  'POST /api/upload': 'Upload project images',
-  'POST /api/upload/avatar': 'Upload user avatar',
-  
+  "POST /api/upload": "Upload project images",
+  "POST /api/upload/avatar": "Upload user avatar",
+
   // Payment webhooks
-  'POST /api/webhooks/stripe': 'Stripe webhook handler',
-  'POST /api/webhooks/blockchain': 'Blockchain event handler',
-  
+  "POST /api/webhooks/stripe": "Stripe webhook handler",
+  "POST /api/webhooks/blockchain": "Blockchain event handler",
+
   // Public data (SEO, feeds)
-  'GET /api/sitemap.xml': 'Dynamic sitemap',
-  'GET /api/feed.json': 'JSON feed for projects',
-  
+  "GET /api/sitemap.xml": "Dynamic sitemap",
+  "GET /api/feed.json": "JSON feed for projects",
+
   // Health & monitoring
-  'GET /api/health': 'Health check endpoint',
-  'GET /api/metrics': 'Application metrics'
+  "GET /api/health": "Health check endpoint",
+  "GET /api/metrics": "Application metrics",
 }
 ```
 
 ## 💰 PAYMENT INTEGRATION
 
 ### Stripe Integration
+
 ```typescript
 // Stripe setup for fiat payments
 interface StripeConfig {
   publishableKey: string
   secretKey: string
   webhookSecret: string
-  currency: 'USD' | 'EUR' | 'GBP'
+  currency: "USD" | "EUR" | "GBP"
 }
 
 // Payment flow
@@ -305,12 +322,12 @@ class PaymentService {
   async createPaymentIntent(amount: number, projectId: string) {
     return await stripe.paymentIntents.create({
       amount: amount * 100, // Convert to cents
-      currency: 'usd',
+      currency: "usd",
       metadata: { projectId },
-      payment_method_types: ['card']
+      payment_method_types: ["card"],
     })
   }
-  
+
   async handleWebhook(event: Stripe.Event) {
     // Handle payment success/failure
     // Update donation status
@@ -320,10 +337,11 @@ class PaymentService {
 ```
 
 ### Blockchain Integration
+
 ```typescript
 // Modular blockchain integration
 interface BlockchainConfig {
-  network: 'ethereum' | 'polygon' | 'arbitrum'
+  network: "ethereum" | "polygon" | "arbitrum"
   rpcUrl: string
   contractAddress: string
   tokenAddresses: Record<string, string>
@@ -346,19 +364,20 @@ class BlockchainService {
 ## 🔍 SEARCH & FILTERING
 
 ### Search Implementation
+
 ```typescript
 // Elasticsearch integration for advanced search
 interface SearchConfig {
-  index: 'projects'
+  index: "projects"
   mapping: {
-    title: { type: 'text', analyzer: 'standard' }
-    description: { type: 'text', analyzer: 'standard' }
-    category: { type: 'keyword' }
-    tags: { type: 'keyword' }
-    status: { type: 'keyword' }
-    raisedAmount: { type: 'integer' }
-    targetAmount: { type: 'integer' }
-    createdAt: { type: 'date' }
+    title: { type: "text"; analyzer: "standard" }
+    description: { type: "text"; analyzer: "standard" }
+    category: { type: "keyword" }
+    tags: { type: "keyword" }
+    status: { type: "keyword" }
+    raisedAmount: { type: "integer" }
+    targetAmount: { type: "integer" }
+    createdAt: { type: "date" }
   }
 }
 
@@ -367,13 +386,16 @@ class SearchService {
   async searchProjects(query: string, filters: ProjectFilter) {
     return await prisma.project.findMany({
       where: {
-        OR: [
-          { title: { search: query } },
-          { description: { search: query } }
-        ],
-        ...filters
+        OR: [{ title: { search: query } }, { description: { search: query } }],
+        ...filters,
       },
-      orderBy: { _relevance: { fields: ['title', 'description'], search: query, sort: 'desc' } }
+      orderBy: {
+        _relevance: {
+          fields: ["title", "description"],
+          search: query,
+          sort: "desc",
+        },
+      },
     })
   }
 }
@@ -382,6 +404,7 @@ class SearchService {
 ## 📱 RESPONSIVE DESIGN
 
 ### Mobile-First Approach
+
 ```typescript
 // Tailwind responsive breakpoints
 const breakpoints = {
@@ -403,6 +426,7 @@ const ResponsiveGrid = () => (
 ## 🔄 PERFORMANCE OPTIMIZATION
 
 ### Caching Strategy
+
 ```typescript
 // Multi-layer caching
 interface CacheConfig {
@@ -413,7 +437,7 @@ interface CacheConfig {
     keyPrefix: string
     ttl: number
   }
-  
+
   // Next.js static generation
   revalidate: {
     projects: 60 * 5,      // 5 minutes
@@ -437,10 +461,11 @@ class QueryOptimizer {
 ```
 
 ### Database Optimization
+
 ```sql
 -- Materialized views for heavy queries
 CREATE MATERIALIZED VIEW project_stats AS
-SELECT 
+SELECT
   p.id,
   p.title,
   p.target_amount,
@@ -448,7 +473,7 @@ SELECT
   COUNT(d.id) as donation_count,
   AVG(d.amount) as avg_donation
 FROM projects p
-LEFT JOIN donations d ON p.id = d.project_id 
+LEFT JOIN donations d ON p.id = d.project_id
 WHERE d.payment_status = 'COMPLETED'
 GROUP BY p.id, p.title, p.target_amount;
 
@@ -465,9 +490,10 @@ $$ LANGUAGE plpgsql;
 ## 🚀 DEPLOYMENT STRATEGY
 
 ### Development Environment
+
 ```yaml
 # docker-compose.dev.yml
-version: '3.8'
+version: "3.8"
 services:
   postgres:
     image: postgres:15
@@ -488,7 +514,7 @@ services:
       - redis_data:/data
 
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.dev
     ports:
@@ -509,6 +535,7 @@ volumes:
 ```
 
 ### Production Deployment
+
 ```yaml
 # Vercel (Frontend)
 vercel.json:
@@ -539,29 +566,30 @@ REDIS_URL = "${{ RAILWAY_REDIS_URL }}"
 ## 🎯 SUCCESS METRICS
 
 ### Key Performance Indicators
+
 ```typescript
 interface KPIs {
   technical: {
-    apiResponseTime: '< 200ms average'
-    databaseQueryTime: '< 50ms average'
-    frontendLoadTime: '< 2s first contentful paint'
-    uptime: '> 99.9%'
-    errorRate: '< 0.1%'
+    apiResponseTime: "< 200ms average"
+    databaseQueryTime: "< 50ms average"
+    frontendLoadTime: "< 2s first contentful paint"
+    uptime: "> 99.9%"
+    errorRate: "< 0.1%"
   }
-  
+
   business: {
-    userRegistrations: 'track monthly growth'
-    projectCreations: 'track monthly growth'
-    totalDonations: 'track volume and count'
-    conversionRate: 'visitors to donors'
-    averageDonationAmount: 'track trends'
+    userRegistrations: "track monthly growth"
+    projectCreations: "track monthly growth"
+    totalDonations: "track volume and count"
+    conversionRate: "visitors to donors"
+    averageDonationAmount: "track trends"
   }
-  
+
   user_experience: {
-    pageLoadSpeed: 'Core Web Vitals compliance'
-    mobileUsability: 'Mobile-first design'
-    accessibility: 'WCAG 2.1 AA compliance'
-    seoPerformance: 'Page speed and rankings'
+    pageLoadSpeed: "Core Web Vitals compliance"
+    mobileUsability: "Mobile-first design"
+    accessibility: "WCAG 2.1 AA compliance"
+    seoPerformance: "Page speed and rankings"
   }
 }
 ```
@@ -569,24 +597,28 @@ interface KPIs {
 ## 💡 IMPLEMENTATION PHASES
 
 ### Phase 1: Foundation (Weeks 1-2)
+
 - Setup development environment
 - Implement authentication system
 - Create basic database schema
 - Setup CI/CD pipelines
 
 ### Phase 2: Core Features (Weeks 3-6)
+
 - Project CRUD operations
 - User profiles and management
 - Basic payment integration (Stripe)
 - Admin dashboard essentials
 
 ### Phase 3: Advanced Features (Weeks 7-10)
+
 - Blockchain integration
 - Advanced search and filtering
 - Notification system
 - Analytics dashboard
 
 ### Phase 4: Polish & Launch (Weeks 11-12)
+
 - Performance optimization
 - Security audit
 - Load testing
@@ -594,4 +626,4 @@ interface KPIs {
 
 ---
 
-*Kiến trúc này được thiết kế dựa trên lessons learned từ Giveth project, tối ưu cho performance, maintainability, và scalability. Mỗi component đều có thể phát triển độc lập và dễ dàng thay thế khi cần.* 
+_Kiến trúc này được thiết kế dựa trên lessons learned từ Giveth project, tối ưu cho performance, maintainability, và scalability. Mỗi component đều có thể phát triển độc lập và dễ dàng thay thế khi cần._

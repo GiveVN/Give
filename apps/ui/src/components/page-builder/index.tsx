@@ -10,12 +10,11 @@ import StrapiHero from "@/components/page-builder/components/sections/StrapiHero
 import StrapiHorizontalImages from "@/components/page-builder/components/sections/StrapiHorizontalImages"
 import StrapiImageWithCTAButton from "@/components/page-builder/components/sections/StrapiImageWithCTAButton"
 import StrapiCkEditorContent from "@/components/page-builder/components/utilities/StrapiCkEditorContent"
-
+import CtaSection from "@/components/page-builder/sections/CtaSection"
+import FeaturedProjects from "@/components/page-builder/sections/FeaturedProjects"
 // Radiant Crowdfunding Components
 import HeroCrowdfunding from "@/components/page-builder/sections/HeroCrowdfunding"
 import StatsSection from "@/components/page-builder/sections/StatsSection"
-import FeaturedProjects from "@/components/page-builder/sections/FeaturedProjects"
-import CtaSection from "@/components/page-builder/sections/CtaSection"
 
 /**
  * Mapping of Strapi Component UID to React Component

@@ -7,7 +7,9 @@ export const SUPPORTED_CRYPTO = {
     name: "Ethereum",
     decimals: 18,
     chainId: 1,
-    rpcUrl: process.env.NEXT_PUBLIC_ETH_RPC_URL || "https://eth-mainnet.g.alchemy.com/v2/your-api-key",
+    rpcUrl:
+      process.env.NEXT_PUBLIC_ETH_RPC_URL ||
+      "https://eth-mainnet.g.alchemy.com/v2/your-api-key",
   },
   BTC: {
     symbol: "BTC",
@@ -38,7 +40,9 @@ export function isWeb3Available() {
 // Connect to Web3 wallet
 export async function connectWeb3Wallet() {
   if (!isWeb3Available()) {
-    throw new Error("No Web3 wallet detected. Please install MetaMask or another Web3 wallet.")
+    throw new Error(
+      "No Web3 wallet detected. Please install MetaMask or another Web3 wallet."
+    )
   }
 
   try {
@@ -100,20 +104,20 @@ export async function sendETHTransaction(
   try {
     const provider = new ethers.BrowserProvider(window.ethereum)
     const signer = await provider.getSigner()
-    
+
     // Convert amount to wei
     const amountInWei = ethers.parseEther(amount)
-    
+
     // Create transaction
     const tx = await signer.sendTransaction({
       to: toAddress,
       value: amountInWei,
       data: ethers.toUtf8Bytes(JSON.stringify(metadata)),
     })
-    
+
     // Wait for transaction confirmation
     const receipt = await tx.wait()
-    
+
     return {
       hash: receipt!.hash,
       from: receipt!.from,
@@ -146,29 +150,29 @@ export async function sendERC20Transaction(
   try {
     const provider = new ethers.BrowserProvider(window.ethereum)
     const signer = await provider.getSigner()
-    
+
     // ERC20 ABI for transfer function
     const erc20Abi = [
       "function transfer(address to, uint256 amount) returns (bool)",
       "function balanceOf(address owner) view returns (uint256)",
     ]
-    
+
     // Create contract instance
     const contract = new ethers.Contract(tokenAddress, erc20Abi, signer)
-    
+
     // Convert amount to token units
     const amountInUnits = ethers.parseUnits(amount, decimals)
-    
+
     // Check balance
     const balance = await contract.balanceOf(await signer.getAddress())
     if (balance < amountInUnits) {
       throw new Error("Insufficient token balance")
     }
-    
+
     // Send transaction
     const tx = await contract.transfer(toAddress, amountInUnits)
     const receipt = await tx.wait()
-    
+
     return {
       hash: receipt.hash,
       from: receipt.from,
@@ -203,10 +207,8 @@ export async function monitorTransaction(
   txHash: string,
   chainId: number = 1
 ): Promise<ethers.TransactionReceipt | null> {
-  const provider = new ethers.JsonRpcProvider(
-    SUPPORTED_CRYPTO.ETH.rpcUrl
-  )
-  
+  const provider = new ethers.JsonRpcProvider(SUPPORTED_CRYPTO.ETH.rpcUrl)
+
   try {
     const receipt = await provider.getTransactionReceipt(txHash)
     return receipt
@@ -214,4 +216,4 @@ export async function monitorTransaction(
     console.error("Failed to get transaction receipt:", error)
     return null
   }
-} 
+}

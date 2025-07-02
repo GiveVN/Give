@@ -1,5 +1,5 @@
 export const commentReplyTemplate = {
-  subject: '<%= replyAuthor %> replied to your comment on <%= project.Title %>',
+  subject: "<%= replyAuthor %> replied to your comment on <%= project.Title %>",
   text: `
     Hi <%= parentComment.Author.username %>,
     
@@ -57,5 +57,5 @@ export const commentReplyTemplate = {
         To manage your notification preferences, <a href="<%= URL %>/profile/settings">visit your profile settings</a>.
       </p>
     </div>
-  `
-}; 
+  `,
+}

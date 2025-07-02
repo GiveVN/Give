@@ -1,3 +1,3 @@
 import { PublicClient } from "./public"
 
-export const PublicStrapiClient = new PublicClient() 
+export const PublicStrapiClient = new PublicClient()

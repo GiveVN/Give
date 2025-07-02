@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
 import { PrivateStrapiClient } from "@/lib/strapi-api"
 
@@ -11,10 +12,7 @@ export async function GET(request: NextRequest) {
 
     // Validate user access
     if (!session || session.user.id !== userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Fetch donations from Strapi
@@ -51,4 +49,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}

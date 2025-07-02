@@ -1,18 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { loadStripe } from "@stripe/stripe-js"
-import { 
+import { useEffect, useState } from "react"
+import {
   Elements,
   PaymentElement,
+  useElements,
   useStripe,
-  useElements 
 } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+import { AlertCircle, CreditCard, Loader2 } from "lucide-react"
+
+import { STRIPE_CONFIG } from "@/lib/stripe"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, CreditCard, AlertCircle } from "lucide-react"
-import { STRIPE_CONFIG } from "@/lib/stripe"
 
 // Load Stripe outside of component to avoid recreating on every render
 const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey)
@@ -25,7 +26,12 @@ interface StripePaymentProps {
   onError: (error: string) => void
 }
 
-function CheckoutForm({ amount, currency, onSuccess, onError }: Omit<StripePaymentProps, 'clientSecret'>) {
+function CheckoutForm({
+  amount,
+  currency,
+  onSuccess,
+  onError,
+}: Omit<StripePaymentProps, "clientSecret">) {
   const stripe = useStripe()
   const elements = useElements()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -69,19 +75,19 @@ function CheckoutForm({ amount, currency, onSuccess, onError }: Omit<StripePayme
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             <CreditCard className="h-5 w-5 text-gray-600" />
             <h3 className="font-semibold">Payment Details</h3>
           </div>
-          
-          <PaymentElement 
+
+          <PaymentElement
             options={{
               layout: "tabs",
               defaultValues: {
                 billingDetails: {
                   email: "",
-                }
-              }
+                },
+              },
             }}
           />
         </div>
@@ -94,8 +100,8 @@ function CheckoutForm({ amount, currency, onSuccess, onError }: Omit<StripePayme
         </Alert>
       )}
 
-      <Button 
-        type="submit" 
+      <Button
+        type="submit"
         disabled={!stripe || isProcessing}
         className="w-full"
         size="lg"
@@ -106,36 +112,36 @@ function CheckoutForm({ amount, currency, onSuccess, onError }: Omit<StripePayme
             Processing...
           </>
         ) : (
-          `Pay ${new Intl.NumberFormat('en-US', {
-            style: 'currency',
+          `Pay ${new Intl.NumberFormat("en-US", {
+            style: "currency",
             currency: currency,
           }).format(amount)}`
         )}
       </Button>
 
-      <p className="text-xs text-center text-gray-500">
+      <p className="text-center text-xs text-gray-500">
         Your payment information is secure and encrypted.
       </p>
     </form>
   )
 }
 
-export default function StripePayment({ 
-  clientSecret, 
-  amount, 
+export default function StripePayment({
+  clientSecret,
+  amount,
   currency,
   onSuccess,
-  onError 
+  onError,
 }: StripePaymentProps) {
   const appearance = {
-    theme: 'stripe' as const,
+    theme: "stripe" as const,
     variables: {
-      colorPrimary: '#0070f3',
-      colorBackground: '#ffffff',
-      colorText: '#1a1a1a',
-      colorDanger: '#df1b41',
-      fontFamily: 'system-ui, sans-serif',
-      borderRadius: '8px',
+      colorPrimary: "#0070f3",
+      colorBackground: "#ffffff",
+      colorText: "#1a1a1a",
+      colorDanger: "#df1b41",
+      fontFamily: "system-ui, sans-serif",
+      borderRadius: "8px",
     },
   }
 
@@ -146,12 +152,12 @@ export default function StripePayment({
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm 
-        amount={amount} 
-        currency={currency} 
+      <CheckoutForm
+        amount={amount}
+        currency={currency}
         onSuccess={onSuccess}
         onError={onError}
       />
     </Elements>
   )
-} 
+}

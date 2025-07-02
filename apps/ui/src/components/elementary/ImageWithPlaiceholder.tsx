@@ -54,7 +54,13 @@ export const ImageWithPlaiceholder = async (props: ImageExtendedProps) => {
   if (placeholder == null) {
     // Image and fallback image weren't loaded -> show local fallback image
     return (
-      <Image {...imageProps} src={FALLBACK_IMAGE_PATH} width={50} height={50} alt={props.alt || "Fallback image"} />
+      <Image
+        {...imageProps}
+        src={FALLBACK_IMAGE_PATH}
+        width={50}
+        height={50}
+        alt={props.alt || "Fallback image"}
+      />
     )
   }
 

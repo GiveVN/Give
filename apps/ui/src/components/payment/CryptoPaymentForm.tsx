@@ -1,25 +1,30 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { QrCode, Wallet, Copy, CheckCircle2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { CheckCircle2, Copy, QrCode, Wallet } from "lucide-react"
 import QRCode from "qrcode"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { toast } from "@/components/ui/use-toast"
-
 import {
-  SUPPORTED_CRYPTO,
-  PLATFORM_WALLETS,
-  isWeb3Available,
   connectWeb3Wallet,
-  sendETHTransaction,
-  sendERC20Transaction,
   generateCryptoQRData,
+  isWeb3Available,
+  PLATFORM_WALLETS,
+  sendERC20Transaction,
+  sendETHTransaction,
+  SUPPORTED_CRYPTO,
 } from "@/lib/payment/crypto"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { toast } from "@/components/ui/use-toast"
 
 interface CryptoPaymentFormProps {
   amount: number
@@ -38,7 +43,8 @@ export default function CryptoPaymentForm({
   onSuccess,
   onError,
 }: CryptoPaymentFormProps) {
-  const [selectedCrypto, setSelectedCrypto] = useState<keyof typeof SUPPORTED_CRYPTO>("ETH")
+  const [selectedCrypto, setSelectedCrypto] =
+    useState<keyof typeof SUPPORTED_CRYPTO>("ETH")
   const [paymentMethod, setPaymentMethod] = useState<"wallet" | "qr">("wallet")
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("")
   const [isProcessing, setIsProcessing] = useState(false)
@@ -51,8 +57,12 @@ export default function CryptoPaymentForm({
 
   const generateQRCode = async () => {
     const address = PLATFORM_WALLETS[selectedCrypto]
-    const qrData = generateCryptoQRData(selectedCrypto, address, amount.toString())
-    
+    const qrData = generateCryptoQRData(
+      selectedCrypto,
+      address,
+      amount.toString()
+    )
+
     try {
       const url = await QRCode.toDataURL(qrData, {
         width: 256,
@@ -77,7 +87,8 @@ export default function CryptoPaymentForm({
         description: `Connected to ${address.slice(0, 6)}...${address.slice(-4)}`,
       })
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to connect wallet"
+      const message =
+        error instanceof Error ? error.message : "Failed to connect wallet"
       toast({
         title: "Connection failed",
         description: message,
@@ -94,7 +105,7 @@ export default function CryptoPaymentForm({
     }
 
     setIsProcessing(true)
-    
+
     try {
       let txResult
       const metadata = { donationId, projectId, projectTitle }
@@ -156,13 +167,15 @@ export default function CryptoPaymentForm({
         <Label>Select cryptocurrency</Label>
         <RadioGroup
           value={selectedCrypto}
-          onValueChange={(value) => setSelectedCrypto(value as keyof typeof SUPPORTED_CRYPTO)}
+          onValueChange={(value) =>
+            setSelectedCrypto(value as keyof typeof SUPPORTED_CRYPTO)
+          }
           className="mt-2"
         >
           {Object.entries(SUPPORTED_CRYPTO).map(([key, crypto]) => (
             <div key={key} className="flex items-center space-x-2">
               <RadioGroupItem value={key} id={key} />
-              <Label htmlFor={key} className="font-normal cursor-pointer">
+              <Label htmlFor={key} className="cursor-pointer font-normal">
                 {crypto.name} ({crypto.symbol})
               </Label>
             </div>
@@ -180,15 +193,15 @@ export default function CryptoPaymentForm({
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="wallet" id="wallet" />
-            <Label htmlFor="wallet" className="font-normal cursor-pointer">
-              <Wallet className="inline h-4 w-4 mr-1" />
+            <Label htmlFor="wallet" className="cursor-pointer font-normal">
+              <Wallet className="mr-1 inline h-4 w-4" />
               Connect Web3 Wallet
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="qr" id="qr" />
-            <Label htmlFor="qr" className="font-normal cursor-pointer">
-              <QrCode className="inline h-4 w-4 mr-1" />
+            <Label htmlFor="qr" className="cursor-pointer font-normal">
+              <QrCode className="mr-1 inline h-4 w-4" />
               QR Code / Manual Transfer
             </Label>
           </div>
@@ -208,7 +221,8 @@ export default function CryptoPaymentForm({
             {!isWeb3Available() ? (
               <Alert>
                 <AlertDescription>
-                  No Web3 wallet detected. Please install MetaMask or another Web3 wallet.
+                  No Web3 wallet detected. Please install MetaMask or another
+                  Web3 wallet.
                 </AlertDescription>
               </Alert>
             ) : (
@@ -217,22 +231,23 @@ export default function CryptoPaymentForm({
                   <Alert>
                     <CheckCircle2 className="h-4 w-4" />
                     <AlertDescription>
-                      Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                      Connected: {walletAddress.slice(0, 6)}...
+                      {walletAddress.slice(-4)}
                     </AlertDescription>
                   </Alert>
                 )}
                 <Button
-                  onClick={walletAddress ? handleWalletPayment : handleConnectWallet}
+                  onClick={
+                    walletAddress ? handleWalletPayment : handleConnectWallet
+                  }
                   disabled={isProcessing}
                   className="w-full"
                 >
-                  {isProcessing ? (
-                    "Processing..."
-                  ) : walletAddress ? (
-                    `Send ${amount} ${selectedCrypto}`
-                  ) : (
-                    "Connect Wallet"
-                  )}
+                  {isProcessing
+                    ? "Processing..."
+                    : walletAddress
+                      ? `Send ${amount} ${selectedCrypto}`
+                      : "Connect Wallet"}
                 </Button>
               </div>
             )}
@@ -249,22 +264,26 @@ export default function CryptoPaymentForm({
           <CardContent className="space-y-4">
             {/* QR Code */}
             <div className="flex justify-center">
-              <img src={qrCodeUrl} alt="Payment QR Code" className="w-64 h-64" />
+              <img
+                src={qrCodeUrl}
+                alt="Payment QR Code"
+                className="h-64 w-64"
+              />
             </div>
 
             {/* Wallet Address */}
             <div className="space-y-2">
               <Label>Send to this address:</Label>
               <div className="flex items-center gap-2">
-                <code className="flex-1 p-2 bg-muted rounded text-sm break-all">
+                <code className="bg-muted flex-1 rounded p-2 text-sm break-all">
                   {PLATFORM_WALLETS[selectedCrypto]}
                 </code>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={copyAddress}
-                >
-                  {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <Button size="sm" variant="outline" onClick={copyAddress}>
+                  {copied ? (
+                    <CheckCircle2 className="h-4 w-4" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -279,8 +298,8 @@ export default function CryptoPaymentForm({
             {/* Instructions */}
             <Alert>
               <AlertDescription>
-                After sending the transaction, please save the transaction hash and contact support
-                to verify your donation.
+                After sending the transaction, please save the transaction hash
+                and contact support to verify your donation.
               </AlertDescription>
             </Alert>
           </CardContent>
@@ -288,4 +307,4 @@ export default function CryptoPaymentForm({
       )}
     </div>
   )
-} 
+}

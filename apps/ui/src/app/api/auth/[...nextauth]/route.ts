@@ -1,14 +1,14 @@
-import NextAuth, { NextAuthOptions } from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { JWT } from 'next-auth/jwt'
+import NextAuth, { NextAuthOptions } from "next-auth"
+import { JWT } from "next-auth/jwt"
+import CredentialsProvider from "next-auth/providers/credentials"
 
 const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
-        email: { label: 'Email', type: 'email', placeholder: 'your@email.com' },
-        password: { label: 'Password', type: 'password' }
+        email: { label: "Email", type: "email", placeholder: "your@email.com" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -17,16 +17,19 @@ const authOptions: NextAuthOptions = {
 
         try {
           // Login to Strapi
-          const strapiResponse = await fetch(`${process.env.STRAPI_URL}/api/auth/local`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              identifier: credentials.email,
-              password: credentials.password,
-            }),
-          })
+          const strapiResponse = await fetch(
+            `${process.env.STRAPI_URL}/api/auth/local`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                identifier: credentials.email,
+                password: credentials.password,
+              }),
+            }
+          )
 
           const strapiData = await strapiResponse.json()
 
@@ -36,23 +39,23 @@ const authOptions: NextAuthOptions = {
               email: strapiData.user.email,
               name: strapiData.user.username || strapiData.user.email,
               strapiToken: strapiData.jwt,
-              strapiUser: strapiData.user
+              strapiUser: strapiData.user,
             }
           }
 
           return null
         } catch (error) {
-          console.error('Authentication error:', error)
+          console.error("Authentication error:", error)
           return null
         }
-      }
-    })
+      },
+    }),
   ],
-  
+
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
-  
+
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: any }) {
       if (user) {
@@ -61,19 +64,19 @@ const authOptions: NextAuthOptions = {
       }
       return token
     },
-    
+
     async session({ session, token }: { session: any; token: JWT }) {
       session.strapiToken = token.strapiToken
       session.user.strapiUser = token.strapiUser
       return session
     },
   },
-  
+
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
-  
+
   secret: process.env.NEXTAUTH_SECRET,
 }
 

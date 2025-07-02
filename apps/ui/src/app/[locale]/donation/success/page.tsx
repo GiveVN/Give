@@ -1,17 +1,26 @@
 "use client"
 
-import { useEffect, useState, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
-import { CheckCircle, XCircle, Loader2 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useSearchParams } from "next/navigation"
+import { CheckCircle, Loader2, XCircle } from "lucide-react"
+
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 function DonationSuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading"
+  )
   const [donationData, setDonationData] = useState<any>(null)
   const [error, setError] = useState<string>("")
 
@@ -43,18 +52,18 @@ function DonationSuccessContent() {
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
       </div>
     )
   }
 
   if (status === "error") {
     return (
-      <Card className="max-w-2xl mx-auto">
+      <Card className="mx-auto max-w-2xl">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <XCircle className="h-8 w-8 text-destructive" />
+            <XCircle className="text-destructive h-8 w-8" />
             <CardTitle>Payment Error</CardTitle>
           </div>
           <CardDescription>
@@ -79,7 +88,7 @@ function DonationSuccessContent() {
   }
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="mx-auto max-w-2xl">
       <CardHeader>
         <div className="flex items-center gap-2">
           <CheckCircle className="h-8 w-8 text-green-600" />
@@ -91,8 +100,8 @@ function DonationSuccessContent() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="bg-muted p-4 rounded-lg space-y-2">
-            <p className="text-sm text-muted-foreground">Transaction ID</p>
+          <div className="bg-muted space-y-2 rounded-lg p-4">
+            <p className="text-muted-foreground text-sm">Transaction ID</p>
             <p className="font-mono text-sm">{sessionId}</p>
           </div>
 
@@ -100,13 +109,14 @@ function DonationSuccessContent() {
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Amount</p>
+                  <p className="text-muted-foreground text-sm">Amount</p>
                   <p className="text-lg font-semibold">
-                    ${donationData.amount} {donationData.currency?.toUpperCase()}
+                    ${donationData.amount}{" "}
+                    {donationData.currency?.toUpperCase()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Date</p>
+                  <p className="text-muted-foreground text-sm">Date</p>
                   <p className="text-lg">
                     {new Date(donationData.createdAt).toLocaleDateString()}
                   </p>
@@ -115,15 +125,15 @@ function DonationSuccessContent() {
 
               {donationData.projectTitle && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Project</p>
+                  <p className="text-muted-foreground text-sm">Project</p>
                   <p className="text-lg">{donationData.projectTitle}</p>
                 </div>
               )}
 
               <Alert>
                 <AlertDescription>
-                  A receipt has been sent to your email address. You can also download
-                  it from your account dashboard.
+                  A receipt has been sent to your email address. You can also
+                  download it from your account dashboard.
                 </AlertDescription>
               </Alert>
             </>
@@ -146,13 +156,15 @@ function DonationSuccessContent() {
 export default function DonationSuccessPage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Suspense fallback={
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="flex min-h-[400px] items-center justify-center">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          </div>
+        }
+      >
         <DonationSuccessContent />
       </Suspense>
     </div>
   )
-} 
+}

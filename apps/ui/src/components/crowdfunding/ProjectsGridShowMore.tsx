@@ -1,8 +1,9 @@
-'use client'
+"use client"
 
 import { useState } from "react"
-import { ProjectCard } from "@/components/crowdfunding/ProjectCard"
+
 import { AppLocale } from "@/lib/i18n"
+import { ProjectCard } from "@/components/crowdfunding/ProjectCard"
 
 interface ProjectsGridShowMoreProps {
   locale: AppLocale
@@ -49,17 +50,29 @@ export default function ProjectsGridShowMore({
         queryParams.append("filters[status][$eq]", baseSearchParams.status)
       }
       if (baseSearchParams.search) {
-        queryParams.append("filters[$or][0][title][$containsi]", baseSearchParams.search)
-        queryParams.append("filters[$or][1][shortDescription][$containsi]", baseSearchParams.search)
+        queryParams.append(
+          "filters[$or][0][title][$containsi]",
+          baseSearchParams.search
+        )
+        queryParams.append(
+          "filters[$or][1][shortDescription][$containsi]",
+          baseSearchParams.search
+        )
       }
 
       // Use NEXT_PUBLIC_* variable for client-side code
       const strapiUrl =
-        process.env.NEXT_PUBLIC_STRAPI_URL || process.env.STRAPI_URL || "http://localhost:1338"
+        process.env.NEXT_PUBLIC_STRAPI_URL ||
+        process.env.STRAPI_URL ||
+        "http://localhost:1338"
 
       const res = await fetch(`${strapiUrl}/api/projects?${queryParams}`)
       if (!res.ok) {
-        console.error("Failed to load more projects", res.status, res.statusText)
+        console.error(
+          "Failed to load more projects",
+          res.status,
+          res.statusText
+        )
         return
       }
 
@@ -78,17 +91,21 @@ export default function ProjectsGridShowMore({
     <div>
       {/* Projects Grid */}
       {projects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project: any) => (
-            <ProjectCard key={project.id ?? project.documentId} project={project} locale={locale} />
+            <ProjectCard
+              key={project.id ?? project.documentId}
+              project={project}
+              locale={locale}
+            />
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 text-gray-500">No projects found</div>
+        <div className="py-16 text-center text-gray-500">No projects found</div>
       )}
 
       {/* Results count */}
-      <div className="text-center text-sm text-gray-500 mb-6">
+      <div className="mb-6 text-center text-sm text-gray-500">
         {total ? (
           <>
             Showing {projects.length} of {total} results
@@ -104,7 +121,7 @@ export default function ProjectsGridShowMore({
           <button
             onClick={handleShowMore}
             disabled={loading}
-            className="px-6 py-3 rounded-lg border border-gray-300 text-gray-800 font-semibold hover:border-gray-400 disabled:opacity-50"
+            className="rounded-lg border border-gray-300 px-6 py-3 font-semibold text-gray-800 hover:border-gray-400 disabled:opacity-50"
           >
             {loading ? "Loading..." : "Show more"}
           </button>
@@ -112,4 +129,4 @@ export default function ProjectsGridShowMore({
       )}
     </div>
   )
-} 
+}

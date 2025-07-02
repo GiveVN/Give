@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { TrendingUp, Users, DollarSign, Clock } from "lucide-react"
+import { Clock, DollarSign, TrendingUp, Users } from "lucide-react"
+
+import { PublicStrapiClient } from "@/lib/strapi-api"
+import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { formatCurrency } from "@/lib/utils"
-import { PublicStrapiClient } from "@/lib/strapi-api"
 
 interface DonationSummaryProps {
   projectId: string
@@ -21,10 +22,10 @@ interface DonationStats {
   recentDonations: number
 }
 
-export default function DonationSummary({ 
-  projectId, 
+export default function DonationSummary({
+  projectId,
   fundingGoal = 10000,
-  currency = "USD" 
+  currency = "USD",
 }: DonationSummaryProps) {
   const [stats, setStats] = useState<DonationStats>({
     totalAmount: 0,
@@ -42,30 +43,33 @@ export default function DonationSummary({
   const fetchDonationStats = async () => {
     try {
       setIsLoading(true)
-      
+
       // Fetch all completed donations for this project
       const response = await PublicStrapiClient.fetchAPI(
         `/donations?filters[Project][id][$eq]=${projectId}&filters[PaymentStatus][$eq]=completed&fields[0]=Amount&fields[1]=createdAt`
       )
-      
+
       if (response.data) {
         const donations = response.data
         const now = new Date()
         const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
-        
+
         // Calculate stats
-        const totalAmount = donations.reduce((sum: number, d: any) => 
-          sum + parseFloat(d.attributes.Amount), 0
+        const totalAmount = donations.reduce(
+          (sum: number, d: any) => sum + parseFloat(d.attributes.Amount),
+          0
         )
         const totalDonations = donations.length
-        const averageDonation = totalDonations > 0 ? totalAmount / totalDonations : 0
-        const largestDonation = Math.max(...donations.map((d: any) => 
-          parseFloat(d.attributes.Amount)
-        ), 0)
-        const recentDonations = donations.filter((d: any) => 
-          new Date(d.attributes.createdAt) > dayAgo
+        const averageDonation =
+          totalDonations > 0 ? totalAmount / totalDonations : 0
+        const largestDonation = Math.max(
+          ...donations.map((d: any) => parseFloat(d.attributes.Amount)),
+          0
+        )
+        const recentDonations = donations.filter(
+          (d: any) => new Date(d.attributes.createdAt) > dayAgo
         ).length
-        
+
         setStats({
           totalAmount,
           totalDonations,
@@ -92,7 +96,7 @@ export default function DonationSummary({
               <CardTitle className="text-sm font-medium">Loading...</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-8 bg-gray-200 rounded animate-pulse" />
+              <div className="h-8 animate-pulse rounded bg-gray-200" />
             </CardContent>
           </Card>
         ))}
@@ -113,8 +117,11 @@ export default function DonationSummary({
               <span>{formatCurrency(stats.totalAmount, currency)} raised</span>
               <span>{formatCurrency(fundingGoal, currency)} goal</span>
             </div>
-            <Progress value={Math.min(fundingPercentage, 100)} className="h-3" />
-            <p className="text-sm text-muted-foreground">
+            <Progress
+              value={Math.min(fundingPercentage, 100)}
+              className="h-3"
+            />
+            <p className="text-muted-foreground text-sm">
               {fundingPercentage.toFixed(1)}% funded
             </p>
           </div>
@@ -126,14 +133,15 @@ export default function DonationSummary({
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Raised</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {formatCurrency(stats.totalAmount, currency)}
             </div>
-            <p className="text-xs text-muted-foreground">
-              {fundingPercentage > 100 ? "+" : ""}{(fundingPercentage - 100).toFixed(1)}% of goal
+            <p className="text-muted-foreground text-xs">
+              {fundingPercentage > 100 ? "+" : ""}
+              {(fundingPercentage - 100).toFixed(1)}% of goal
             </p>
           </CardContent>
         </Card>
@@ -141,11 +149,11 @@ export default function DonationSummary({
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Backers</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalDonations}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {stats.recentDonations} in last 24h
             </p>
           </CardContent>
@@ -153,29 +161,29 @@ export default function DonationSummary({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Donation</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">
+              Average Donation
+            </CardTitle>
+            <TrendingUp className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {formatCurrency(stats.averageDonation, currency)}
             </div>
-            <p className="text-xs text-muted-foreground">
-              per backer
-            </p>
+            <p className="text-muted-foreground text-xs">per backer</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Top Donation</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {formatCurrency(stats.largestDonation, currency)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               highest contribution
             </p>
           </CardContent>
@@ -183,4 +191,4 @@ export default function DonationSummary({
       </div>
     </div>
   )
-} 
+}

@@ -2,14 +2,17 @@
 
 import { useState } from "react"
 import { loadStripe } from "@stripe/stripe-js"
+import { AlertCircle, CreditCard, Loader2 } from "lucide-react"
+
+import { formatCurrency } from "@/lib/utils"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, CreditCard, AlertCircle } from "lucide-react"
-import { formatCurrency } from "@/lib/utils"
 
 // Initialize Stripe (should be from env variable)
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+)
 
 interface StripeCheckoutProps {
   amount: number
@@ -35,7 +38,7 @@ export default function StripeCheckout({
   donorInfo,
   onSuccess,
   onError,
-  onCancel
+  onCancel,
 }: StripeCheckoutProps) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -56,7 +59,7 @@ export default function StripeCheckout({
           currency,
           projectId,
           projectTitle,
-          ...donorInfo
+          ...donorInfo,
         }),
       })
 
@@ -74,13 +77,12 @@ export default function StripeCheckout({
 
       // Redirect to Stripe Checkout
       const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId: data.sessionId
+        sessionId: data.sessionId,
       })
 
       if (stripeError) {
         throw new Error(stripeError.message)
       }
-
     } catch (err: any) {
       console.error("Checkout error:", err)
       setError(err.message || "Something went wrong")
@@ -91,7 +93,7 @@ export default function StripeCheckout({
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
@@ -100,14 +102,16 @@ export default function StripeCheckout({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Order Summary */}
-        <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+        <div className="space-y-2 rounded-lg bg-gray-50 p-4">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Project:</span>
             <span className="font-medium">{projectTitle}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Amount:</span>
-            <span className="font-medium">{formatCurrency(amount, currency)}</span>
+            <span className="font-medium">
+              {formatCurrency(amount, currency)}
+            </span>
           </div>
           {donorInfo.name && !donorInfo.isAnonymous && (
             <div className="flex justify-between text-sm">
@@ -157,10 +161,10 @@ export default function StripeCheckout({
         {/* Stripe Badge */}
         <div className="text-center text-xs text-gray-500">
           Powered by{" "}
-          <span className="font-semibold text-[#635BFF]">Stripe</span>
-          {" "}• Secure Payment
+          <span className="font-semibold text-[#635BFF]">Stripe</span> • Secure
+          Payment
         </div>
       </CardContent>
     </Card>
   )
-} 
+}

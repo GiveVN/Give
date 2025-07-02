@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { stripe } from "@/lib/stripe"
+
 import { PrivateStrapiClient } from "@/lib/strapi-api"
+import { stripe } from "@/lib/stripe"
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,18 +17,15 @@ export async function GET(request: NextRequest) {
 
     // Retrieve the session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['payment_intent', 'line_items']
+      expand: ["payment_intent", "line_items"],
     })
 
     if (!session) {
-      return NextResponse.json(
-        { error: "Session not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Session not found" }, { status: 404 })
     }
 
     // Check if payment was successful
-    if (session.payment_status !== 'paid') {
+    if (session.payment_status !== "paid") {
       return NextResponse.json(
         { error: "Payment not completed" },
         { status: 400 }
@@ -37,9 +35,9 @@ export async function GET(request: NextRequest) {
     // Find donation record by payment ID
     const donations = await PrivateStrapiClient.find("donations", {
       filters: {
-        PaymentId: { $eq: sessionId }
+        PaymentId: { $eq: sessionId },
       },
-      populate: ["Project"]
+      populate: ["Project"],
     })
 
     if (!donations?.data || donations.data.length === 0) {
@@ -53,8 +51,8 @@ export async function GET(request: NextRequest) {
           amount_total: session.amount_total,
           currency: session.currency,
           customer_email: session.customer_email,
-          metadata: session.metadata
-        }
+          metadata: session.metadata,
+        },
       })
     }
 
@@ -67,18 +65,18 @@ export async function GET(request: NextRequest) {
         id: session.id,
         payment_status: session.payment_status,
         amount_total: session.amount_total,
-        currency: session.currency
-      }
+        currency: session.currency,
+      },
     })
-
   } catch (error: any) {
     console.error("Payment verification error:", error)
     return NextResponse.json(
-      { 
+      {
         error: "Failed to verify payment",
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
       },
       { status: 500 }
     )
   }
-} 
+}

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { forwardRef } from 'react'
-import { LucideProps } from 'lucide-react'
+import { forwardRef } from "react"
+import { LucideProps } from "lucide-react"
 
 interface IconProps extends LucideProps {
   children: React.ReactElement
@@ -9,12 +9,8 @@ interface IconProps extends LucideProps {
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
   ({ children, ...props }, ref) => {
-    return (
-      <span suppressHydrationWarning>
-        {children}
-      </span>
-    )
+    return <span suppressHydrationWarning>{children}</span>
   }
 )
 
-Icon.displayName = 'Icon' 
+Icon.displayName = "Icon"

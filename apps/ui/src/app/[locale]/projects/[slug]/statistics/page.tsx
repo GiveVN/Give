@@ -1,11 +1,12 @@
-import { notFound } from "next/navigation"
-import { getProjectBySlug } from "@/lib/strapi-api/content/project"
-import { Container } from "@/components/elementary/Container"
-import { ProjectStatistics } from "@/components/crowdfunding/ProjectStatistics"
-import { ProjectProgressBar } from "@/components/crowdfunding/ProjectProgressBar"
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { ArrowLeft, BarChart3 } from "lucide-react"
+
+import { getProjectBySlug } from "@/lib/strapi-api/content/project"
+import { ProjectProgressBar } from "@/components/crowdfunding/ProjectProgressBar"
+import { ProjectStatistics } from "@/components/crowdfunding/ProjectStatistics"
+import { Container } from "@/components/elementary/Container"
+import { Button } from "@/components/ui/button"
 
 interface ProjectStatisticsPageProps {
   params: Promise<{
@@ -27,18 +28,18 @@ export default async function ProjectStatisticsPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="border-b bg-white">
         <Container className="py-6">
           <div className="flex items-center justify-between">
             <div>
               <Link href={`/projects/${resolvedParams.slug}`}>
                 <Button variant="ghost" size="sm" className="mb-2">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="mr-2 h-4 w-4" />
                   Back to Project
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold flex items-center">
-                <BarChart3 className="w-6 h-6 mr-2" />
+              <h1 className="flex items-center text-2xl font-bold">
+                <BarChart3 className="mr-2 h-6 w-6" />
                 {project.Title} - Statistics Dashboard
               </h1>
             </div>
@@ -48,7 +49,7 @@ export default async function ProjectStatisticsPage({
 
       {/* Content */}
       <Container className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Progress Overview - Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-6">
@@ -90,4 +91,4 @@ export async function generateMetadata({ params }: ProjectStatisticsPageProps) {
     title: `${project.Title} - Statistics | Give Crowdfunding`,
     description: `View detailed statistics and funding progress for ${project.Title}`,
   }
-} 
+}

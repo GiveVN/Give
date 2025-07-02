@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
 interface NoSSRProps {
   children: React.ReactNode
@@ -19,4 +19,4 @@ export default function NoSSR({ children, fallback = null }: NoSSRProps) {
   }
 
   return <>{children}</>
-} 
+}

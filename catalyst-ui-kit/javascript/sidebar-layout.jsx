@@ -1,8 +1,9 @@
-'use client'
+"use client"
 
-import * as Headless from '@headlessui/react'
-import React, { useState } from 'react'
-import { NavbarItem } from './navbar'
+import React, { useState } from "react"
+import * as Headless from "@headlessui/react"
+
+import { NavbarItem } from "./navbar"
 
 function OpenMenuIcon() {
   return (
@@ -60,7 +61,10 @@ export function SidebarLayout({ navbar, sidebar, children }) {
       {/* Navbar on mobile */}
       <header className="flex items-center px-4 lg:hidden">
         <div className="py-2.5">
-          <NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
+          <NavbarItem
+            onClick={() => setShowSidebar(true)}
+            aria-label="Open navigation"
+          >
             <OpenMenuIcon />
           </NavbarItem>
         </div>

@@ -71,4 +71,4 @@ export interface ProjectResponse {
 export interface ProjectListResponse {
   data: ProjectData[]
   meta: any
-} 
+}

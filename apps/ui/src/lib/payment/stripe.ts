@@ -1,4 +1,4 @@
-import { loadStripe, Stripe } from '@stripe/stripe-js'
+import { loadStripe, Stripe } from "@stripe/stripe-js"
 
 // Initialize Stripe
 let stripePromise: Promise<Stripe | null>
@@ -22,10 +22,10 @@ export async function createPaymentIntent(
   }
 ) {
   try {
-    const response = await fetch('/api/payments/stripe/create-intent', {
-      method: 'POST',
+    const response = await fetch("/api/payments/stripe/create-intent", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         amount,
@@ -35,13 +35,13 @@ export async function createPaymentIntent(
     })
 
     if (!response.ok) {
-      throw new Error('Failed to create payment intent')
+      throw new Error("Failed to create payment intent")
     }
 
     const data = await response.json()
     return data
   } catch (error) {
-    console.error('Error creating payment intent:', error)
+    console.error("Error creating payment intent:", error)
     throw error
   }
 }
@@ -54,7 +54,7 @@ export async function processStripePayment(
   try {
     const stripe = await getStripe()
     if (!stripe) {
-      throw new Error('Stripe not initialized')
+      throw new Error("Stripe not initialized")
     }
 
     const result = await stripe.confirmCardPayment(paymentIntentId, {
@@ -67,14 +67,14 @@ export async function processStripePayment(
 
     return result.paymentIntent
   } catch (error) {
-    console.error('Error processing payment:', error)
+    console.error("Error processing payment:", error)
     throw error
   }
 }
 
 // Stripe webhook event types
 export const STRIPE_WEBHOOK_EVENTS = {
-  PAYMENT_INTENT_SUCCEEDED: 'payment_intent.succeeded',
-  PAYMENT_INTENT_FAILED: 'payment_intent.payment_failed',
-  CHARGE_REFUNDED: 'charge.refunded',
-} as const 
+  PAYMENT_INTENT_SUCCEEDED: "payment_intent.succeeded",
+  PAYMENT_INTENT_FAILED: "payment_intent.payment_failed",
+  CHARGE_REFUNDED: "charge.refunded",
+} as const

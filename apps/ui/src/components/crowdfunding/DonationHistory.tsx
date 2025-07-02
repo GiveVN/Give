@@ -1,29 +1,48 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { format } from "date-fns"
-import { 
-  Download, 
-  RefreshCw, 
-  Search,
-  Filter,
+import {
   Calendar,
   DollarSign,
+  Download,
+  Filter,
   Heart,
+  RefreshCw,
+  Search,
+  TrendingUp,
   Users,
-  TrendingUp
 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "@/components/ui/use-toast"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { formatCurrency } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { toast } from "@/components/ui/use-toast"
 
 interface Donation {
   id: string
@@ -48,21 +67,29 @@ interface FakeDonation {
   isAnonymous: boolean
   message?: string
   createdAt: Date
-  projectType: 'give' | 'back'
+  projectType: "give" | "back"
 }
 
 interface DonationHistoryProps {
   projectId: number
-  projectType?: 'give' | 'back'
+  projectType?: "give" | "back"
   currentFunding?: number
   fundingGoal?: number
 }
 
 // Fake donor names for demo
 const fakeNames = [
-  "Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D",
-  "Hoàng Văn E", "Đặng Thị F", "Bùi Văn G", "Vũ Thị H",
-  "Anonymous", "Anonymous", "Anonymous" // More anonymous donors
+  "Nguyễn Văn A",
+  "Trần Thị B",
+  "Lê Văn C",
+  "Phạm Thị D",
+  "Hoàng Văn E",
+  "Đặng Thị F",
+  "Bùi Văn G",
+  "Vũ Thị H",
+  "Anonymous",
+  "Anonymous",
+  "Anonymous", // More anonymous donors
 ]
 
 const fakeMessages = [
@@ -74,14 +101,14 @@ const fakeMessages = [
   "Supporting from Saigon!",
   "",
   "",
-  "" // Some without messages
+  "", // Some without messages
 ]
 
-export default function DonationHistory({ 
-  projectId, 
-  projectType = 'give',
+export default function DonationHistory({
+  projectId,
+  projectType = "give",
   currentFunding = 0,
-  fundingGoal = 100000
+  fundingGoal = 100000,
 }: DonationHistoryProps) {
   const [donations, setDonations] = useState<FakeDonation[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
@@ -94,23 +121,30 @@ export default function DonationHistory({
   const generateFakeDonations = () => {
     const count = Math.floor(Math.random() * 8) + 5 // 5-12 donations
     const fakeDonations: FakeDonation[] = []
-    
+
     for (let i = 0; i < count; i++) {
       const isAnonymous = Math.random() > 0.7 // 30% anonymous
       const amount = Math.floor(Math.random() * 500) + 10 // $10-$510
-      
+
       fakeDonations.push({
         id: `fake-${projectId}-${i}`,
         amount,
         currency: "USD",
-        donorName: isAnonymous ? "Anonymous" : fakeNames[Math.floor(Math.random() * fakeNames.length)],
+        donorName: isAnonymous
+          ? "Anonymous"
+          : fakeNames[Math.floor(Math.random() * fakeNames.length)],
         isAnonymous,
-        message: Math.random() > 0.5 ? fakeMessages[Math.floor(Math.random() * fakeMessages.length)] : undefined,
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000), // Last 30 days
-        projectType
+        message:
+          Math.random() > 0.5
+            ? fakeMessages[Math.floor(Math.random() * fakeMessages.length)]
+            : undefined,
+        createdAt: new Date(
+          Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+        ), // Last 30 days
+        projectType,
       })
     }
-    
+
     // Sort by date descending
     fakeDonations.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     setDonations(fakeDonations)
@@ -122,24 +156,30 @@ export default function DonationHistory({
     setTimeout(() => {
       const isAnonymous = Math.random() > 0.7
       const amount = Math.floor(Math.random() * 200) + 20
-      
+
       const newDonation: FakeDonation = {
         id: `fake-${projectId}-${Date.now()}`,
         amount,
         currency: "USD",
-        donorName: isAnonymous ? "Anonymous" : fakeNames[Math.floor(Math.random() * fakeNames.length)],
+        donorName: isAnonymous
+          ? "Anonymous"
+          : fakeNames[Math.floor(Math.random() * fakeNames.length)],
         isAnonymous,
-        message: Math.random() > 0.5 ? fakeMessages[Math.floor(Math.random() * fakeMessages.length)] : undefined,
+        message:
+          Math.random() > 0.5
+            ? fakeMessages[Math.floor(Math.random() * fakeMessages.length)]
+            : undefined,
         createdAt: new Date(),
-        projectType
+        projectType,
       }
-      
-      setDonations(prev => [newDonation, ...prev])
+
+      setDonations((prev) => [newDonation, ...prev])
       setIsGenerating(false)
     }, 1000)
   }
 
-  const totalRaised = donations.reduce((sum, d) => sum + d.amount, 0) + currentFunding
+  const totalRaised =
+    donations.reduce((sum, d) => sum + d.amount, 0) + currentFunding
   const backerCount = donations.length + Math.floor(currentFunding / 50) // Estimate previous backers
 
   const getTimeAgo = (date: Date) => {
@@ -162,20 +202,22 @@ export default function DonationHistory({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Raised</p>
-                <p className="text-xl font-bold">{formatCurrency(totalRaised, "USD")}</p>
+                <p className="text-muted-foreground text-sm">Total Raised</p>
+                <p className="text-xl font-bold">
+                  {formatCurrency(totalRaised, "USD")}
+                </p>
               </div>
               <TrendingUp className="h-8 w-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">
-                  {projectType === 'give' ? 'Donors' : 'Backers'}
+                <p className="text-muted-foreground text-sm">
+                  {projectType === "give" ? "Donors" : "Backers"}
                 </p>
                 <p className="text-xl font-bold">{backerCount}</p>
               </div>
@@ -183,12 +225,12 @@ export default function DonationHistory({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Funded</p>
+                <p className="text-muted-foreground text-sm">Funded</p>
                 <p className="text-xl font-bold">
                   {Math.round((totalRaised / fundingGoal) * 100)}%
                 </p>
@@ -203,12 +245,12 @@ export default function DonationHistory({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>
-            Recent {projectType === 'give' ? 'Donations' : 'Backers'}
+            Recent {projectType === "give" ? "Donations" : "Backers"}
           </CardTitle>
           <button
             onClick={simulateNewDonation}
             disabled={isGenerating}
-            className="text-sm text-primary hover:underline disabled:opacity-50"
+            className="text-primary text-sm hover:underline disabled:opacity-50"
           >
             {isGenerating ? "Generating..." : "Simulate New"}
           </button>
@@ -216,31 +258,32 @@ export default function DonationHistory({
         <CardContent>
           <div className="space-y-4">
             {donations.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
-                Be the first to {projectType === 'give' ? 'donate' : 'back this project'}!
+              <p className="text-muted-foreground py-8 text-center">
+                Be the first to{" "}
+                {projectType === "give" ? "donate" : "back this project"}!
               </p>
             ) : (
               donations.slice(0, 10).map((donation) => (
                 <div key={donation.id} className="flex items-start space-x-3">
                   <Avatar className="h-10 w-10">
                     <AvatarFallback>
-                      {donation.isAnonymous ? "?" : donation.donorName.charAt(0)}
+                      {donation.isAnonymous
+                        ? "?"
+                        : donation.donorName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
-                      <p className="font-medium">
-                        {donation.donorName}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-medium">{donation.donorName}</p>
+                      <p className="text-muted-foreground text-sm">
                         {getTimeAgo(donation.createdAt)}
                       </p>
                     </div>
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-primary text-sm font-medium">
                       {formatCurrency(donation.amount, donation.currency)}
                     </p>
                     {donation.message && (
-                      <p className="text-sm text-muted-foreground italic">
+                      <p className="text-muted-foreground text-sm italic">
                         "{donation.message}"
                       </p>
                     )}
@@ -249,14 +292,15 @@ export default function DonationHistory({
               ))
             )}
           </div>
-          
+
           {donations.length > 10 && (
-            <p className="text-center text-sm text-muted-foreground mt-4">
-              And {donations.length - 10} more {projectType === 'give' ? 'donations' : 'backers'}...
+            <p className="text-muted-foreground mt-4 text-center text-sm">
+              And {donations.length - 10} more{" "}
+              {projectType === "give" ? "donations" : "backers"}...
             </p>
           )}
         </CardContent>
       </Card>
     </div>
   )
-} 
+}

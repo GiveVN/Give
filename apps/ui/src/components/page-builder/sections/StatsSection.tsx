@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 interface StatItem {
   id: number
@@ -13,38 +13,38 @@ interface StatsSectionProps {
   stats?: StatItem[]
 }
 
-export function StatsSection({ title, subtitle, stats = [] }: StatsSectionProps) {
+export function StatsSection({
+  title,
+  subtitle,
+  stats = [],
+}: StatsSectionProps) {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-gray-50 py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {(title || subtitle) && (
-          <div className="text-center mb-12">
+          <div className="mb-12 text-center">
             {title && (
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                {title}
-              </h2>
+              <h2 className="mb-4 text-3xl font-bold text-gray-900">{title}</h2>
             )}
             {subtitle && (
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              <p className="mx-auto max-w-3xl text-lg text-gray-600">
                 {subtitle}
               </p>
             )}
           </div>
         )}
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (
             <div key={stat.id} className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">
+              <div className="mb-2 text-4xl font-bold text-green-600">
                 {stat.value}
               </div>
-              <div className="text-lg font-medium text-gray-900 mb-1">
+              <div className="mb-1 text-lg font-medium text-gray-900">
                 {stat.label}
               </div>
               {stat.description && (
-                <div className="text-sm text-gray-600">
-                  {stat.description}
-                </div>
+                <div className="text-sm text-gray-600">{stat.description}</div>
               )}
             </div>
           ))}
@@ -54,4 +54,4 @@ export function StatsSection({ title, subtitle, stats = [] }: StatsSectionProps)
   )
 }
 
-export default StatsSection 
+export default StatsSection

@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
-import { PrivateStrapiClient } from "@/lib/strapi-api"
-import { 
-  validatePaymentAmount, 
-  checkRateLimit, 
-  getFraudSignals,
-  performComplianceChecks,
-  logPaymentActivity 
-} from "@/lib/payment/security-compliance"
-import { stripe, formatAmountForStripe } from "@/lib/stripe"
 
-const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:1338'
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || ''
+import {
+  checkRateLimit,
+  getFraudSignals,
+  logPaymentActivity,
+  performComplianceChecks,
+  validatePaymentAmount,
+} from "@/lib/payment/security-compliance"
+import { PrivateStrapiClient } from "@/lib/strapi-api"
+import { formatAmountForStripe, stripe } from "@/lib/stripe"
+
+const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1338"
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || ""
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     const {
       amount,
       currency,
@@ -40,30 +41,30 @@ export async function POST(request: NextRequest) {
     try {
       // Validate amount
       validatePaymentAmount(amount, currency)
-      
+
       // Rate limiting
-      const clientIp = request.headers.get('x-forwarded-for') || 'unknown'
+      const clientIp = request.headers.get("x-forwarded-for") || "unknown"
       checkRateLimit(clientIp)
-      
+
       // Get fraud signals
       const fraudSignals = getFraudSignals(request)
-      
+
       // Compliance checks
       const complianceIssues = await performComplianceChecks({
         Amount: amount,
         Currency: currency,
-        GiverName: giverName
+        GiverName: giverName,
       })
-      
+
       if (complianceIssues.length > 0) {
         logPaymentActivity({
-          type: 'DONATION_BLOCKED',
+          type: "DONATION_BLOCKED",
           amount,
           currency,
-          status: 'blocked',
-          metadata: { complianceIssues, fraudSignals }
+          status: "blocked",
+          metadata: { complianceIssues, fraudSignals },
         })
-        
+
         return NextResponse.json(
           { error: complianceIssues[0].message },
           { status: 403 }
@@ -78,17 +79,17 @@ export async function POST(request: NextRequest) {
 
     // Get project details for payment
     const project = await PrivateStrapiClient.findOne("projects", projectId)
-    const projectTitle = project?.data?.Title || 'Project'
-    
+    const projectTitle = project?.data?.Title || "Project"
+
     // Create payment based on method
     let paymentId
     let sessionUrl
-    
+
     try {
-      if (paymentMethod === 'stripe') {
+      if (paymentMethod === "stripe") {
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
+          payment_method_types: ["card"],
           line_items: [
             {
               price_data: {
@@ -102,27 +103,27 @@ export async function POST(request: NextRequest) {
               quantity: 1,
             },
           ],
-          mode: 'payment',
+          mode: "payment",
           success_url: `${process.env.NEXT_PUBLIC_APP_URL}/donation/success?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${projectId}`,
           metadata: {
             projectId: projectId.toString(),
-            donorName: giverName || 'Anonymous',
+            donorName: giverName || "Anonymous",
             isAnonymous: isAnonymous.toString(),
-            rewardId: rewardId?.toString() || '',
-            email: email || '',
-            message: message || ''
-          }
+            rewardId: rewardId?.toString() || "",
+            email: email || "",
+            message: message || "",
+          },
         })
-        
+
         paymentId = session.id
         sessionUrl = session.url
       } else {
         // For other payment methods (PayPal, Crypto), use fake ID for now
         paymentId = `${paymentMethod.toUpperCase()}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        
+
         // Simulate processing time for non-Stripe payments
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise((resolve) => setTimeout(resolve, 1000))
       }
     } catch (stripeError: any) {
       console.error("Payment processing error:", stripeError)
@@ -131,14 +132,14 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     // Create donation record in Strapi
     const donationData = {
       Amount: amount,
       Currency: currency,
       PaymentMethod: paymentMethod,
       PaymentId: paymentId,
-      PaymentStatus: paymentMethod === 'stripe' ? "pending" : "completed", // Stripe starts as pending until confirmed
+      PaymentStatus: paymentMethod === "stripe" ? "pending" : "completed", // Stripe starts as pending until confirmed
       IsAnonymous: isAnonymous,
       GiverName: isAnonymous ? null : giverName,
       Message: message,
@@ -148,66 +149,77 @@ export async function POST(request: NextRequest) {
 
     try {
       const response = await fetch(`${STRAPI_URL}/api/donations`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          ...(STRAPI_API_TOKEN && { 'Authorization': `Bearer ${STRAPI_API_TOKEN}` })
+          "Content-Type": "application/json",
+          ...(STRAPI_API_TOKEN && {
+            Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+          }),
         },
         body: JSON.stringify(donationData),
       })
-      
+
       if (!response.ok) {
         const error = await response.text()
-        console.error('Strapi error:', error)
+        console.error("Strapi error:", error)
         return NextResponse.json(
-          { error: 'Failed to save donation to Strapi' },
+          { error: "Failed to save donation to Strapi" },
           { status: response.status }
         )
       }
-      
+
       const result = await response.json()
-      
+
       // Update project funding amount
       try {
         // Get current project data
-        const projectResponse = await fetch(`${STRAPI_URL}/api/projects/${projectId}`, {
-          headers: {
-            ...(STRAPI_API_TOKEN && { 'Authorization': `Bearer ${STRAPI_API_TOKEN}` })
+        const projectResponse = await fetch(
+          `${STRAPI_URL}/api/projects/${projectId}`,
+          {
+            headers: {
+              ...(STRAPI_API_TOKEN && {
+                Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+              }),
+            },
           }
-        })
-        
+        )
+
         if (projectResponse.ok) {
           const projectData = await projectResponse.json()
           const currentFunding = projectData.data?.CurrentFunding || 0
           const backersCount = projectData.data?.BackersCount || 0
-          
+
           // Update project with new funding amount
           await fetch(`${STRAPI_URL}/api/projects/${projectId}`, {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-              'Content-Type': 'application/json',
-              ...(STRAPI_API_TOKEN && { 'Authorization': `Bearer ${STRAPI_API_TOKEN}` })
+              "Content-Type": "application/json",
+              ...(STRAPI_API_TOKEN && {
+                Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+              }),
             },
             body: JSON.stringify({
               data: {
                 CurrentFunding: currentFunding + amount,
-                BackersCount: backersCount + 1
-              }
+                BackersCount: backersCount + 1,
+              },
             }),
           })
         }
       } catch (error) {
-        console.error('Error updating project funding:', error)
+        console.error("Error updating project funding:", error)
         // Continue anyway - donation is saved
       }
 
       // Send email receipt if email provided
       if (email) {
         try {
-          const { sendDonationReceipt } = await import("@/lib/email/donation-receipt")
+          const { sendDonationReceipt } = await import(
+            "@/lib/email/donation-receipt"
+          )
           await sendDonationReceipt(email, {
             ...result.data,
-            Project: project?.data || { Title: "Unknown Project" }
+            Project: project?.data || { Title: "Unknown Project" },
           })
         } catch (emailError) {
           console.error("Email send failed:", emailError)
@@ -220,9 +232,10 @@ export async function POST(request: NextRequest) {
         data: result.data,
         transactionId: paymentId,
         sessionUrl: sessionUrl, // For Stripe checkout redirect
-        message: paymentMethod === 'stripe' 
-          ? "Redirecting to payment..."
-          : "Donation processed successfully"
+        message:
+          paymentMethod === "stripe"
+            ? "Redirecting to payment..."
+            : "Donation processed successfully",
       })
     } catch (strapiError) {
       console.error("Strapi error:", strapiError)
@@ -245,31 +258,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const projectId = searchParams.get("projectId")
     const userId = searchParams.get("userId")
-    
+
     let filters: any = {}
-    
+
     if (projectId) {
       filters.Project = { id: { $eq: projectId } }
     }
-    
+
     if (userId) {
       filters.Giver = { id: { $eq: userId } }
     }
-    
+
     const donations = await PrivateStrapiClient.find("donations", {
       filters,
       populate: ["Project", "Giver"],
       sort: ["createdAt:desc"],
       pagination: {
         page: 1,
-        pageSize: 100
-      }
+        pageSize: 100,
+      },
     })
-    
+
     return NextResponse.json({
       success: true,
       donations: donations.data,
-      meta: donations.meta
+      meta: donations.meta,
     })
   } catch (error) {
     console.error("Get donations error:", error)
@@ -278,4 +291,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}

@@ -3,10 +3,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function ProjectCardSkeleton() {
   return (
     <div className="group relative">
-      <div className="relative bg-white rounded-lg border border-gray-200 overflow-visible">
+      <div className="relative overflow-visible rounded-lg border border-gray-200 bg-white">
         {/* Image skeleton */}
         <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
-          <Skeleton className="w-full h-full" />
+          <Skeleton className="h-full w-full" />
         </div>
 
         {/* Content skeleton */}
@@ -17,7 +17,7 @@ export default function ProjectCardSkeleton() {
           </div>
 
           {/* Title skeleton */}
-          <Skeleton className="h-6 w-3/4 mb-3" />
+          <Skeleton className="mb-3 h-6 w-3/4" />
 
           {/* Progress bar skeleton */}
           <div className="mb-3">
@@ -25,7 +25,7 @@ export default function ProjectCardSkeleton() {
           </div>
 
           {/* Funding info skeleton */}
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-4 w-20" />
           </div>
@@ -33,4 +33,4 @@ export default function ProjectCardSkeleton() {
       </div>
     </div>
   )
-} 
+}

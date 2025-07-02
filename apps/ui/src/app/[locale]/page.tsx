@@ -80,48 +80,57 @@ export default async function HomePage(props: Props) {
         ) : (
           // Default crowdfunding homepage when content is empty
           <Container className="py-16">
-            <div className="text-center space-y-8">
+            <div className="space-y-8 text-center">
               <div className="space-y-4">
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+                <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
                   Fund the Future
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Discover and support innovative projects that make a difference. 
-                  Join thousands of backers bringing creative ideas to life.
+                <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
+                  Discover and support innovative projects that make a
+                  difference. Join thousands of backers bringing creative ideas
+                  to life.
                 </p>
               </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a 
-                  href="/projects" 
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+
+              <div className="flex flex-col justify-center gap-4 sm:flex-row">
+                <a
+                  href="/projects"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-8 py-3 text-sm font-medium shadow transition-colors"
                 >
                   Browse Projects
                 </a>
-                <a 
-                  href="/projects/create" 
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                <a
+                  href="/projects/create"
+                  className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md border px-8 py-3 text-sm font-medium shadow-sm transition-colors"
                 >
                   Start a Campaign
                 </a>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-12">
+              <div className="grid grid-cols-2 gap-8 pt-12 md:grid-cols-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold">1,000+</div>
-                  <div className="text-sm text-muted-foreground">Projects Funded</div>
+                  <div className="text-muted-foreground text-sm">
+                    Projects Funded
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold">$2.5M+</div>
-                  <div className="text-sm text-muted-foreground">Total Raised</div>
+                  <div className="text-muted-foreground text-sm">
+                    Total Raised
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold">10K+</div>
-                  <div className="text-sm text-muted-foreground">Active Backers</div>
+                  <div className="text-muted-foreground text-sm">
+                    Active Backers
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold">85%</div>
-                  <div className="text-sm text-muted-foreground">Success Rate</div>
+                  <div className="text-muted-foreground text-sm">
+                    Success Rate
+                  </div>
                 </div>
               </div>
             </div>

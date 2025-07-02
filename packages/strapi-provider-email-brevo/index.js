@@ -1,10 +1,10 @@
-const BrevoApi = require('@getbrevo/brevo')
+const BrevoApi = require("@getbrevo/brevo")
 
 module.exports = {
   init(providerOptions = {}, settings = {}) {
     const { apiKey } = providerOptions
     if (!apiKey) {
-      throw new Error('Brevo API key is missing – please set BREVO_API_KEY')
+      throw new Error("Brevo API key is missing – please set BREVO_API_KEY")
     }
 
     const apiInstance = new BrevoApi.TransactionalEmailsApi()
@@ -17,9 +17,11 @@ module.exports = {
 
     return {
       async send(options) {
-        const senderEmail = options.from || settings.defaultFrom || 'admin@give.local'
-        const senderName = settings.defaultSenderName || 'Give Platform'
-        const replyTo = options.replyTo || settings.defaultReplyTo || senderEmail
+        const senderEmail =
+          options.from || settings.defaultFrom || "admin@give.local"
+        const senderName = settings.defaultSenderName || "Give Platform"
+        const replyTo =
+          options.replyTo || settings.defaultReplyTo || senderEmail
 
         const payload = new BrevoApi.SendSmtpEmail()
         payload.sender = { email: senderEmail, name: senderName }
@@ -34,10 +36,12 @@ module.exports = {
           return data
         } catch (error) {
           const message =
-            error?.response?.body?.message || error.message || 'Unknown Brevo error'
+            error?.response?.body?.message ||
+            error.message ||
+            "Unknown Brevo error"
           throw new Error(`Brevo provider error: ${message}`)
         }
       },
     }
   },
-} 
+}

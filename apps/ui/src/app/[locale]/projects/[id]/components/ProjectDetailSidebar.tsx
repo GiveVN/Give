@@ -40,124 +40,137 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
   const [customAmount, setCustomAmount] = useState<string>("")
 
   // Use real rewards from Strapi or fallback to mock data
-  const rewardTiers = project.Rewards && project.Rewards.length > 0 
-    ? project.Rewards.filter(reward => reward.IsActive).map(reward => ({
-        id: reward.id.toString(),
-        amount: reward.Amount,
-        title: reward.Title,
-        description: reward.Description,
-        deliveryDate: reward.EstimatedDelivery ? new Date(reward.EstimatedDelivery).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "March 2025",
-        backers: reward.ClaimedQuantity || 0,
-        available: !reward.LimitedQuantity || reward.ClaimedQuantity < reward.LimitedQuantity,
-        estimated: "Estimated delivery",
-        includes: [], // TODO: Add includes field to Strapi rewards schema
-        currency: reward.Currency || 'USD'
-      }))
-    : [
-        // Fallback mock data when no Strapi rewards
-        {
-          id: "1",
-          amount: 25,
-          title: "Early Bird Special",
-          description:
-            "Get the project at a discounted price. Includes digital thank you and updates.",
-          deliveryDate: "March 2025",
-          backers: 127,
-          available: true,
+  const rewardTiers =
+    project.Rewards && project.Rewards.length > 0
+      ? project.Rewards.filter((reward) => reward.IsActive).map((reward) => ({
+          id: reward.id.toString(),
+          amount: reward.Amount,
+          title: reward.Title,
+          description: reward.Description,
+          deliveryDate: reward.EstimatedDelivery
+            ? new Date(reward.EstimatedDelivery).toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric",
+              })
+            : "March 2025",
+          backers: reward.ClaimedQuantity || 0,
+          available:
+            !reward.LimitedQuantity ||
+            reward.ClaimedQuantity < reward.LimitedQuantity,
           estimated: "Estimated delivery",
-          includes: ["Digital thank you", "Project updates", "Early access"],
-          currency: "USD"
-        },
-        {
-          id: "2", 
-          amount: 50,
-          title: "Standard Package",
-          description: "Full project package with all basic features and benefits.",
-          deliveryDate: "March 2025",
-          backers: 89,
-          available: true,
-          estimated: "Estimated delivery",
-          includes: ["Complete project", "Digital materials", "Community access"],
-          currency: "USD"
-        },
-        {
-          id: "3",
-          amount: 100,
-          title: "Premium Package", 
-          description:
-            "Premium package with exclusive content and priority support.",
-          deliveryDate: "February 2025",
-          backers: 42,
-          available: true,
-          estimated: "Estimated delivery",
-          includes: [
-            "Everything in Standard",
-            "Premium features",
-            "Priority support",
-            "Exclusive content",
-          ],
-          currency: "USD"
-        },
-        {
-          id: "4",
-          amount: 200,
-          title: "Deluxe Package", 
-          description:
-            "Deluxe package with all premium features plus exclusive merchandise and physical rewards.",
-          deliveryDate: "January 2025",
-          backers: 23,
-          available: true,
-          estimated: "Estimated delivery",
-          includes: [
-            "Everything in Premium",
-            "Physical merchandise",
-            "Exclusive t-shirt",
-            "Signed certificate",
-            "VIP support",
-          ],
-          currency: "USD"
-        },
-        {
-          id: "5",
-          amount: 500,
-          title: "Ultimate Supporter", 
-          description:
-            "Ultimate supporter package with lifetime access and special recognition.",
-          deliveryDate: "December 2024",
-          backers: 8,
-          available: true,
-          estimated: "Estimated delivery",
-          includes: [
-            "Everything in Deluxe",
-            "Lifetime access",
-            "Special recognition",
-            "Private Discord channel",
-            "1-on-1 consultation",
-            "Custom feature request",
-          ],
-          currency: "USD"
-        },
-        {
-          id: "6",
-          amount: 1000,
-          title: "Corporate Sponsor", 
-          description:
-            "Corporate sponsorship tier with company logo placement and custom integration options.",
-          deliveryDate: "November 2024",
-          backers: 2,
-          available: true,
-          estimated: "Estimated delivery",
-          includes: [
-            "Everything in Ultimate",
-            "Company logo placement",
-            "Custom integration",
-            "Dedicated support team",
-            "Priority feature development",
-            "Annual partnership review",
-          ],
-          currency: "USD"
-        },
-      ]
+          includes: [], // TODO: Add includes field to Strapi rewards schema
+          currency: reward.Currency || "USD",
+        }))
+      : [
+          // Fallback mock data when no Strapi rewards
+          {
+            id: "1",
+            amount: 25,
+            title: "Early Bird Special",
+            description:
+              "Get the project at a discounted price. Includes digital thank you and updates.",
+            deliveryDate: "March 2025",
+            backers: 127,
+            available: true,
+            estimated: "Estimated delivery",
+            includes: ["Digital thank you", "Project updates", "Early access"],
+            currency: "USD",
+          },
+          {
+            id: "2",
+            amount: 50,
+            title: "Standard Package",
+            description:
+              "Full project package with all basic features and benefits.",
+            deliveryDate: "March 2025",
+            backers: 89,
+            available: true,
+            estimated: "Estimated delivery",
+            includes: [
+              "Complete project",
+              "Digital materials",
+              "Community access",
+            ],
+            currency: "USD",
+          },
+          {
+            id: "3",
+            amount: 100,
+            title: "Premium Package",
+            description:
+              "Premium package with exclusive content and priority support.",
+            deliveryDate: "February 2025",
+            backers: 42,
+            available: true,
+            estimated: "Estimated delivery",
+            includes: [
+              "Everything in Standard",
+              "Premium features",
+              "Priority support",
+              "Exclusive content",
+            ],
+            currency: "USD",
+          },
+          {
+            id: "4",
+            amount: 200,
+            title: "Deluxe Package",
+            description:
+              "Deluxe package with all premium features plus exclusive merchandise and physical rewards.",
+            deliveryDate: "January 2025",
+            backers: 23,
+            available: true,
+            estimated: "Estimated delivery",
+            includes: [
+              "Everything in Premium",
+              "Physical merchandise",
+              "Exclusive t-shirt",
+              "Signed certificate",
+              "VIP support",
+            ],
+            currency: "USD",
+          },
+          {
+            id: "5",
+            amount: 500,
+            title: "Ultimate Supporter",
+            description:
+              "Ultimate supporter package with lifetime access and special recognition.",
+            deliveryDate: "December 2024",
+            backers: 8,
+            available: true,
+            estimated: "Estimated delivery",
+            includes: [
+              "Everything in Deluxe",
+              "Lifetime access",
+              "Special recognition",
+              "Private Discord channel",
+              "1-on-1 consultation",
+              "Custom feature request",
+            ],
+            currency: "USD",
+          },
+          {
+            id: "6",
+            amount: 1000,
+            title: "Corporate Sponsor",
+            description:
+              "Corporate sponsorship tier with company logo placement and custom integration options.",
+            deliveryDate: "November 2024",
+            backers: 2,
+            available: true,
+            estimated: "Estimated delivery",
+            includes: [
+              "Everything in Ultimate",
+              "Company logo placement",
+              "Custom integration",
+              "Dedicated support team",
+              "Priority feature development",
+              "Annual partnership review",
+            ],
+            currency: "USD",
+          },
+        ]
 
   const handleBack = (amount: number) => {
     // In real app, this would handle the backing process
@@ -187,11 +200,10 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
   return (
     <div className="sticky top-6 h-fit max-h-[calc(100vh-3rem)] overflow-hidden">
       {/* Single Scrollable Container for Everything */}
-      <div className="flex flex-col overflow-y-auto pr-2 space-y-4 max-h-[calc(100vh-6rem)] scrollbar-thin">
-        
+      <div className="scrollbar-thin flex max-h-[calc(100vh-6rem)] flex-col space-y-4 overflow-y-auto pr-2">
         {/* Support this project header */}
         <div className="flex-shrink-0">
-          <h3 className="text-lg font-semibold mb-3">Support this project</h3>
+          <h3 className="mb-3 text-lg font-semibold">Support this project</h3>
         </div>
 
         {/* Custom Pledge - Top Priority (Kickstarter Style) */}
@@ -199,24 +211,28 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
           <Card className="border-2 border-blue-200 bg-blue-50/50">
             <CardContent className="p-4">
               <div className="mb-3">
-                <h4 className="font-semibold text-blue-900">Make a pledge without a reward</h4>
+                <h4 className="font-semibold text-blue-900">
+                  Make a pledge without a reward
+                </h4>
                 <p className="text-sm text-blue-700">
                   Back it because you believe in it.
                 </p>
               </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                  <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-500">
+                    $
+                  </span>
                   <input
                     type="number"
                     placeholder="Enter amount"
                     value={customAmount}
                     onChange={(e) => setCustomAmount(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 py-2 pr-3 pl-8 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
                 </div>
-                <Button 
+                <Button
                   className="bg-blue-600 hover:bg-blue-700"
                   size="sm"
                   onClick={handleCustomPledge}
@@ -232,7 +248,9 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
 
         {/* Rewards Header */}
         <div className="flex-shrink-0">
-          <h4 className="text-base font-medium text-gray-700">Or choose a reward</h4>
+          <h4 className="text-base font-medium text-gray-700">
+            Or choose a reward
+          </h4>
         </div>
 
         {/* Rewards List */}
@@ -251,7 +269,14 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
                 <div className="mb-2 flex items-start justify-between">
                   <div>
                     <div className="text-lg font-semibold">
-                      {reward.currency === 'USD' ? '$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : '$'}{reward.amount}
+                      {reward.currency === "USD"
+                        ? "$"
+                        : reward.currency === "EUR"
+                          ? "€"
+                          : reward.currency === "GBP"
+                            ? "£"
+                            : "$"}
+                      {reward.amount}
                     </div>
                     <div className="text-sm font-medium">{reward.title}</div>
                   </div>
@@ -265,10 +290,10 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
                   )}
                 </div>
 
-                <p 
+                <p
                   className="mb-3 text-sm text-gray-600"
-                  dangerouslySetInnerHTML={{ 
-                    __html: reward.description.replace(/\n/g, '<br />') 
+                  dangerouslySetInnerHTML={{
+                    __html: reward.description.replace(/\n/g, "<br />"),
                   }}
                 />
 
@@ -295,7 +320,7 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
                 </div>
 
                 {/* Pledge Button */}
-                <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="mt-3 border-t border-gray-100 pt-3">
                   <Button
                     className="w-full bg-blue-600 hover:bg-blue-700"
                     size="sm"
@@ -305,7 +330,15 @@ export function ProjectDetailSidebar({ project }: ProjectDetailSidebarProps) {
                     }}
                   >
                     <Heart className="mr-2 h-4 w-4" />
-                    Pledge {reward.currency === 'USD' ? 'US$' : reward.currency === 'EUR' ? '€' : reward.currency === 'GBP' ? '£' : 'US$'} {reward.amount.toLocaleString()}
+                    Pledge{" "}
+                    {reward.currency === "USD"
+                      ? "US$"
+                      : reward.currency === "EUR"
+                        ? "€"
+                        : reward.currency === "GBP"
+                          ? "£"
+                          : "US$"}{" "}
+                    {reward.amount.toLocaleString()}
                   </Button>
                 </div>
               </CardContent>

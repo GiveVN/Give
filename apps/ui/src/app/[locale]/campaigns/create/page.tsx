@@ -1,20 +1,42 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Container } from '@/components/catalyst/container'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CalendarIcon, CurrencyDollarIcon, PhotoIcon, TagIcon } from '@heroicons/react/24/outline'
-import { format } from 'date-fns'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import {
+  CalendarIcon,
+  CurrencyDollarIcon,
+  PhotoIcon,
+  TagIcon,
+} from "@heroicons/react/24/outline"
+import { format } from "date-fns"
+
+import { cn } from "@/lib/utils"
+import { Container } from "@/components/catalyst/container"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 
 interface Reward {
   title: string
@@ -27,19 +49,19 @@ interface Reward {
 export default function CreateCampaignPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [activeTab, setActiveTab] = useState('basics')
-  
+  const [activeTab, setActiveTab] = useState("basics")
+
   // Form states
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [shortDescription, setShortDescription] = useState('')
-  const [category, setCategory] = useState('')
-  const [fundingGoal, setFundingGoal] = useState('')
-  const [currency, setCurrency] = useState('USD')
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [shortDescription, setShortDescription] = useState("")
+  const [category, setCategory] = useState("")
+  const [fundingGoal, setFundingGoal] = useState("")
+  const [currency, setCurrency] = useState("USD")
   const [startDate, setStartDate] = useState<Date>()
   const [endDate, setEndDate] = useState<Date>()
   const [media, setMedia] = useState<File[]>([])
-  const [videoUrl, setVideoUrl] = useState('')
+  const [videoUrl, setVideoUrl] = useState("")
   const [rewards, setRewards] = useState<Reward[]>([])
   const [tags, setTags] = useState<string[]>([])
 
@@ -49,7 +71,7 @@ export default function CreateCampaignPage() {
 
     try {
       // TODO: Implement API call to create campaign
-      console.log('Creating campaign:', {
+      console.log("Creating campaign:", {
         title,
         description,
         shortDescription,
@@ -61,26 +83,29 @@ export default function CreateCampaignPage() {
         media,
         videoUrl,
         rewards,
-        tags
+        tags,
       })
 
       // Redirect to campaign page after creation
-      router.push('/projects')
+      router.push("/projects")
     } catch (error) {
-      console.error('Error creating campaign:', error)
+      console.error("Error creating campaign:", error)
     } finally {
       setIsSubmitting(false)
     }
   }
 
   const addReward = () => {
-    setRewards([...rewards, {
-      title: '',
-      description: '',
-      amount: '',
-      limit: '',
-      estimatedDelivery: undefined
-    }])
+    setRewards([
+      ...rewards,
+      {
+        title: "",
+        description: "",
+        amount: "",
+        limit: "",
+        estimatedDelivery: undefined,
+      },
+    ])
   }
 
   const updateReward = (index: number, field: keyof Reward, value: any) => {
@@ -95,11 +120,14 @@ export default function CreateCampaignPage() {
 
   return (
     <Container className="py-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Create Your Campaign</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Create Your Campaign
+          </h1>
           <p className="text-muted-foreground mt-2">
-            Share your vision and bring your project to life with the support of our community
+            Share your vision and bring your project to life with the support of
+            our community
           </p>
         </div>
 
@@ -133,7 +161,9 @@ export default function CreateCampaignPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="shortDescription">Short Description *</Label>
+                    <Label htmlFor="shortDescription">
+                      Short Description *
+                    </Label>
                     <Input
                       id="shortDescription"
                       value={shortDescription}
@@ -142,7 +172,7 @@ export default function CreateCampaignPage() {
                       maxLength={160}
                       required
                     />
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       {shortDescription.length}/160 characters
                     </p>
                   </div>
@@ -183,15 +213,22 @@ export default function CreateCampaignPage() {
                     <Input
                       id="tags"
                       placeholder="Add tags separated by commas (e.g., innovation, sustainability, community)"
-                      onChange={(e) => setTags(e.target.value.split(',').map(tag => tag.trim()).filter(Boolean))}
+                      onChange={(e) =>
+                        setTags(
+                          e.target.value
+                            .split(",")
+                            .map((tag) => tag.trim())
+                            .filter(Boolean)
+                        )
+                      }
                     />
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full"
+                          className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium"
                         >
-                          <TagIcon className="w-3 h-3" />
+                          <TagIcon className="h-3 w-3" />
                           {tag}
                         </span>
                       ))}
@@ -232,8 +269,12 @@ export default function CreateCampaignPage() {
                         <SelectContent>
                           <SelectItem value="USD">USD - US Dollar</SelectItem>
                           <SelectItem value="EUR">EUR - Euro</SelectItem>
-                          <SelectItem value="GBP">GBP - British Pound</SelectItem>
-                          <SelectItem value="VND">VND - Vietnamese Dong</SelectItem>
+                          <SelectItem value="GBP">
+                            GBP - British Pound
+                          </SelectItem>
+                          <SelectItem value="VND">
+                            VND - Vietnamese Dong
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -252,7 +293,9 @@ export default function CreateCampaignPage() {
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP") : "Pick a date"}
+                            {startDate
+                              ? format(startDate, "PPP")
+                              : "Pick a date"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -292,12 +335,12 @@ export default function CreateCampaignPage() {
                     </div>
                   </div>
 
-                  <div className="rounded-lg bg-muted p-4">
-                    <h4 className="font-medium mb-2">Campaign Duration</h4>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="bg-muted rounded-lg p-4">
+                    <h4 className="mb-2 font-medium">Campaign Duration</h4>
+                    <p className="text-muted-foreground text-sm">
                       {startDate && endDate
                         ? `${Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))} days`
-                        : 'Select start and end dates'}
+                        : "Select start and end dates"}
                     </p>
                   </div>
                 </CardContent>
@@ -309,14 +352,15 @@ export default function CreateCampaignPage() {
                 <CardHeader>
                   <CardTitle>Rewards</CardTitle>
                   <CardDescription>
-                    Create rewards to incentivize backers to support your campaign
+                    Create rewards to incentivize backers to support your
+                    campaign
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {rewards.map((reward, index) => (
                     <Card key={index}>
-                      <CardContent className="pt-6 space-y-4">
-                        <div className="flex justify-between items-start">
+                      <CardContent className="space-y-4 pt-6">
+                        <div className="flex items-start justify-between">
                           <h4 className="font-medium">Reward {index + 1}</h4>
                           <Button
                             type="button"
@@ -327,12 +371,14 @@ export default function CreateCampaignPage() {
                             Remove
                           </Button>
                         </div>
-                        
+
                         <div className="space-y-2">
                           <Label>Title</Label>
                           <Input
                             value={reward.title}
-                            onChange={(e) => updateReward(index, 'title', e.target.value)}
+                            onChange={(e) =>
+                              updateReward(index, "title", e.target.value)
+                            }
                             placeholder="e.g., Early Bird Special"
                           />
                         </div>
@@ -341,7 +387,9 @@ export default function CreateCampaignPage() {
                           <Label>Description</Label>
                           <Textarea
                             value={reward.description}
-                            onChange={(e) => updateReward(index, 'description', e.target.value)}
+                            onChange={(e) =>
+                              updateReward(index, "description", e.target.value)
+                            }
                             placeholder="Describe what backers will receive"
                             rows={3}
                           />
@@ -353,7 +401,9 @@ export default function CreateCampaignPage() {
                             <Input
                               type="number"
                               value={reward.amount}
-                              onChange={(e) => updateReward(index, 'amount', e.target.value)}
+                              onChange={(e) =>
+                                updateReward(index, "amount", e.target.value)
+                              }
                               placeholder="0"
                               min="1"
                             />
@@ -363,7 +413,9 @@ export default function CreateCampaignPage() {
                             <Input
                               type="number"
                               value={reward.limit}
-                              onChange={(e) => updateReward(index, 'limit', e.target.value)}
+                              onChange={(e) =>
+                                updateReward(index, "limit", e.target.value)
+                              }
                               placeholder="Unlimited"
                               min="1"
                             />
@@ -396,12 +448,12 @@ export default function CreateCampaignPage() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="media">Project Images</Label>
-                    <div className="border-2 border-dashed rounded-lg p-6 text-center">
-                      <PhotoIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <div className="rounded-lg border-2 border-dashed p-6 text-center">
+                      <PhotoIcon className="text-muted-foreground mx-auto h-12 w-12" />
                       <div className="mt-4">
                         <label
                           htmlFor="media"
-                          className="cursor-pointer text-sm font-medium text-primary hover:underline"
+                          className="text-primary cursor-pointer text-sm font-medium hover:underline"
                         >
                           <span>Upload images</span>
                           <input
@@ -417,19 +469,19 @@ export default function CreateCampaignPage() {
                             }}
                           />
                         </label>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-muted-foreground mt-1 text-xs">
                           PNG, JPG, GIF up to 10MB
                         </p>
                       </div>
                     </div>
                     {media.length > 0 && (
-                      <div className="grid grid-cols-3 gap-4 mt-4">
+                      <div className="mt-4 grid grid-cols-3 gap-4">
                         {media.map((file, index) => (
                           <div key={index} className="relative">
                             <img
                               src={URL.createObjectURL(file)}
                               alt={`Upload ${index + 1}`}
-                              className="rounded-lg object-cover w-full h-24"
+                              className="h-24 w-full rounded-lg object-cover"
                             />
                           </div>
                         ))}
@@ -445,7 +497,7 @@ export default function CreateCampaignPage() {
                       onChange={(e) => setVideoUrl(e.target.value)}
                       placeholder="https://youtube.com/watch?v=..."
                     />
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       Add a YouTube or Vimeo link to showcase your project
                     </p>
                   </div>
@@ -454,24 +506,32 @@ export default function CreateCampaignPage() {
             </TabsContent>
           </Tabs>
 
-          <div className="flex gap-4 mt-8">
+          <div className="mt-8 flex gap-4">
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push('/projects')}
+              onClick={() => router.push("/projects")}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || !title || !description || !category || !fundingGoal || !startDate || !endDate}
+              disabled={
+                isSubmitting ||
+                !title ||
+                !description ||
+                !category ||
+                !fundingGoal ||
+                !startDate ||
+                !endDate
+              }
             >
-              {isSubmitting ? 'Creating...' : 'Create Campaign'}
+              {isSubmitting ? "Creating..." : "Create Campaign"}
             </Button>
           </div>
         </form>
       </div>
     </Container>
   )
-} 
+}

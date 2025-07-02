@@ -21,9 +21,9 @@ npm install tailwindcss@latest
 Now you're ready to start using the components in your project — just import them from wherever you're keeping your components and start using them like any of your other React components:
 
 ```jsx
-import { Input } from './components/input'
-import { Field, FieldGroup, Label } from './components/fieldset'
-import { Button } from './components/button'
+import { Button } from "./components/button"
+import { Field, FieldGroup, Label } from "./components/fieldset"
+import { Input } from "./components/input"
 
 export default function SettingsForm() {
   return (
