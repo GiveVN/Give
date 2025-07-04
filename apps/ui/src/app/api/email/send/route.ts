@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
+import { getProjectUpdateNotificationEmail } from "@/lib/email/project-update-notifications"
 import {
   getDonationConfirmationEmail,
   getNewDonationNotificationEmail,
@@ -10,7 +11,7 @@ import { PrivateStrapiClient } from "@/lib/strapi-api"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { type, data } = body
+    const { type, data, to } = body
 
     let emailTemplate
     let recipientEmail
@@ -29,6 +30,11 @@ export async function POST(request: NextRequest) {
       case "refund_notification":
         emailTemplate = getRefundNotificationEmail(data)
         recipientEmail = data.donorEmail
+        break
+
+      case "project_update":
+        emailTemplate = getProjectUpdateNotificationEmail(data)
+        recipientEmail = to || data.donorEmail
         break
 
       default:
