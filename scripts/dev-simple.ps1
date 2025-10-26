@@ -8,7 +8,7 @@ Write-Host "  yarn develop" -ForegroundColor White
 Write-Host ""
 
 Write-Host "Step 2: Open another terminal and run:" -ForegroundColor Green
-Write-Host "  cd apps/ui" -ForegroundColor White
+Write-Host "  cd apps/web" -ForegroundColor White
 Write-Host "  yarn dev" -ForegroundColor White
 Write-Host ""
 
@@ -19,4 +19,4 @@ Write-Host ""
 
 Write-Host "Services will be available at:" -ForegroundColor Cyan
 Write-Host "  Strapi: http://localhost:1338" -ForegroundColor White
-Write-Host "  UI: http://localhost:3003" -ForegroundColor White 
+Write-Host "  Web: http://localhost:3003" -ForegroundColor White 

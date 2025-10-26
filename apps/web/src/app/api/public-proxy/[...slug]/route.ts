@@ -42,11 +42,7 @@ async function handler(
   // Extract the body explicitly from the cloned request
   const body = isReadOnly ? undefined : await clonedRequest.text()
 
-  const injectedAuthHeader = `Bearer ${
-    isReadOnly
-      ? env.STRAPI_REST_READONLY_API_KEY
-      : env.STRAPI_REST_CUSTOM_API_KEY
-  }`
+  const injectedAuthHeader = `Bearer ${env.STRAPI_REST_CUSTOM_API_KEY}`
 
   return fetch(url, {
     headers: {

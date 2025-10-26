@@ -56,7 +56,7 @@ yarn setup:apps
 ```
 
 > [!WARNING]
-> More **manual setup is needed** for communication with Strapi using API tokens. Please refer to the [UI README](apps/ui/README.md#environment-variables) before running the UI app. Otherwise, you will get **401 Unauthorized error** - missing or invalid credentials.
+> More **manual setup is needed** for communication with Strapi using API tokens. Please refer to the [Web README](apps/web/README.md#environment-variables) before running the Web app. Otherwise, you will get **401 Unauthorized error** - missing or invalid credentials.
 
 4. Run apps
 
@@ -67,7 +67,7 @@ yarn dev
 
 5. 🎉 Enjoy!
 
-- Open your browser and go to [http://localhost:3000](http://localhost:3000) to see the UI app in action.
+- Open your browser and go to [http://localhost:3000](http://localhost:3000) to see the Web app in action.
 - Open your browser and go to [http://localhost:1337/admin](http://localhost:1337/admin) to see the Strapi app in action.
 
 6. Next steps?
@@ -106,7 +106,7 @@ yarn dev
 
 ### Apps
 
-- `apps/ui` - UI web app based on [Next.js v15](https://nextjs.org/docs/) and [shadcn/ui](https://ui.shadcn.com/) ([Tailwind](https://tailwindcss.com/)) - [README.md](./apps/ui/README.md)
+- `apps/web` - Web app based on [Next.js v15](https://nextjs.org/docs/) and [shadcn/ui](https://ui.shadcn.com/) ([Tailwind](https://tailwindcss.com/)) - [README.md](./apps/web/README.md)
 - `apps/strapi` - [Strapi v5](https://strapi.io/) API with prepared page-builder components - [README.md](./apps/strapi/README.md)
 
 ### Packages
@@ -138,7 +138,7 @@ yarn dev
 yarn build
 
 # dev run of specific app(s)
-yarn dev:ui
+yarn dev:web
 yarn dev:strapi
 ```
 

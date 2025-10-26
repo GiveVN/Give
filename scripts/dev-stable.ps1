@@ -28,11 +28,11 @@ if ($strapiRunning) {
     exit 1
 }
 
-# Start UI in foreground
-Write-Host "`nStarting UI..." -ForegroundColor Green
-cd apps/ui
+# Start Web in foreground
+Write-Host "`nStarting Web..." -ForegroundColor Green
+cd apps/web
 yarn dev
 
-# When UI exits, stop Strapi job
+# When Web exits, stop Strapi job
 Stop-Job $strapiJob -ErrorAction SilentlyContinue
 Remove-Job $strapiJob -ErrorAction SilentlyContinue 

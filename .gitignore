@@ -79,6 +79,37 @@ temp-*.js
 script-*.ts
 script-*.js
 
+# TypeScript compiled files from Strapi and Next.js
+apps/strapi/config/**/*.js
+apps/strapi/config/**/*.js.map
+apps/strapi/src/**/*.js
+apps/strapi/src/**/*.js.map
+apps/strapi/types/**/*.js
+apps/strapi/types/**/*.js.map
+apps/strapi/scripts/**/*.js
+apps/strapi/scripts/**/*.js.map
+apps/web/sentry.*.config.js
+apps/web/sentry.*.config.js.map
+
+# Prevent accidental .js compilation in TypeScript projects
+apps/web/src/**/*.js
+apps/web/src/**/*.js.map
+
+# Ignore compiled .js in TypeScript-only demo folders
+# catalyst-ui-kit has both /javascript (real .js) and /typescript (should not have .js)
+catalyst-ui-kit/typescript/**/*.js
+catalyst-ui-kit/typescript/**/*.js.map
+# radiant-ts is TypeScript only - no .js should exist except in node_modules
+radiant-ts/src/**/*.js
+radiant-ts/src/**/*.js.map
+radiant-ts/*.js
+!radiant-ts/postcss.config.js
+!radiant-ts/prettier.config.js
+
+# TypeScript build info files
+*.tsbuildinfo
+!**/dist/*.tsbuildinfo
+
 # Database backup files with potential sensitive data
 **/*.sql
 **/Backup/

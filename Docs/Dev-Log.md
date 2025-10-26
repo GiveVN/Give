@@ -248,12 +248,12 @@ if (!res?.error) {
 
 **Files Modified**:
 
-- `apps/ui/src/app/[locale]/auth/signin/_components/SignInForm.tsx`
+- `apps/web/src/app/[locale]/auth/signin/_components/SignInForm.tsx`
   - Added `isSubmitting` state từ React Hook Form
   - Implemented spinner component với Tailwind animations
   - Enhanced error handling với try-catch blocks
   - Replaced soft navigation với hard refresh for session
-- `apps/ui/locales/en.json` & `apps/ui/locales/cs.json`
+- `apps/web/locales/en.json` & `apps/web/locales/cs.json`
   - Added "signingIn" translation keys
   - Maintains consistency với existing translation structure
 
@@ -424,12 +424,12 @@ Error: Cannot find module 'D:\Projects\Give\node_modules\@strapi\strapi\bin\stra
 **Impact**: Medium - requires occasional restart
 **Workaround**: Clean restart of development environment
 
-### 2. ⚠️ UI Frontend Instability
+### 2. ⚠️ Web Frontend Instability
 
 **Problem**:
 
 ```
-command finished with error: command (D:\Projects\Give\apps\ui) exited (-1)
+command finished with error: command (D:\Projects\Give\apps\web) exited (-1)
 × Internal errors encountered: unable to determine why task exited
 ```
 
@@ -557,11 +557,11 @@ error Command failed with exit code 3221225786
 ```powershell
 # Check services
 netstat -ano | findstr ":1338"  # Strapi
-netstat -ano | findstr ":3002"  # UI Frontend
+netstat -ano | findstr ":3002"  # Web Frontend
 
 # Restart services
 yarn workspace @repo/strapi dev    # Start Strapi
-yarn workspace @repo/ui dev        # Start UI
+yarn workspace @repo/web dev        # Start Web
 ```
 
 ### Dependency Management
@@ -668,7 +668,7 @@ yarn install                      # Reinstall
 
 **Files Modified**:
 
-- `apps/ui/src/components/crowdfunding/ProjectCard.tsx` - Main implementation
+- `apps/web/src/components/crowdfunding/ProjectCard.tsx` - Main implementation
 
 **Commit**: `feat: implement Kickstarter-style hover effect with single shadow`
 

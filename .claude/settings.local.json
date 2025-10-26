@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -ExecutionPolicy Bypass -File ./scripts/kill-ports-fixed.ps1)",
+      "Bash(yarn outdated @strapi/strapi)",
+      "Bash(yarn upgrade --latest --pattern \"@strapi/*\")",
+      "Bash(yarn outdated --json)",
+      "Bash(timeout /t 10)",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 15\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3020,1357 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique | ForEach-Object { Stop-Process -Id $_-Force -ErrorAction SilentlyContinue }\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 20\")",
+      "Bash(yarn dev)",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 10\")",
+      "Bash(yarn strapi --help)",
+      "Bash(node scripts/seed-data.js)",
+      "Bash(node -e \"const strapi = require(''@strapi/strapi''); console.log(''Exports:'', Object.keys(strapi)); console.log(''Type of default:'', typeof strapi.default); console.log(''Type of compile:'', typeof strapi.compile); console.log(''Type of compileStrapi:'', typeof strapi.compileStrapi); console.log(''Type of createStrapi:'', typeof strapi.createStrapi);\")",
+      "Bash(node scripts/seed-cms-data.js)",
+      "Bash(curl -s http://localhost:1357/api/footer?populate=deep)",
+      "Bash(curl -s http://localhost:1357/api/navbar?populate=deep)",
+      "Bash(curl -s \"http://localhost:1357/api/pages?filters[fullPath][$eq]=/&populate=deep\")",
+      "Bash(curl -s http://localhost:1357/_health)",
+      "Bash(curl -s -H \"Authorization: Bearer 2271cfe95aa2d142d9a569e63676d0854c5bc85c74ca2e8abb9097f535186ed23c4cc73914e7f9987e690f88cf6180b73f9757c546767e8212de70978d4c64e965095e4a8945e3fdbea66bf195fe03a6b2e4692117321dfad0813aaeaeded35bd4c84d6b7595b6c01505818fe6fc3f3f11dbe6cf01e7ff4a2df88f17eea6367f\" \"http://127.0.0.1:1357/api/footer?locale=en\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 2\")",
+      "Bash(node scripts/check-cms-data.js)",
+      "Bash(del /F appsstrapiscriptsseed-cms-data.js)",
+      "Bash(node scripts/reseed-cms-data.js)",
+      "Bash(node scripts/check-cms-data-populated.js)",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 1357 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty State\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 30\")",
+      "Bash(powershell:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(del appsstrapisrcadminapp.js)",
+      "Bash(del \"apps\\web\\src\\app\\api\\public-proxy\\[...slug]\\route.js\")",
+      "Bash(git check-ignore:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [
+      "Bash(powershell -Command \"Get-Process node,strapi -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue\")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue\")"
+    ],
+    "ask": []
+  }
+}

@@ -440,7 +440,7 @@ export default ({ env }) => ({
 ### Project Structure
 
 ```
-apps/ui/
+apps/web/
 ├── src/
 │   ├── app/                    # Next.js 15 App Router
 │   │   ├── (auth)/            # Auth routes group
@@ -812,14 +812,14 @@ services:
 
   nextjs:
     build:
-      context: ./apps/ui
+      context: ./apps/web
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_STRAPI_URL: http://localhost:1337
     volumes:
-      - ./apps/ui:/app
+      - ./apps/web:/app
       - /app/node_modules
 
 volumes:

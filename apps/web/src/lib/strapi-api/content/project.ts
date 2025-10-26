@@ -148,35 +148,28 @@ export async function fetchProjects({
   populate?: string[]
 } = {}): Promise<StrapiCollectionResponse<ProjectData>> {
   try {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1338"
+    const queryParams: Record<string, any> = {}
 
-    const params = new URLSearchParams()
     // Filters
-    if (filters.type) params.append("filters[Type][$eq]", filters.type)
-    if (filters.category)
-      params.append("filters[Category][$eq]", filters.category)
-    if (filters.projectStatus)
-      params.append("filters[ProjectStatus][$eq]", filters.projectStatus)
-    if (filters.featured !== undefined)
-      params.append("filters[Featured][$eq]", String(filters.featured))
-    if (filters.locale) params.append("locale", filters.locale)
+    if (filters.type) queryParams["filters[Type][$eq]"] = filters.type
+    if (filters.category) queryParams["filters[Category][$eq]"] = filters.category
+    if (filters.projectStatus) queryParams["filters[ProjectStatus][$eq]"] = filters.projectStatus
+    if (filters.featured !== undefined) queryParams["filters[Featured][$eq]"] = filters.featured
+    if (filters.locale) queryParams["locale"] = filters.locale
 
     // Sort
-    params.append("sort[0]", `${sort.field}:${sort.order}`)
+    queryParams["sort[0]"] = `${sort.field}:${sort.order}`
 
     // Pagination
-    params.append("pagination[page]", String(pagination.page))
-    params.append("pagination[pageSize]", String(pagination.pageSize))
+    queryParams["pagination[page]"] = pagination.page
+    queryParams["pagination[pageSize]"] = pagination.pageSize
 
-    // Populate
-    populate.forEach((p) => params.append("populate", p))
+    // Populate - need to handle array for qs.stringify
+    if (populate.length > 0) {
+      queryParams["populate"] = populate
+    }
 
-    const url = `${apiUrl}/api/projects?${params.toString()}`
-    console.log("Fetching projects from Strapi:", url)
-    const res = await fetch(url)
-    if (!res.ok) throw new Error(`Strapi error ${res.status}`)
-    const data = await res.json()
+    const data = await PublicStrapiClient.fetchAPI("/projects", queryParams)
 
     const transformed = (data.data as any[]).map(transformStrapiProject)
 

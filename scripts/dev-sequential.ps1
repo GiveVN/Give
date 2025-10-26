@@ -33,23 +33,23 @@ else {
     exit 1
 }
 
-# Start UI
-Write-Host "`nStarting UI on port 3003..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd apps/ui; yarn dev" -WindowStyle Normal
+# Start Web
+Write-Host "`nStarting Web on port 3003..." -ForegroundColor Green
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd apps/web; yarn dev" -WindowStyle Normal
 
-# Wait for UI to start
-Write-Host "Waiting for UI to initialize..." -ForegroundColor Yellow
+# Wait for Web to start
+Write-Host "Waiting for Web to initialize..." -ForegroundColor Yellow
 Start-Sleep -Seconds 10
 
-# Check if UI started successfully
-$uiRunning = Test-NetConnection -ComputerName localhost -Port 3003 -InformationLevel Quiet
-if ($uiRunning) {
-    Write-Host "✓ UI started successfully!" -ForegroundColor Green
+# Check if Web started successfully
+$webRunning = Test-NetConnection -ComputerName localhost -Port 3003 -InformationLevel Quiet
+if ($webRunning) {
+    Write-Host "✓ Web started successfully!" -ForegroundColor Green
 }
 else {
-    Write-Host "✗ UI failed to start. Check the UI window for errors." -ForegroundColor Red
+    Write-Host "✗ Web failed to start. Check the Web window for errors." -ForegroundColor Red
 }
 
 Write-Host "`n✅ Development environment started!" -ForegroundColor Green
 Write-Host "Strapi: http://localhost:1338" -ForegroundColor Cyan
-Write-Host "UI: http://localhost:3003" -ForegroundColor Cyan 
+Write-Host "Web: http://localhost:3003" -ForegroundColor Cyan 

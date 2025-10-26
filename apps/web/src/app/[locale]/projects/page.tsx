@@ -5,6 +5,7 @@ import FiltersSheet from "@/components/crowdfunding/FiltersSheet"
 import FiltersSidebar from "@/components/crowdfunding/FiltersSidebar"
 import ProjectCard from "@/components/crowdfunding/ProjectCard"
 import ProjectsTopControls from "@/components/crowdfunding/ProjectsTopControls"
+import { fetchProjects as strapiApiFetchProjects } from "@/lib/strapi-api/content/project"
 
 interface ProjectsPageProps {
   params: Promise<{ locale: AppLocale }>
@@ -17,58 +18,27 @@ interface ProjectsPageProps {
   }>
 }
 
-async function fetchProjects(locale: AppLocale, searchParams: any) {
+async function fetchProjectsForPage(locale: AppLocale, searchParams: any) {
   try {
-    // Direct API call to Strapi as workaround for permissions
-    const queryParams = new URLSearchParams({
-      "populate[Media][populate]": "*",
-      "populate[Category]": "true",
-      "populate[Tags]": "true",
-      "sort[0]": "createdAt:desc",
-      "pagination[page]": searchParams.page || "1",
-      "pagination[pageSize]": "12",
-      locale: locale,
-    })
-
-    // Add filters if provided
-    if (searchParams.type) {
-      queryParams.append("filters[Type][$eq]", searchParams.type)
-    }
-    if (searchParams.category) {
-      // Filter by Category slug
-      queryParams.append("filters[Category][Slug][$eq]", searchParams.category)
-    }
-    if (searchParams.status) {
-      queryParams.append("filters[ProjectStatus][$eq]", searchParams.status)
-    }
-    if (searchParams.search) {
-      queryParams.append(
-        "filters[$or][0][Title][$containsi]",
-        searchParams.search
-      )
-      queryParams.append(
-        "filters[$or][1][ShortDescription][$containsi]",
-        searchParams.search
-      )
-    }
-
-    // Use env variable so it works in all environments
-    const strapiUrl = process.env.STRAPI_URL ?? "http://localhost:1338"
-
-    const response = await fetch(`${strapiUrl}/api/projects?${queryParams}`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+    // Use the Strapi API client which routes through /api/public-proxy
+    const result = await strapiApiFetchProjects({
+      filters: {
+        type: searchParams.type,
+        category: searchParams.category,
+        projectStatus: searchParams.status,
+        locale: locale,
       },
-      next: { revalidate: 60 },
+      sort: {
+        field: "createdAt",
+        order: "desc",
+      },
+      pagination: {
+        page: parseInt(searchParams.page || "1"),
+        pageSize: 12,
+      },
+      populate: ["Media", "Category", "Tags"],
     })
 
-    if (!response.ok) {
-      console.error("API Error:", response.status, response.statusText)
-      return null
-    }
-
-    const result = await response.json()
     console.log("Projects fetched:", result?.data?.length || 0)
     return result
   } catch (error) {
@@ -84,7 +54,7 @@ export default async function ProjectsPage({
   const resolvedParams = await params
   const resolvedSearchParams = await searchParams
 
-  const projectsData = await fetchProjects(
+  const projectsData = await fetchProjectsForPage(
     resolvedParams.locale,
     resolvedSearchParams
   )
