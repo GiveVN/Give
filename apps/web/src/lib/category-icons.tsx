@@ -17,29 +17,31 @@ import {
   Utensils,
 } from "lucide-react"
 
-export const categoryIcons: Record<string, React.ReactNode> = {
+type IconComponent = typeof Home
+
+export const categoryIcons: Record<string, IconComponent> = {
   // Give categories
-  "disaster-relief": <Home className="h-4 w-4" />,
-  "poverty-alleviation": <HandHeart className="h-4 w-4" />,
-  healthcare: <Stethoscope className="h-4 w-4" />,
-  education: <GraduationCap className="h-4 w-4" />,
-  environment: <Trees className="h-4 w-4" />,
-  "animal-welfare": <Cat className="h-4 w-4" />,
-  "community-development": <Users className="h-4 w-4" />,
-  "humanitarian-aid": <Heart className="h-4 w-4" />,
+  "disaster-relief": Home,
+  "poverty-alleviation": HandHeart,
+  healthcare: Stethoscope,
+  education: GraduationCap,
+  environment: Trees,
+  "animal-welfare": Cat,
+  "community-development": Users,
+  "humanitarian-aid": Heart,
 
   // Back categories
-  technology: <Cpu className="h-4 w-4" />,
-  arts: <Palette className="h-4 w-4" />,
-  "film-video": <Film className="h-4 w-4" />,
-  games: <Gamepad2 className="h-4 w-4" />,
-  music: <Music className="h-4 w-4" />,
-  publishing: <BookOpen className="h-4 w-4" />,
-  "food-craft": <Utensils className="h-4 w-4" />,
-  "design-fashion": <Shirt className="h-4 w-4" />,
+  technology: Cpu,
+  arts: Palette,
+  "film-video": Film,
+  games: Gamepad2,
+  music: Music,
+  publishing: BookOpen,
+  "food-craft": Utensils,
+  "design-fashion": Shirt,
 
   // Default
-  default: <Heart className="h-4 w-4" />,
+  default: Heart,
 }
 
 export function getCategoryIcon(category: string | any): React.ReactNode {
@@ -51,5 +53,6 @@ export function getCategoryIcon(category: string | any): React.ReactNode {
           .replace(/\s+/g, "-")
       : (category || "").toLowerCase().replace(/\s+/g, "-")
 
-  return categoryIcons[categorySlug] || categoryIcons["default"]
+  const IconComponent = categoryIcons[categorySlug] || categoryIcons["default"]
+  return <IconComponent className="h-4 w-4" />
 }

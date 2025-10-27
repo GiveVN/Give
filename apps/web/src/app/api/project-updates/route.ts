@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 
+import { env } from "@/env.mjs"
+
 const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1338"
 
 export async function GET(request: NextRequest) {
@@ -14,6 +16,7 @@ export async function GET(request: NextRequest) {
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${env.STRAPI_REST_CUSTOM_API_KEY}`,
         },
         next: { revalidate: 60 }, // Cache for 60 seconds
       }

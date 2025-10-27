@@ -142,7 +142,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
 
   // Support both Images and Media fields
-  let imageSrc = null
+  let imageSrc = "/placeholder-project.svg" // Default placeholder
   let imageAlt = project.Title || "Project image"
 
   // Check Images field first (transformed data)
